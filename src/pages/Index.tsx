@@ -39,7 +39,9 @@ const Index = () => {
       "3. Findings",
       "4. Conclusions and implications",
       "5. References"
-    ]
+    ],
+    qrCodeUrl: "https://example.com/poster",
+    qrCodeColor: "#000000"
   });
   
   const [designSettings, setDesignSettings] = useState({
@@ -67,22 +69,52 @@ const Index = () => {
       return;
     }
     
-    const opt = {
-      margin: 0,
-      filename: 'conference-poster.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'mm', format: 'a0', orientation: 'portrait' }
-    };
+    // Create a clone of the element to modify for PDF export
+    const clonedElement = element.cloneNode(true) as HTMLElement;
     
+    // Add a hidden div to the document to contain our clone
+    const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.left = '-9999px';
+    tempDiv.style.top = '-9999px';
+    tempDiv.style.width = '794px'; // A4 width in pixels at 96 DPI
+    document.body.appendChild(tempDiv);
+    tempDiv.appendChild(clonedElement);
+    
+    // Ensure all fonts are loaded before generating PDF
     toast.info("Preparing PDF export...");
     
-    html2pdf().from(element).set(opt).save().then(() => {
-      toast.success("PDF exported successfully!");
-    }).catch(err => {
-      console.error("PDF export failed:", err);
-      toast.error("PDF export failed. Please try again.");
-    });
+    // Fix the width and height for PDF export
+    clonedElement.style.width = '794px'; // A4 width
+    clonedElement.style.height = '1123px'; // A4 height
+    clonedElement.style.margin = '0';
+    clonedElement.style.padding = '0';
+    
+    const opt = {
+      margin: 10,
+      filename: 'conference-poster.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { 
+        scale: 2, 
+        useCORS: true,
+        letterRendering: true,
+        logging: false
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    
+    setTimeout(() => {
+      html2pdf().from(clonedElement).set(opt).save().then(() => {
+        toast.success("PDF exported successfully!");
+        // Clean up
+        document.body.removeChild(tempDiv);
+      }).catch(err => {
+        console.error("PDF export failed:", err);
+        toast.error("PDF export failed. Please try again.");
+        // Clean up
+        document.body.removeChild(tempDiv);
+      });
+    }, 1000); // Give a moment for fonts to load properly
   };
   
   return (

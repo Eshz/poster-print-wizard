@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import QrCode from "@/components/QrCode";
 
 interface PosterFormProps {
   posterData: any;
@@ -36,6 +37,10 @@ const PosterForm: React.FC<PosterFormProps> = ({
     const updatedSectionTitles = [...posterData.sectionTitles];
     updatedSectionTitles[index] = value;
     setPosterData(prev => ({ ...prev, sectionTitles: updatedSectionTitles }));
+  };
+
+  const handleQrUrlChange = (url: string) => {
+    setPosterData(prev => ({ ...prev, qrCodeUrl: url }));
   };
   
   return (
@@ -88,9 +93,10 @@ const PosterForm: React.FC<PosterFormProps> = ({
       </Card>
       
       <Tabs defaultValue="content" className="w-full">
-        <TabsList className="grid grid-cols-2 mb-4">
+        <TabsList className="grid grid-cols-3 mb-4">
           <TabsTrigger value="content">Main Content</TabsTrigger>
           <TabsTrigger value="keypoints">Key Takeaways</TabsTrigger>
+          <TabsTrigger value="qrcode">QR Code</TabsTrigger>
         </TabsList>
         
         <TabsContent value="content" className="space-y-4">
@@ -136,7 +142,7 @@ const PosterForm: React.FC<PosterFormProps> = ({
           
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Label htmlFor="sectionTitle-2">Section 3 Title</Label>
+              <Label htmlFor="sectionTitle-2">Section 2 Title</Label>
               <Input 
                 id="sectionTitle-2"
                 value={posterData.sectionTitles[2]}
@@ -156,7 +162,7 @@ const PosterForm: React.FC<PosterFormProps> = ({
           
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Label htmlFor="sectionTitle-3">Section 4 Title</Label>
+              <Label htmlFor="sectionTitle-3">Section 3 Title</Label>
               <Input 
                 id="sectionTitle-3"
                 value={posterData.sectionTitles[3]}
@@ -176,7 +182,7 @@ const PosterForm: React.FC<PosterFormProps> = ({
           
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Label htmlFor="sectionTitle-4">Section 5 Title</Label>
+              <Label htmlFor="sectionTitle-4">Section 4 Title</Label>
               <Input 
                 id="sectionTitle-4"
                 value={posterData.sectionTitles[4]}
@@ -215,6 +221,18 @@ const PosterForm: React.FC<PosterFormProps> = ({
               />
             </div>
           ))}
+        </TabsContent>
+
+        <TabsContent value="qrcode">
+          <Card>
+            <CardContent className="pt-4">
+              <QrCode 
+                url={posterData.qrCodeUrl} 
+                setUrl={handleQrUrlChange}
+                color={posterData.qrCodeColor || '#000000'}
+              />
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

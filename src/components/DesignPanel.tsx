@@ -65,7 +65,9 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
     setDesignSettings(prev => ({
       ...prev,
       headerBgColor: pair.bg,
-      headerTextColor: pair.fg
+      headerTextColor: pair.fg,
+      sectionTitleColor: pair.bg,
+      sectionBgColor: pair.fg === '#000000' ? '#e6ebff' : '#f5f7ff'
     }));
   };
 
@@ -219,20 +221,6 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
-              
-              <Separator className="my-4" />
-              
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium">Font Preview</h3>
-                <div className={`font-${designSettings.titleFont} p-2 border rounded-md`}>
-                  <p className="text-xl font-bold">Title Font Example</p>
-                  <p>The quick brown fox jumps over the lazy dog.</p>
-                </div>
-                <div className={`font-${designSettings.contentFont} p-2 border rounded-md`}>
-                  <p className="text-base">Content Font Example</p>
-                  <p className="text-sm">The quick brown fox jumps over the lazy dog.</p>
-                </div>
               </div>
             </CardContent>
           </Card>
@@ -412,7 +400,9 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
                 setDesignSettings(prev => ({
                   ...prev,
                   headerBgColor: color1,
-                  headerTextColor: color2
+                  headerTextColor: color2,
+                  sectionTitleColor: color1,
+                  sectionBgColor: color2 === '#000000' ? '#e6ebff' : '#f5f7ff'
                 }));
                 setShowColorChecker(false);
               }}

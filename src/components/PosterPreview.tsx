@@ -15,6 +15,8 @@ interface PosterPreviewProps {
     keypoints: string[];
     keyDescriptions: string[];
     sectionTitles: string[];
+    qrCodeUrl: string;
+    qrCodeColor?: string;
   };
   designSettings: {
     layout: string;
@@ -31,6 +33,11 @@ interface PosterPreviewProps {
 }
 
 const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSettings }) => {
+  // QR Code generation
+  const qrCodeUrl = posterData.qrCodeUrl ? 
+    `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(posterData.qrCodeUrl)}&color=${(posterData.qrCodeColor || '#000000').replace('#', '')}` : 
+    '';
+
   // Apply the selected layout
   const renderLayout = () => {
     switch(designSettings.layout) {
@@ -127,20 +134,44 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
       
       {/* Right Column */}
       <div className="flex flex-col space-y-2 h-full overflow-hidden">
-        {/* Key Takeaways Section */}
-        <div 
-          className="border-t-2 border-b-2 py-2 text-center mb-1"
-          style={{ borderColor: designSettings.sectionTitleColor }}
-        >
-          <h2 
-            className={`text-lg md:text-xl font-semibold`}
-            style={{ 
-              color: designSettings.sectionTitleColor,
-              fontFamily: `var(--font-${designSettings.titleFont})`
-            }}
+        {/* Key Takeaways and QR Code Section */}
+        <div className="flex flex-col space-y-2">
+          <div 
+            className="border-t-2 border-b-2 py-2 text-center mb-1"
+            style={{ borderColor: designSettings.sectionTitleColor }}
           >
-            Key Takeaways
-          </h2>
+            <div className="flex justify-between items-center px-2">
+              <h2 
+                className={`text-lg md:text-xl font-semibold`}
+                style={{ 
+                  color: designSettings.sectionTitleColor,
+                  fontFamily: `var(--font-${designSettings.titleFont})`
+                }}
+              >
+                Key Takeaways
+              </h2>
+              
+              {/* QR Code */}
+              {posterData.qrCodeUrl && qrCodeUrl && (
+                <div className="flex flex-col items-center">
+                  <img 
+                    src={qrCodeUrl} 
+                    alt="QR Code" 
+                    className="w-20 h-20 object-contain"
+                  />
+                  <p 
+                    className="text-xs text-center mt-1"
+                    style={{ 
+                      color: designSettings.sectionTitleColor,
+                      fontFamily: `var(--font-${designSettings.contentFont})`
+                    }}
+                  >
+                    Scan for more info
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
         
         {/* Key Points Grid - Updated to scroll if needed */}
@@ -153,7 +184,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
             >
               <div className="flex items-start mb-1">
                 <div 
-                  className="h-8 w-8 min-w-8 rounded-full flex items-center justify-center text-lg font-bold mr-1 flex-shrink-0"
+                  className="h-8 w-8 min-w-[2rem] rounded-full flex items-center justify-center text-lg font-bold mr-1 flex-shrink-0"
                   style={{ 
                     backgroundColor: designSettings.sectionTitleColor, 
                     color: designSettings.sectionBgColor
@@ -323,19 +354,41 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
           </div>
           
           {/* Key Points */}
-          <div 
-            className="border-t-2 border-b-2 py-2 text-center mb-2"
-            style={{ borderColor: designSettings.sectionTitleColor }}
-          >
-            <h2 
-              className={`text-lg font-semibold`}
-              style={{ 
-                color: designSettings.sectionTitleColor,
-                fontFamily: `var(--font-${designSettings.titleFont})`
-              }}
+          <div className="flex justify-between items-center mb-2">
+            <div 
+              className="border-t-2 border-b-2 py-2 flex-1 text-center"
+              style={{ borderColor: designSettings.sectionTitleColor }}
             >
-              Key Takeaways
-            </h2>
+              <h2 
+                className={`text-lg font-semibold`}
+                style={{ 
+                  color: designSettings.sectionTitleColor,
+                  fontFamily: `var(--font-${designSettings.titleFont})`
+                }}
+              >
+                Key Takeaways
+              </h2>
+            </div>
+            
+            {/* QR Code */}
+            {posterData.qrCodeUrl && qrCodeUrl && (
+              <div className="ml-2 flex flex-col items-center">
+                <img 
+                  src={qrCodeUrl} 
+                  alt="QR Code" 
+                  className="w-20 h-20 object-contain"
+                />
+                <p 
+                  className="text-xs text-center mt-1"
+                  style={{ 
+                    color: designSettings.sectionTitleColor,
+                    fontFamily: `var(--font-${designSettings.contentFont})`
+                  }}
+                >
+                  Scan for more info
+                </p>
+              </div>
+            )}
           </div>
           
           <div className="space-y-2 flex-grow flex flex-col justify-between">
@@ -347,7 +400,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
               >
                 <div className="flex items-start mb-1">
                   <div 
-                    className="h-8 w-8 min-w-8 rounded-full flex items-center justify-center text-lg font-bold mr-2 flex-shrink-0"
+                    className="h-8 w-8 min-w-[2rem] rounded-full flex items-center justify-center text-lg font-bold mr-2 flex-shrink-0"
                     style={{ 
                       backgroundColor: designSettings.sectionTitleColor, 
                       color: designSettings.sectionBgColor
@@ -390,7 +443,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
               >
                 <div className="flex items-start mb-1">
                   <div 
-                    className="h-8 w-8 min-w-8 rounded-full flex items-center justify-center text-lg font-bold mr-2 flex-shrink-0"
+                    className="h-8 w-8 min-w-[2rem] rounded-full flex items-center justify-center text-lg font-bold mr-2 flex-shrink-0"
                     style={{ 
                       backgroundColor: designSettings.sectionTitleColor, 
                       color: designSettings.sectionBgColor
@@ -479,29 +532,54 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
   const renderFocusLayout = () => (
     <div className="p-4 h-full flex flex-col">
       <div className="max-w-4xl mx-auto space-y-6 flex-grow flex flex-col">
-        {/* Introduction Section */}
-        <div 
-          className="p-4 rounded flex-grow"
-          style={{ backgroundColor: designSettings.sectionBgColor }}
-        >
-          <h2 
-            className={`text-2xl font-semibold mb-3`}
-            style={{ 
-              color: designSettings.sectionTitleColor,
-              fontFamily: `var(--font-${designSettings.titleFont})`
-            }}
-          >
-            {posterData.sectionTitles[0]}
-          </h2>
-          <p 
-            className={`text-base`}
-            style={{ 
-              color: designSettings.sectionTextColor,
-              fontFamily: `var(--font-${designSettings.contentFont})`
-            }}
-          >
-            {posterData.introduction}
-          </p>
+        {/* QR Code and Title Row */}
+        <div className="flex justify-between items-start mb-4">
+          <div className="w-4/5">
+            {/* Introduction Section */}
+            <div 
+              className="p-4 rounded"
+              style={{ backgroundColor: designSettings.sectionBgColor }}
+            >
+              <h2 
+                className={`text-2xl font-semibold mb-3`}
+                style={{ 
+                  color: designSettings.sectionTitleColor,
+                  fontFamily: `var(--font-${designSettings.titleFont})`
+                }}
+              >
+                {posterData.sectionTitles[0]}
+              </h2>
+              <p 
+                className={`text-base`}
+                style={{ 
+                  color: designSettings.sectionTextColor,
+                  fontFamily: `var(--font-${designSettings.contentFont})`
+                }}
+              >
+                {posterData.introduction}
+              </p>
+            </div>
+          </div>
+
+          {/* QR Code */}
+          {posterData.qrCodeUrl && qrCodeUrl && (
+            <div className="flex flex-col items-center">
+              <img 
+                src={qrCodeUrl} 
+                alt="QR Code" 
+                className="w-28 h-28 object-contain"
+              />
+              <p 
+                className="text-xs text-center mt-1"
+                style={{ 
+                  color: designSettings.sectionTitleColor,
+                  fontFamily: `var(--font-${designSettings.contentFont})`
+                }}
+              >
+                Scan for more info
+              </p>
+            </div>
+          )}
         </div>
         
         {/* Methods Section */}
@@ -580,7 +658,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
             >
               <div className="flex items-start mb-2">
                 <div 
-                  className="h-10 w-10 min-w-10 rounded-full flex items-center justify-center text-xl font-bold mr-3 flex-shrink-0"
+                  className="h-10 w-10 min-w-[2.5rem] rounded-full flex items-center justify-center text-xl font-bold mr-3 flex-shrink-0"
                   style={{ 
                     backgroundColor: designSettings.sectionTitleColor, 
                     color: designSettings.sectionBgColor
@@ -700,4 +778,3 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
 };
 
 export default PosterPreview;
-
