@@ -2,20 +2,14 @@
 import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { HexColorPicker } from "react-colorful";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
-import { ChevronDown } from 'lucide-react';
 
 interface QrCodeProps {
   url: string;
   setUrl: (url: string) => void;
   color: string;
-  setColor: (color: string) => void;
 }
 
-const QrCode: React.FC<QrCodeProps> = ({ url, setUrl, color, setColor }) => {
+const QrCode: React.FC<QrCodeProps> = ({ url, setUrl, color }) => {
   // QR Code API from QRServer.com
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}&color=${color.replace('#', '')}`;
   

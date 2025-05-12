@@ -56,6 +56,9 @@ const Index = () => {
     keyPointsBgColor: '#f5f7ff',
     keyPointsTextColor: '#4052b6',
   });
+
+  // Create state for the QR code color
+  const [qrColor, setQrColor] = useState(posterData.qrCodeColor);
   
   // Directly use posterData as the generated poster
   // No need for a separate state or generation function
@@ -172,6 +175,8 @@ const Index = () => {
               <DesignPanel 
                 designSettings={designSettings}
                 setDesignSettings={setDesignSettings}
+                qrColor={qrColor}
+                setQrColor={setQrColor}
               />
             </div>
           </TabsContent>
@@ -206,6 +211,8 @@ const Index = () => {
               <DesignPanel 
                 designSettings={designSettings}
                 setDesignSettings={setDesignSettings}
+                qrColor={qrColor}
+                setQrColor={setQrColor}
               />
             </TabsContent>
           </Tabs>
@@ -224,7 +231,7 @@ const Index = () => {
       <div className="w-full lg:w-2/3 p-4 bg-gray-100 overflow-auto">
         <div className="bg-white p-2 rounded-lg shadow">
           <PosterPreview 
-            posterData={posterData} 
+            posterData={{...posterData, qrCodeColor: qrColor}} 
             designSettings={designSettings}
           />
         </div>
@@ -246,6 +253,8 @@ const Index = () => {
             <DesignPanel 
               designSettings={designSettings}
               setDesignSettings={setDesignSettings}
+              qrColor={qrColor}
+              setQrColor={setQrColor}
             />
           </div>
         </SheetContent>
