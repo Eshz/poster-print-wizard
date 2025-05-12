@@ -1,4 +1,3 @@
-
 import { toast } from "sonner";
 import html2pdf from 'html2pdf.js';
 
@@ -87,17 +86,20 @@ export const exportToPDF = (elementId: string) => {
   if (headerDiv) {
     // Fix header padding
     headerDiv.style.padding = '5rem';
-    // Add margin below the title
-    const titleElement = headerDiv.querySelector('h1') as HTMLElement;
-    if (titleElement) {
-      titleElement.style.marginBottom = '3rem';
-    }
+  }
+  
+  // Style the author info with borders
+  const authorInfoContainer = posterContent.querySelector('.w-full.text-center.py-2') as HTMLElement;
+  if (authorInfoContainer) {
+    authorInfoContainer.style.padding = '1.5rem 0';
+    authorInfoContainer.style.borderTopWidth = '3px';
+    authorInfoContainer.style.borderBottomWidth = '3px';
     
-    const authorInfo = headerDiv.querySelector('.flex.flex-col.md\\:flex-row') as HTMLElement;
+    const authorInfo = authorInfoContainer.querySelector('.flex.flex-col.md\\:flex-row') as HTMLElement;
     if (authorInfo) {
       authorInfo.style.fontSize = '2.4rem';
-      authorInfo.style.lineHeight = '1.4';
-      authorInfo.style.gap = '2rem';
+      authorInfo.style.padding = '0 4rem';
+      authorInfo.style.gap = '3rem';
       
       // Make sure all divs inside author info are properly styled
       const authorDivs = authorInfo.querySelectorAll('div');
@@ -211,4 +213,3 @@ export const exportToPDF = (elementId: string) => {
     });
   }, 3000); // Give more time for large format to load properly
 };
-
