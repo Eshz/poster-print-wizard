@@ -18,11 +18,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Type, Layout, Palette } from 'lucide-react';
+import { Type, Layout, Palette, ChevronDown } from 'lucide-react';
 import { isAccessible, accessibleColorPairs, availableFonts } from '@/lib/color-utils';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 
 interface DesignPanelProps {
   designSettings: {
@@ -53,6 +54,7 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
   const [contrastRatio, setContrastRatio] = React.useState(21);
   const [isAA, setIsAA] = React.useState(true);
   const [isAAA, setIsAAA] = React.useState(true);
+  const [advancedOpen, setAdvancedOpen] = React.useState(false);
 
   const handleChange = (key: string, value: string) => {
     setDesignSettings(prev => ({
@@ -68,7 +70,7 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
       headerBgColor: pair.bg,
       headerTextColor: pair.fg,
       sectionTitleColor: pair.bg,
-      keyPointsTextColor: pair.bg, // Also update key takeaways title color
+      keyPointsTextColor: pair.bg,
       sectionBgColor: pair.fg === '#000000' ? '#e6ebff' : '#f5f7ff',
       keyPointsBgColor: pair.fg === '#000000' ? '#e6ebff' : '#f5f7ff'
     }));
@@ -92,15 +94,6 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
     <div className="space-y-6 p-1">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Design Settings</h2>
-        
-        <Button 
-          variant="outline" 
-          onClick={() => setShowColorChecker(true)}
-          size="sm"
-        >
-          <Palette className="mr-2 h-4 w-4" />
-          Check Contrast
-        </Button>
       </div>
       
       <Tabs defaultValue="layout" className="w-full">
@@ -232,110 +225,6 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
         <TabsContent value="colors" className="space-y-4">
           <Card>
             <CardContent className="pt-4 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="headerBgColor">Header Background</Label>
-                  <div className="flex gap-2">
-                    <div 
-                      className="w-10 h-10 rounded border" 
-                      style={{backgroundColor: designSettings.headerBgColor}}
-                    ></div>
-                    <Input 
-                      id="headerBgColor" 
-                      type="text" 
-                      value={designSettings.headerBgColor}
-                      onChange={(e) => handleChange('headerBgColor', e.target.value)}
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="headerTextColor">Header Text</Label>
-                  <div className="flex gap-2">
-                    <div 
-                      className="w-10 h-10 rounded border" 
-                      style={{backgroundColor: designSettings.headerTextColor}}
-                    ></div>
-                    <Input 
-                      id="headerTextColor" 
-                      type="text" 
-                      value={designSettings.headerTextColor}
-                      onChange={(e) => handleChange('headerTextColor', e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="sectionBgColor">Section Background</Label>
-                  <div className="flex gap-2">
-                    <div 
-                      className="w-10 h-10 rounded border" 
-                      style={{backgroundColor: designSettings.sectionBgColor}}
-                    ></div>
-                    <Input 
-                      id="sectionBgColor" 
-                      type="text" 
-                      value={designSettings.sectionBgColor}
-                      onChange={(e) => handleChange('sectionBgColor', e.target.value)}
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="sectionTitleColor">Section Title</Label>
-                  <div className="flex gap-2">
-                    <div 
-                      className="w-10 h-10 rounded border" 
-                      style={{backgroundColor: designSettings.sectionTitleColor}}
-                    ></div>
-                    <Input 
-                      id="sectionTitleColor" 
-                      type="text" 
-                      value={designSettings.sectionTitleColor}
-                      onChange={(e) => handleChange('sectionTitleColor', e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="keyPointsBgColor">Key Takeaways Background</Label>
-                  <div className="flex gap-2">
-                    <div 
-                      className="w-10 h-10 rounded border" 
-                      style={{backgroundColor: designSettings.keyPointsBgColor}}
-                    ></div>
-                    <Input 
-                      id="keyPointsBgColor" 
-                      type="text" 
-                      value={designSettings.keyPointsBgColor}
-                      onChange={(e) => handleChange('keyPointsBgColor', e.target.value)}
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="keyPointsTextColor">Key Takeaways Title</Label>
-                  <div className="flex gap-2">
-                    <div 
-                      className="w-10 h-10 rounded border" 
-                      style={{backgroundColor: designSettings.keyPointsTextColor}}
-                    ></div>
-                    <Input 
-                      id="keyPointsTextColor" 
-                      type="text" 
-                      value={designSettings.keyPointsTextColor}
-                      onChange={(e) => handleChange('keyPointsTextColor', e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
-              
-              <Separator className="my-2" />
-              
               <h3 className="text-sm font-medium">Accessible Color Combinations</h3>
               <div className="grid grid-cols-2 gap-2">
                 {accessibleColorPairs.map((pair, index) => (
@@ -357,6 +246,133 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
                   </Button>
                 ))}
               </div>
+              
+              <Separator className="my-2" />
+              
+              <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-medium">Advanced Color Settings</h3>
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" size="sm" className="p-0 h-8 w-8">
+                      <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${advancedOpen ? 'rotate-180' : ''}`} />
+                    </Button>
+                  </CollapsibleTrigger>
+                </div>
+                
+                <CollapsibleContent className="space-y-4">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setShowColorChecker(true)}
+                    size="sm"
+                    className="mb-2"
+                  >
+                    <Palette className="mr-2 h-4 w-4" />
+                    Check Contrast
+                  </Button>
+                
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="headerBgColor">Header Background</Label>
+                      <div className="flex gap-2">
+                        <div 
+                          className="w-10 h-10 rounded border" 
+                          style={{backgroundColor: designSettings.headerBgColor}}
+                        ></div>
+                        <Input 
+                          id="headerBgColor" 
+                          type="text" 
+                          value={designSettings.headerBgColor}
+                          onChange={(e) => handleChange('headerBgColor', e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="headerTextColor">Header Text</Label>
+                      <div className="flex gap-2">
+                        <div 
+                          className="w-10 h-10 rounded border" 
+                          style={{backgroundColor: designSettings.headerTextColor}}
+                        ></div>
+                        <Input 
+                          id="headerTextColor" 
+                          type="text" 
+                          value={designSettings.headerTextColor}
+                          onChange={(e) => handleChange('headerTextColor', e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="sectionBgColor">Section Background</Label>
+                      <div className="flex gap-2">
+                        <div 
+                          className="w-10 h-10 rounded border" 
+                          style={{backgroundColor: designSettings.sectionBgColor}}
+                        ></div>
+                        <Input 
+                          id="sectionBgColor" 
+                          type="text" 
+                          value={designSettings.sectionBgColor}
+                          onChange={(e) => handleChange('sectionBgColor', e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="sectionTitleColor">Section Title</Label>
+                      <div className="flex gap-2">
+                        <div 
+                          className="w-10 h-10 rounded border" 
+                          style={{backgroundColor: designSettings.sectionTitleColor}}
+                        ></div>
+                        <Input 
+                          id="sectionTitleColor" 
+                          type="text" 
+                          value={designSettings.sectionTitleColor}
+                          onChange={(e) => handleChange('sectionTitleColor', e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="keyPointsBgColor">Key Takeaways Background</Label>
+                      <div className="flex gap-2">
+                        <div 
+                          className="w-10 h-10 rounded border" 
+                          style={{backgroundColor: designSettings.keyPointsBgColor}}
+                        ></div>
+                        <Input 
+                          id="keyPointsBgColor" 
+                          type="text" 
+                          value={designSettings.keyPointsBgColor}
+                          onChange={(e) => handleChange('keyPointsBgColor', e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="keyPointsTextColor">Key Takeaways Title</Label>
+                      <div className="flex gap-2">
+                        <div 
+                          className="w-10 h-10 rounded border" 
+                          style={{backgroundColor: designSettings.keyPointsTextColor}}
+                        ></div>
+                        <Input 
+                          id="keyPointsTextColor" 
+                          type="text" 
+                          value={designSettings.keyPointsTextColor}
+                          onChange={(e) => handleChange('keyPointsTextColor', e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
             </CardContent>
           </Card>
         </TabsContent>
@@ -439,7 +455,7 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
                   headerBgColor: color1,
                   headerTextColor: color2,
                   sectionTitleColor: color1,
-                  keyPointsTextColor: color1, // Also update key takeaways title color
+                  keyPointsTextColor: color1,
                   sectionBgColor: color2 === '#000000' ? '#e6ebff' : '#f5f7ff',
                   keyPointsBgColor: color2 === '#000000' ? '#e6ebff' : '#f5f7ff'
                 }));
@@ -458,3 +474,4 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
 };
 
 export default DesignPanel;
+
