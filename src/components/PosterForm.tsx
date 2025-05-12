@@ -46,6 +46,34 @@ const PosterForm: React.FC<PosterFormProps> = ({
     setPosterData(prev => ({ ...prev, qrCodeColor: color }));
   };
   
+  // Function to reorder sections by swapping field values and titles
+  const reorderSections = (dragIndex: number, dropIndex: number) => {
+    // Create a mapping of field names to their order
+    const sectionFields = ["introduction", "methods", "findings", "conclusions", "references"];
+    
+    // Create copies of the data
+    const newData = { ...posterData };
+    const newSectionTitles = [...posterData.sectionTitles];
+    
+    // Store the dragged item's values
+    const draggedTitle = newSectionTitles[dragIndex];
+    const draggedContent = posterData[sectionFields[dragIndex]];
+    
+    // Swap the section titles
+    newSectionTitles[dragIndex] = newSectionTitles[dropIndex];
+    newSectionTitles[dropIndex] = draggedTitle;
+    
+    // Swap the section contents
+    newData[sectionFields[dragIndex]] = posterData[sectionFields[dropIndex]];
+    newData[sectionFields[dropIndex]] = draggedContent;
+    
+    // Update the section titles in the new data
+    newData.sectionTitles = newSectionTitles;
+    
+    // Update state
+    setPosterData(newData);
+  };
+  
   return (
     <div className="space-y-6">
       <BasicInfoSection 
@@ -65,6 +93,7 @@ const PosterForm: React.FC<PosterFormProps> = ({
             posterData={posterData}
             handleChange={handleChange}
             handleSectionTitleChange={handleSectionTitleChange}
+            reorderSections={reorderSections}
           />
         </TabsContent>
         
