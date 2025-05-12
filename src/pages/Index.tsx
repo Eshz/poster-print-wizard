@@ -14,6 +14,7 @@ const Index = () => {
   const [posterData, setPosterData] = useState({
     title: "COMMUNITY RESILIENCE IN UNDERPRIVILEGED NEIGHBORHOOD: DIFFERENCES BETWEEN COMMUNITY ACTIVISTS AND NON-ACTIVIST RESIDENTS",
     authors: "Prof. Ester Zychlinski, Mrs. Ora Davidoff",
+    school: "Ariel University, Department of Social Work",
     contact: "esterz@ariel.ac.il",
     introduction: "Community resilience is essential for the proper functioning and well-being of communities, enabling them to handle sudden and unpredictable situations, including the ability to withstand and cope with financial and social losses, and to recover, to adapt, and even to grow toward a better state after a crisis.",
     methods: "Data from 241 citizens, including 144 activists and 97 non-activists, through convenience and snowball sampling, were collected via questionnaires in a large underprivileged urban neighborhood.",
@@ -31,6 +32,13 @@ const Index = () => {
       "Community resilience empowers residents to voice their needs and drive local social change.",
       "Community social work is essential for long-term change, but many social workers lack these teachable skills.",
       "Investing in community activism can improve long-term social and economic opportunities for underprivileged communities."
+    ],
+    sectionTitles: [
+      "1. Introduction",
+      "2. Methods",
+      "3. Findings",
+      "4. Conclusions and implications",
+      "5. References"
     ]
   });
   

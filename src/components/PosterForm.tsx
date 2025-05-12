@@ -31,6 +31,12 @@ const PosterForm: React.FC<PosterFormProps> = ({
     updatedDescriptions[index] = value;
     setPosterData(prev => ({ ...prev, keyDescriptions: updatedDescriptions }));
   };
+
+  const handleSectionTitleChange = (index: number, value: string) => {
+    const updatedSectionTitles = [...posterData.sectionTitles];
+    updatedSectionTitles[index] = value;
+    setPosterData(prev => ({ ...prev, sectionTitles: updatedSectionTitles }));
+  };
   
   return (
     <div className="space-y-6">
@@ -57,15 +63,26 @@ const PosterForm: React.FC<PosterFormProps> = ({
               />
             </div>
             <div>
-              <Label htmlFor="contact">Contact Info</Label>
+              <Label htmlFor="school">School/Institution</Label>
               <Input
-                id="contact"
-                name="contact"
-                value={posterData.contact}
+                id="school"
+                name="school"
+                value={posterData.school}
                 onChange={handleChange}
                 className="mb-2"
               />
             </div>
+          </div>
+          
+          <div>
+            <Label htmlFor="contact">Contact Info</Label>
+            <Input
+              id="contact"
+              name="contact"
+              value={posterData.contact}
+              onChange={handleChange}
+              className="mb-2"
+            />
           </div>
         </CardContent>
       </Card>
@@ -78,7 +95,15 @@ const PosterForm: React.FC<PosterFormProps> = ({
         
         <TabsContent value="content" className="space-y-4">
           <div>
-            <Label htmlFor="introduction">1. Introduction</Label>
+            <div className="flex items-center gap-2 mb-1">
+              <Label htmlFor="sectionTitle-0">Section 1 Title</Label>
+              <Input 
+                id="sectionTitle-0"
+                value={posterData.sectionTitles[0]}
+                onChange={(e) => handleSectionTitleChange(0, e.target.value)}
+                className="max-w-[250px]"
+              />
+            </div>
             <Textarea
               id="introduction"
               name="introduction"
@@ -90,7 +115,15 @@ const PosterForm: React.FC<PosterFormProps> = ({
           </div>
           
           <div>
-            <Label htmlFor="methods">2. Methods</Label>
+            <div className="flex items-center gap-2 mb-1">
+              <Label htmlFor="sectionTitle-1">Section 2 Title</Label>
+              <Input 
+                id="sectionTitle-1"
+                value={posterData.sectionTitles[1]}
+                onChange={(e) => handleSectionTitleChange(1, e.target.value)}
+                className="max-w-[250px]"
+              />
+            </div>
             <Textarea
               id="methods"
               name="methods"
@@ -102,7 +135,15 @@ const PosterForm: React.FC<PosterFormProps> = ({
           </div>
           
           <div>
-            <Label htmlFor="findings">3. Findings</Label>
+            <div className="flex items-center gap-2 mb-1">
+              <Label htmlFor="sectionTitle-2">Section 3 Title</Label>
+              <Input 
+                id="sectionTitle-2"
+                value={posterData.sectionTitles[2]}
+                onChange={(e) => handleSectionTitleChange(2, e.target.value)}
+                className="max-w-[250px]"
+              />
+            </div>
             <Textarea
               id="findings"
               name="findings"
@@ -114,7 +155,15 @@ const PosterForm: React.FC<PosterFormProps> = ({
           </div>
           
           <div>
-            <Label htmlFor="conclusions">4. Conclusions and Implications</Label>
+            <div className="flex items-center gap-2 mb-1">
+              <Label htmlFor="sectionTitle-3">Section 4 Title</Label>
+              <Input 
+                id="sectionTitle-3"
+                value={posterData.sectionTitles[3]}
+                onChange={(e) => handleSectionTitleChange(3, e.target.value)}
+                className="max-w-[250px]"
+              />
+            </div>
             <Textarea
               id="conclusions"
               name="conclusions"
@@ -126,7 +175,15 @@ const PosterForm: React.FC<PosterFormProps> = ({
           </div>
           
           <div>
-            <Label htmlFor="references">5. References</Label>
+            <div className="flex items-center gap-2 mb-1">
+              <Label htmlFor="sectionTitle-4">Section 5 Title</Label>
+              <Input 
+                id="sectionTitle-4"
+                value={posterData.sectionTitles[4]}
+                onChange={(e) => handleSectionTitleChange(4, e.target.value)}
+                className="max-w-[250px]"
+              />
+            </div>
             <Textarea
               id="references"
               name="references"

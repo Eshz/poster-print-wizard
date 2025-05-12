@@ -5,6 +5,7 @@ interface PosterPreviewProps {
   posterData: {
     title: string;
     authors: string;
+    school: string;
     contact: string;
     introduction: string;
     methods: string;
@@ -13,6 +14,7 @@ interface PosterPreviewProps {
     references: string;
     keypoints: string[];
     keyDescriptions: string[];
+    sectionTitles: string[];
   };
   designSettings: {
     layout: string;
@@ -59,7 +61,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
               fontFamily: `var(--font-${designSettings.titleFont})`
             }}
           >
-            1. Introduction
+            {posterData.sectionTitles[0]}
           </h2>
           <p 
             className={`text-xs md:text-sm`}
@@ -84,7 +86,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
               fontFamily: `var(--font-${designSettings.titleFont})`
             }}
           >
-            2. Methods
+            {posterData.sectionTitles[1]}
           </h2>
           <p 
             className={`text-xs md:text-sm`}
@@ -109,7 +111,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
               fontFamily: `var(--font-${designSettings.titleFont})`
             }}
           >
-            3. Findings
+            {posterData.sectionTitles[2]}
           </h2>
           <p 
             className={`text-xs md:text-sm`}
@@ -151,7 +153,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
             >
               <div className="flex items-start mb-1">
                 <div 
-                  className="h-8 w-8 rounded-full flex items-center justify-center text-lg font-bold mr-1"
+                  className="h-8 w-8 min-w-8 rounded-full flex items-center justify-center text-lg font-bold mr-1 flex-shrink-0"
                   style={{ 
                     backgroundColor: designSettings.sectionTitleColor, 
                     color: designSettings.sectionBgColor
@@ -194,7 +196,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
               fontFamily: `var(--font-${designSettings.titleFont})`
             }}
           >
-            4. Conclusions and implications
+            {posterData.sectionTitles[3]}
           </h2>
           <p 
             className={`text-xs md:text-sm`}
@@ -219,7 +221,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
               fontFamily: `var(--font-${designSettings.titleFont})`
             }}
           >
-            5. References
+            {posterData.sectionTitles[4]}
           </h2>
           <p 
             className={`text-xs md:text-sm whitespace-pre-line`}
@@ -254,7 +256,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
                 fontFamily: `var(--font-${designSettings.titleFont})`
               }}
             >
-              1. Introduction
+              {posterData.sectionTitles[0]}
             </h2>
             <p 
               className={`text-sm`}
@@ -279,7 +281,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
                 fontFamily: `var(--font-${designSettings.titleFont})`
               }}
             >
-              2. Methods
+              {posterData.sectionTitles[1]}
             </h2>
             <p 
               className={`text-sm`}
@@ -307,7 +309,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
                 fontFamily: `var(--font-${designSettings.titleFont})`
               }}
             >
-              3. Findings
+              {posterData.sectionTitles[2]}
             </h2>
             <p 
               className={`text-sm`}
@@ -345,7 +347,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
               >
                 <div className="flex items-start mb-1">
                   <div 
-                    className="h-8 w-8 rounded-full flex items-center justify-center text-lg font-bold mr-2"
+                    className="h-8 w-8 min-w-8 rounded-full flex items-center justify-center text-lg font-bold mr-2 flex-shrink-0"
                     style={{ 
                       backgroundColor: designSettings.sectionTitleColor, 
                       color: designSettings.sectionBgColor
@@ -388,7 +390,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
               >
                 <div className="flex items-start mb-1">
                   <div 
-                    className="h-8 w-8 rounded-full flex items-center justify-center text-lg font-bold mr-2"
+                    className="h-8 w-8 min-w-8 rounded-full flex items-center justify-center text-lg font-bold mr-2 flex-shrink-0"
                     style={{ 
                       backgroundColor: designSettings.sectionTitleColor, 
                       color: designSettings.sectionBgColor
@@ -431,7 +433,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
                 fontFamily: `var(--font-${designSettings.titleFont})`
               }}
             >
-              4. Conclusions
+              {posterData.sectionTitles[3]}
             </h2>
             <p 
               className={`text-sm`}
@@ -456,7 +458,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
                 fontFamily: `var(--font-${designSettings.titleFont})`
               }}
             >
-              5. References
+              {posterData.sectionTitles[4]}
             </h2>
             <p 
               className={`text-xs whitespace-pre-line`}
@@ -489,7 +491,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
               fontFamily: `var(--font-${designSettings.titleFont})`
             }}
           >
-            1. Introduction
+            {posterData.sectionTitles[0]}
           </h2>
           <p 
             className={`text-base`}
@@ -514,7 +516,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
               fontFamily: `var(--font-${designSettings.titleFont})`
             }}
           >
-            2. Methods
+            {posterData.sectionTitles[1]}
           </h2>
           <p 
             className={`text-base`}
@@ -539,7 +541,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
               fontFamily: `var(--font-${designSettings.titleFont})`
             }}
           >
-            3. Findings
+            {posterData.sectionTitles[2]}
           </h2>
           <p 
             className={`text-base`}
@@ -578,7 +580,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
             >
               <div className="flex items-start mb-2">
                 <div 
-                  className="h-10 w-10 rounded-full flex items-center justify-center text-xl font-bold mr-3"
+                  className="h-10 w-10 min-w-10 rounded-full flex items-center justify-center text-xl font-bold mr-3 flex-shrink-0"
                   style={{ 
                     backgroundColor: designSettings.sectionTitleColor, 
                     color: designSettings.sectionBgColor
@@ -621,7 +623,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
               fontFamily: `var(--font-${designSettings.titleFont})`
             }}
           >
-            4. Conclusions and implications
+            {posterData.sectionTitles[3]}
           </h2>
           <p 
             className={`text-base`}
@@ -646,7 +648,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
               fontFamily: `var(--font-${designSettings.titleFont})`
             }}
           >
-            5. References
+            {posterData.sectionTitles[4]}
           </h2>
           <p 
             className={`text-base whitespace-pre-line`}
@@ -682,8 +684,9 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
         }}
       >
         <h1 className="text-2xl md:text-3xl font-bold mb-2">{posterData.title}</h1>
-        <div className="flex justify-between items-center text-xs md:text-sm">
+        <div className="flex flex-col md:flex-row justify-between items-center text-xs md:text-sm">
           <div>{posterData.authors}</div>
+          <div>{posterData.school}</div>
           <div>{posterData.contact}</div>
         </div>
       </div>
@@ -697,3 +700,4 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
 };
 
 export default PosterPreview;
+
