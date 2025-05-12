@@ -25,10 +25,10 @@ export const exportToPDF = (elementId: string) => {
   document.body.appendChild(tempDiv);
   tempDiv.appendChild(clonedElement);
   
-  // Fix the styling for PDF export - A0 dimensions: 84.1 x 118.8 cm
-  // Convert to points for PDF (1 cm = 28.35 points)
-  const width = 2384; // A0 width in points (~84.1 cm)
-  const height = 3370; // A0 height in points (~118.8 cm)
+  // A0 dimensions in mm: 841 x 1189 mm
+  // Convert to points for PDF (1 mm ≈ 2.83 points)
+  const width = 2384; // 841 mm in points
+  const height = 3370; // 1189 mm in points
   
   clonedElement.style.width = `${width}px`;
   clonedElement.style.height = `${height}px`;
@@ -36,6 +36,7 @@ export const exportToPDF = (elementId: string) => {
   clonedElement.style.padding = '0';
   clonedElement.style.overflow = 'hidden';
   clonedElement.style.position = 'relative';
+  clonedElement.style.backgroundColor = '#ffffff';
   
   // Fix the number circles in the key takeaways
   const numberCircles = clonedElement.querySelectorAll('[data-circle-number]');
@@ -55,13 +56,13 @@ export const exportToPDF = (elementId: string) => {
   headerTexts.forEach((header) => {
     const headerElement = header as HTMLElement;
     if (header.tagName === 'H1') {
-      headerElement.style.fontSize = '5rem';
+      headerElement.style.fontSize = '6rem';
       headerElement.style.lineHeight = '1.2';
     } else if (header.tagName === 'H2') {
-      headerElement.style.fontSize = '3.5rem';
+      headerElement.style.fontSize = '4rem';
       headerElement.style.lineHeight = '1.3';
     } else if (header.tagName === 'H3') {
-      headerElement.style.fontSize = '2.5rem';
+      headerElement.style.fontSize = '2.8rem';
       headerElement.style.lineHeight = '1.4';
     }
   });
@@ -70,21 +71,32 @@ export const exportToPDF = (elementId: string) => {
   const paragraphs = clonedElement.querySelectorAll('p');
   paragraphs.forEach((p) => {
     const pElement = p as HTMLElement;
-    pElement.style.fontSize = '2rem';
+    pElement.style.fontSize = '2.4rem';
     pElement.style.lineHeight = '1.5';
   });
+
+  // Ensure all content sections scale correctly
+  const contentSections = clonedElement.querySelectorAll('[class*="PosterSection"], [class*="KeyTakeaway"]');
+  contentSections.forEach((section) => {
+    const sectionElement = section as HTMLElement;
+    sectionElement.style.padding = '2.5rem';
+    sectionElement.style.margin = '0.8rem';
+    sectionElement.style.borderRadius = '1rem';
+  });
   
-  toast.info("Preparing PDF export for A0 size (84.1 x 118.8 cm)...");
+  toast.info("Preparing PDF export for A0 size (841 x 1189 mm)...");
   
   const opt = {
     margin: 0,
     filename: 'conference-poster-A0.pdf',
     image: { type: 'jpeg', quality: 1 },
     html2canvas: { 
-      scale: 2, // Increase scale for better quality
+      scale: 4, // Increase scale for better quality on large format
       useCORS: true,
       letterRendering: true,
-      logging: false
+      logging: false,
+      width: width,
+      height: height
     },
     jsPDF: { 
       unit: 'pt', 
@@ -105,5 +117,5 @@ export const exportToPDF = (elementId: string) => {
       // Clean up
       document.body.removeChild(tempDiv);
     });
-  }, 2000); // Give more time for large format to load properly
+  }, 3000); // Give more time for large format to load properly
 };
