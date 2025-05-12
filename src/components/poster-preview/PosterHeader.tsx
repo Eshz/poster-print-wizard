@@ -30,7 +30,9 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
           fontFamily: `var(--font-${designSettings.titleFont})`
         }}
       >
-        <h1 className="text-2xl md:text-3xl font-bold mb-2">{title}</h1>
+        <div className={`${showQrCode && qrCodeUrl ? 'pr-24' : ''} transition-all duration-300`}>
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">{title}</h1>
+        </div>
         
         {/* QR Code - absolute positioned to the right */}
         {showQrCode && qrCodeUrl && (

@@ -51,41 +51,19 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
           {/* Key Points */}
           {showKeypoints && (
             <>
-              <div className="flex justify-between items-center mb-2">
-                <div 
-                  className="border-t-2 border-b-2 py-2 flex-1 text-center"
-                  style={{ borderColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
+              <div 
+                className="border-t-2 border-b-2 py-2 text-center mb-2"
+                style={{ borderColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
+              >
+                <h2 
+                  className={`text-lg font-semibold`}
+                  style={{ 
+                    color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
+                    fontFamily: `var(--font-${designSettings.titleFont})`
+                  }}
                 >
-                  <h2 
-                    className={`text-lg font-semibold`}
-                    style={{ 
-                      color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
-                      fontFamily: `var(--font-${designSettings.titleFont})`
-                    }}
-                  >
-                    Key Takeaways
-                  </h2>
-                </div>
-                
-                {/* QR Code */}
-                {showQrCode && qrCodeUrl && (
-                  <div className="ml-2 flex flex-col items-center">
-                    <img 
-                      src={qrCodeUrl} 
-                      alt="QR Code" 
-                      className="w-20 h-20 object-contain"
-                    />
-                    <p 
-                      className="text-xs text-center mt-1"
-                      style={{ 
-                        color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
-                        fontFamily: `var(--font-${designSettings.contentFont})`
-                      }}
-                    >
-                      Scan for more info
-                    </p>
-                  </div>
-                )}
+                  Key Takeaways
+                </h2>
               </div>
               
               <div className="space-y-2 flex-grow flex flex-col justify-between">

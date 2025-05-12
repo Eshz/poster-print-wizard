@@ -88,6 +88,12 @@ export const exportToPDF = (elementId: string) => {
     // Fix header padding
     headerDiv.style.padding = '5rem';
     
+    // Adjust the title container if QR code is visible
+    const titleContainer = headerDiv.querySelector('div[class*="pr-24"]') as HTMLElement;
+    if (titleContainer) {
+      titleContainer.style.paddingRight = '15rem'; // More space in the exported PDF
+    }
+    
     // Style the QR code in the header if present
     const headerQrCode = headerDiv.querySelector('.absolute.right-4') as HTMLElement;
     if (headerQrCode) {

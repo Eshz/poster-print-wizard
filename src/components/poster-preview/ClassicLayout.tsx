@@ -43,44 +43,22 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
       
       {/* Right Column */}
       <div className="flex flex-col space-y-2 h-full overflow-hidden">
-        {/* Key Takeaways and QR Code Section */}
+        {/* Key Takeaways Section */}
         {showKeypoints && (
           <div className="flex flex-col space-y-2">
             <div 
               className="border-t-2 border-b-2 py-2 text-center mb-1"
               style={{ borderColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
             >
-              <div className="flex justify-between items-center px-2">
-                <h2 
-                  className={`text-lg md:text-xl font-semibold`}
-                  style={{ 
-                    color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
-                    fontFamily: `var(--font-${designSettings.titleFont})`
-                  }}
-                >
-                  Key Takeaways
-                </h2>
-                
-                {/* QR Code */}
-                {showQrCode && qrCodeUrl && (
-                  <div className="flex flex-col items-center">
-                    <img 
-                      src={qrCodeUrl} 
-                      alt="QR Code" 
-                      className="w-20 h-20 object-contain"
-                    />
-                    <p 
-                      className="text-xs text-center mt-1"
-                      style={{ 
-                        color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
-                        fontFamily: `var(--font-${designSettings.contentFont})`
-                      }}
-                    >
-                      Scan for more info
-                    </p>
-                  </div>
-                )}
-              </div>
+              <h2 
+                className={`text-lg md:text-xl font-semibold`}
+                style={{ 
+                  color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
+                  fontFamily: `var(--font-${designSettings.titleFont})`
+                }}
+              >
+                Key Takeaways
+              </h2>
             </div>
           </div>
         )}
