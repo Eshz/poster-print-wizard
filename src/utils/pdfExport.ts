@@ -87,6 +87,11 @@ export const exportToPDF = (elementId: string) => {
   if (headerDiv) {
     // Fix header padding
     headerDiv.style.padding = '5rem';
+    // Add margin below the title
+    const titleElement = headerDiv.querySelector('h1') as HTMLElement;
+    if (titleElement) {
+      titleElement.style.marginBottom = '3rem';
+    }
     
     const authorInfo = headerDiv.querySelector('.flex.flex-col.md\\:flex-row') as HTMLElement;
     if (authorInfo) {
@@ -127,6 +132,16 @@ export const exportToPDF = (elementId: string) => {
     const gridElement = grid as HTMLElement;
     gridElement.style.gap = '3rem';
     gridElement.style.padding = '2rem';
+  });
+  
+  // Specifically target all elements with p-4 flex-grow classes
+  const flexGrowSections = posterContent.querySelectorAll('.p-4.flex-grow, [class*="p-4"][class*="flex-grow"]');
+  flexGrowSections.forEach((section) => {
+    const sectionElement = section as HTMLElement;
+    sectionElement.style.padding = '5rem';
+    sectionElement.style.margin = '2rem';
+    // Make sure there's space between sections
+    sectionElement.style.marginBottom = '3rem';
   });
   
   toast.info("Preparing PDF export for A0 size (841 x 1189 mm)...");
