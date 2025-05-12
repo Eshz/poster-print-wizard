@@ -22,16 +22,20 @@ export const exportToPDF = (elementId: string) => {
   tempDiv.style.position = 'absolute';
   tempDiv.style.left = '-9999px';
   tempDiv.style.top = '-9999px';
-  tempDiv.appendChild(clonedElement);
   document.body.appendChild(tempDiv);
+  tempDiv.appendChild(clonedElement);
   
   // Fix the styling for PDF export - A0 dimensions: 84.1 x 118.8 cm
   // Convert to points for PDF (1 cm = 28.35 points)
-  const width = Math.round(84.1 * 28.35);  // ~2384 points
-  const height = Math.round(118.8 * 28.35); // ~3370 points
+  const width = 2384; // A0 width in points (~84.1 cm)
+  const height = 3370; // A0 height in points (~118.8 cm)
   
   clonedElement.style.width = `${width}px`;
   clonedElement.style.height = `${height}px`;
+  clonedElement.style.margin = '0';
+  clonedElement.style.padding = '0';
+  clonedElement.style.overflow = 'hidden';
+  clonedElement.style.position = 'relative';
   
   // Fix the number circles in the key takeaways
   const numberCircles = clonedElement.querySelectorAll('[data-circle-number]');
@@ -51,11 +55,14 @@ export const exportToPDF = (elementId: string) => {
   headerTexts.forEach((header) => {
     const headerElement = header as HTMLElement;
     if (header.tagName === 'H1') {
-      headerElement.style.fontSize = '3.5rem';
+      headerElement.style.fontSize = '5rem';
+      headerElement.style.lineHeight = '1.2';
     } else if (header.tagName === 'H2') {
-      headerElement.style.fontSize = '2.5rem';
+      headerElement.style.fontSize = '3.5rem';
+      headerElement.style.lineHeight = '1.3';
     } else if (header.tagName === 'H3') {
-      headerElement.style.fontSize = '2rem';
+      headerElement.style.fontSize = '2.5rem';
+      headerElement.style.lineHeight = '1.4';
     }
   });
   
@@ -63,7 +70,8 @@ export const exportToPDF = (elementId: string) => {
   const paragraphs = clonedElement.querySelectorAll('p');
   paragraphs.forEach((p) => {
     const pElement = p as HTMLElement;
-    pElement.style.fontSize = '1.5rem';
+    pElement.style.fontSize = '2rem';
+    pElement.style.lineHeight = '1.5';
   });
   
   toast.info("Preparing PDF export for A0 size (84.1 x 118.8 cm)...");
@@ -73,12 +81,10 @@ export const exportToPDF = (elementId: string) => {
     filename: 'conference-poster-A0.pdf',
     image: { type: 'jpeg', quality: 1 },
     html2canvas: { 
-      scale: 1, 
+      scale: 2, // Increase scale for better quality
       useCORS: true,
       letterRendering: true,
-      logging: false,
-      width: width,
-      height: height
+      logging: false
     },
     jsPDF: { 
       unit: 'pt', 
@@ -99,5 +105,5 @@ export const exportToPDF = (elementId: string) => {
       // Clean up
       document.body.removeChild(tempDiv);
     });
-  }, 1500); // Give more time for large format to load properly
+  }, 2000); // Give more time for large format to load properly
 };
