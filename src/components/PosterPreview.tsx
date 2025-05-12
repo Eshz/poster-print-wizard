@@ -50,7 +50,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
     }
   };
 
-  // Classic layout (2 columns) - Updated to fix overflow issues
+  // Classic layout (2 columns)
   const renderClassicLayout = () => (
     <div className="grid grid-cols-2 gap-2 h-full overflow-hidden">
       {/* Left Column */}
@@ -137,13 +137,13 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
         <div className="flex flex-col space-y-2">
           <div 
             className="border-t-2 border-b-2 py-2 text-center mb-1"
-            style={{ borderColor: designSettings.sectionTitleColor }}
+            style={{ borderColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
           >
             <div className="flex justify-between items-center px-2">
               <h2 
                 className={`text-lg md:text-xl font-semibold`}
                 style={{ 
-                  color: designSettings.sectionTitleColor,
+                  color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
                   fontFamily: `var(--font-${designSettings.titleFont})`
                 }}
               >
@@ -161,7 +161,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
                   <p 
                     className="text-xs text-center mt-1"
                     style={{ 
-                      color: designSettings.sectionTitleColor,
+                      color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
                       fontFamily: `var(--font-${designSettings.contentFont})`
                     }}
                   >
@@ -173,7 +173,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
           </div>
         </div>
         
-        {/* Key Points Grid - Updated to scroll if needed */}
+        {/* Key Points Grid */}
         <div className="grid grid-cols-2 gap-2 flex-grow overflow-auto">
           {posterData.keypoints.map((point, index) => (
             <div 
@@ -184,9 +184,9 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
               <div className="flex items-start mb-1">
                 <div 
                   data-circle-number="true"
-                  className="h-8 w-8 rounded-full flex items-center justify-center text-lg font-bold mr-1 flex-shrink-0"
+                  className="h-8 w-8 min-w-8 rounded-full flex items-center justify-center text-lg font-bold mr-1 flex-shrink-0"
                   style={{ 
-                    backgroundColor: designSettings.sectionTitleColor, 
+                    backgroundColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor, 
                     color: designSettings.sectionBgColor,
                     width: "2rem",
                     height: "2rem",
@@ -360,12 +360,12 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
           <div className="flex justify-between items-center mb-2">
             <div 
               className="border-t-2 border-b-2 py-2 flex-1 text-center"
-              style={{ borderColor: designSettings.sectionTitleColor }}
+              style={{ borderColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
             >
               <h2 
                 className={`text-lg font-semibold`}
                 style={{ 
-                  color: designSettings.sectionTitleColor,
+                  color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
                   fontFamily: `var(--font-${designSettings.titleFont})`
                 }}
               >
@@ -384,7 +384,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
                 <p 
                   className="text-xs text-center mt-1"
                   style={{ 
-                    color: designSettings.sectionTitleColor,
+                    color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
                     fontFamily: `var(--font-${designSettings.contentFont})`
                   }}
                 >
@@ -406,7 +406,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
                     data-circle-number="true"
                     className="h-8 w-8 rounded-full flex items-center justify-center text-lg font-bold mr-2 flex-shrink-0"
                     style={{ 
-                      backgroundColor: designSettings.sectionTitleColor, 
+                      backgroundColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor, 
                       color: designSettings.sectionBgColor,
                       width: "2rem",
                       height: "2rem",
@@ -453,7 +453,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
                     data-circle-number="true"
                     className="h-8 w-8 rounded-full flex items-center justify-center text-lg font-bold mr-2 flex-shrink-0"
                     style={{ 
-                      backgroundColor: designSettings.sectionTitleColor, 
+                      backgroundColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor, 
                       color: designSettings.sectionBgColor,
                       width: "2rem",
                       height: "2rem",
@@ -646,12 +646,12 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
         {/* Key Takeaways Section */}
         <div 
           className="border-t-2 border-b-2 py-4 text-center my-6"
-          style={{ borderColor: designSettings.sectionTitleColor }}
+          style={{ borderColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
         >
           <h2 
             className={`text-2xl font-semibold`}
             style={{ 
-              color: designSettings.sectionTitleColor,
+              color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
               fontFamily: `var(--font-${designSettings.titleFont})`
             }}
           >
@@ -672,7 +672,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
                   data-circle-number="true"
                   className="rounded-full flex items-center justify-center text-xl font-bold mr-3 flex-shrink-0"
                   style={{ 
-                    backgroundColor: designSettings.sectionTitleColor, 
+                    backgroundColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor, 
                     color: designSettings.sectionBgColor,
                     width: "2.5rem",
                     height: "2.5rem",

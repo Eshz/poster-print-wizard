@@ -62,12 +62,15 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
   };
 
   const handleColorPairSelect = (pair: {bg: string, fg: string}) => {
+    // Update all colors when a color pair is selected
     setDesignSettings(prev => ({
       ...prev,
       headerBgColor: pair.bg,
       headerTextColor: pair.fg,
       sectionTitleColor: pair.bg,
-      sectionBgColor: pair.fg === '#000000' ? '#e6ebff' : '#f5f7ff'
+      keyPointsTextColor: pair.bg, // Also update key takeaways title color
+      sectionBgColor: pair.fg === '#000000' ? '#e6ebff' : '#f5f7ff',
+      keyPointsBgColor: pair.fg === '#000000' ? '#e6ebff' : '#f5f7ff'
     }));
   };
 
@@ -297,6 +300,40 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
                 </div>
               </div>
               
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="keyPointsBgColor">Key Takeaways Background</Label>
+                  <div className="flex gap-2">
+                    <div 
+                      className="w-10 h-10 rounded border" 
+                      style={{backgroundColor: designSettings.keyPointsBgColor}}
+                    ></div>
+                    <Input 
+                      id="keyPointsBgColor" 
+                      type="text" 
+                      value={designSettings.keyPointsBgColor}
+                      onChange={(e) => handleChange('keyPointsBgColor', e.target.value)}
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="keyPointsTextColor">Key Takeaways Title</Label>
+                  <div className="flex gap-2">
+                    <div 
+                      className="w-10 h-10 rounded border" 
+                      style={{backgroundColor: designSettings.keyPointsTextColor}}
+                    ></div>
+                    <Input 
+                      id="keyPointsTextColor" 
+                      type="text" 
+                      value={designSettings.keyPointsTextColor}
+                      onChange={(e) => handleChange('keyPointsTextColor', e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+              
               <Separator className="my-2" />
               
               <h3 className="text-sm font-medium">Accessible Color Combinations</h3>
@@ -402,7 +439,9 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
                   headerBgColor: color1,
                   headerTextColor: color2,
                   sectionTitleColor: color1,
-                  sectionBgColor: color2 === '#000000' ? '#e6ebff' : '#f5f7ff'
+                  keyPointsTextColor: color1, // Also update key takeaways title color
+                  sectionBgColor: color2 === '#000000' ? '#e6ebff' : '#f5f7ff',
+                  keyPointsBgColor: color2 === '#000000' ? '#e6ebff' : '#f5f7ff'
                 }));
                 setShowColorChecker(false);
               }}
