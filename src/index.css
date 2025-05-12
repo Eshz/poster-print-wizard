@@ -46,6 +46,15 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Font family variables */
+    --font-playfair: 'Playfair Display', serif;
+    --font-roboto: 'Roboto', sans-serif;
+    --font-merriweather: 'Merriweather', serif;
+    --font-montserrat: 'Montserrat', sans-serif;
+    --font-opensans: 'Open Sans', sans-serif;
+    --font-lora: 'Lora', serif;
+    --font-raleway: 'Raleway', sans-serif;
   }
 
   .dark {
