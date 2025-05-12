@@ -99,6 +99,15 @@ export const exportToPDF = (elementId: string) => {
     if (headerQrCode) {
       headerQrCode.style.right = '10rem';
       
+      // Style the QR code container with white background
+      const qrCodeContainer = headerQrCode.querySelector('.bg-white') as HTMLElement;
+      if (qrCodeContainer) {
+        qrCodeContainer.style.backgroundColor = '#FFFFFF';
+        qrCodeContainer.style.padding = '1.5rem';
+        qrCodeContainer.style.borderRadius = '0.75rem';
+        qrCodeContainer.style.boxShadow = '0 0.2rem 0.5rem rgba(0, 0, 0, 0.15)';
+      }
+      
       // Style the QR code image
       const qrCodeImg = headerQrCode.querySelector('img') as HTMLElement;
       if (qrCodeImg) {
