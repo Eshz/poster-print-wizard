@@ -114,8 +114,8 @@ export const exportToPDF = (elementId: string) => {
   const contentSections = posterContent.querySelectorAll('[class*="PosterSection"], [class*="KeyTakeaway"]');
   contentSections.forEach((section) => {
     const sectionElement = section as HTMLElement;
-    sectionElement.style.padding = '4rem';
-    sectionElement.style.margin = '2rem';
+    sectionElement.style.padding = '3rem';
+    sectionElement.style.margin = '1rem';
     sectionElement.style.borderRadius = '1rem';
   });
   
@@ -123,25 +123,32 @@ export const exportToPDF = (elementId: string) => {
   const mainContentArea = posterContent.querySelector('.flex-grow.overflow-hidden.p-2');
   if (mainContentArea) {
     const mainContentElement = mainContentArea as HTMLElement;
-    mainContentElement.style.padding = '3rem';
+    mainContentElement.style.padding = '2rem';
   }
   
-  // Fix padding in grid layouts
+  // Adjust spacing in grid layouts
   const gridLayouts = posterContent.querySelectorAll('.grid.grid-cols-2, .grid.grid-cols-3');
   gridLayouts.forEach((grid) => {
     const gridElement = grid as HTMLElement;
-    gridElement.style.gap = '3rem';
-    gridElement.style.padding = '2rem';
+    gridElement.style.gap = '1.5rem';
+    gridElement.style.padding = '1rem';
   });
   
   // Specifically target all elements with p-4 flex-grow classes
   const flexGrowSections = posterContent.querySelectorAll('.p-4.flex-grow, [class*="p-4"][class*="flex-grow"]');
   flexGrowSections.forEach((section) => {
     const sectionElement = section as HTMLElement;
-    sectionElement.style.padding = '5rem';
-    sectionElement.style.margin = '2rem';
-    // Make sure there's space between sections
-    sectionElement.style.marginBottom = '3rem';
+    sectionElement.style.padding = '3rem';
+    sectionElement.style.margin = '1rem';
+    // Reduce space between sections
+    sectionElement.style.marginBottom = '1.5rem';
+  });
+  
+  // Reduce space-y classes
+  const spaceYElements = posterContent.querySelectorAll('[class*="space-y"]');
+  spaceYElements.forEach((element) => {
+    const spaceElement = element as HTMLElement;
+    spaceElement.style.gap = '1rem';
   });
   
   toast.info("Preparing PDF export for A0 size (841 x 1189 mm)...");
