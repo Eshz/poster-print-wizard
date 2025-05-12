@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -234,7 +233,6 @@ const PosterForm: React.FC<PosterFormProps> = ({
                 url={posterData.qrCodeUrl} 
                 setUrl={handleQrUrlChange}
                 color={posterData.qrCodeColor}
-                setColor={handleQrColorChange}
               />
             </CardContent>
           </Card>
