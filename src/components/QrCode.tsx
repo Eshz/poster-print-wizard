@@ -7,9 +7,10 @@ interface QrCodeProps {
   url: string;
   setUrl: (url: string) => void;
   color: string;
+  setColor: (color: string) => void; // Add the missing setColor prop to the interface
 }
 
-const QrCode: React.FC<QrCodeProps> = ({ url, setUrl, color }) => {
+const QrCode: React.FC<QrCodeProps> = ({ url, setUrl, color, setColor }) => {
   // QR Code API from QRServer.com
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}&color=${color.replace('#', '')}`;
   
