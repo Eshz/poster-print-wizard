@@ -1,14 +1,10 @@
 
 import React, { useState } from 'react';
-import PosterForm from '@/components/PosterForm';
-import PosterPreview from '@/components/PosterPreview';
-import DesignPanel from '@/components/DesignPanel';
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Download, Palette, Text } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { exportToPDF } from '@/utils/pdfExport';
+import MobileTabs from '@/components/layout/MobileTabs';
+import DesktopSidebar from '@/components/layout/DesktopSidebar';
+import PosterPreviewArea from '@/components/layout/PosterPreviewArea';
+import MobileFloatingButton from '@/components/layout/MobileFloatingButton';
 
 const Index = () => {
   const [posterData, setPosterData] = useState({
@@ -57,11 +53,7 @@ const Index = () => {
     keyPointsTextColor: '#4052b6',
   });
 
-  // Create state for the QR code color
   const [qrColor, setQrColor] = useState(posterData.qrCodeColor);
-  
-  // Directly use posterData as the generated poster
-  // No need for a separate state or generation function
   const [activePanel, setActivePanel] = useState<'content' | 'design'>('content');
   
   const handleExportPDF = () => {
@@ -71,127 +63,45 @@ const Index = () => {
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
       {/* Mobile view tabs */}
-      <div className="lg:hidden w-full p-4">
-        <Tabs defaultValue="content" className="w-full" onValueChange={(value) => setActivePanel(value as 'content' | 'design')}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="content">
-              <Text className="mr-2 h-4 w-4" />
-              Content
-            </TabsTrigger>
-            <TabsTrigger value="design">
-              <Palette className="mr-2 h-4 w-4" />
-              Design
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="content">
-            <div className="bg-white rounded-lg shadow p-4">
-              <h1 className="text-2xl font-bold mb-6 text-center">Conference Poster Generator</h1>
-              
-              <PosterForm 
-                posterData={posterData}
-                setPosterData={setPosterData}
-              />
-              
-              <Button 
-                onClick={handleExportPDF} 
-                className="w-full mt-4"
-                variant="outline"
-              >
-                <Download className="mr-2 h-4 w-4" /> Export as PDF
-              </Button>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="design">
-            <div className="bg-white rounded-lg shadow p-4">
-              <DesignPanel 
-                designSettings={designSettings}
-                setDesignSettings={setDesignSettings}
-                qrColor={qrColor}
-                setQrColor={setQrColor}
-              />
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
+      <MobileTabs 
+        posterData={posterData}
+        setPosterData={setPosterData}
+        designSettings={designSettings}
+        setDesignSettings={setDesignSettings}
+        qrColor={qrColor}
+        setQrColor={setQrColor}
+        activePanel={activePanel}
+        setActivePanel={setActivePanel}
+        handleExportPDF={handleExportPDF}
+      />
       
       {/* Desktop sidebar */}
-      <div className="hidden lg:block lg:w-1/3 p-4">
-        <div className="p-4 bg-white rounded-lg shadow">
-          <h1 className="text-2xl font-bold mb-6 text-center">Conference Poster Generator</h1>
-          
-          <Tabs defaultValue="content" className="w-full" onValueChange={(value) => setActivePanel(value as 'content' | 'design')}>
-            <TabsList className="grid w-full grid-cols-2 mb-4">
-              <TabsTrigger value="content">
-                <Text className="mr-2 h-4 w-4" />
-                Content
-              </TabsTrigger>
-              <TabsTrigger value="design">
-                <Palette className="mr-2 h-4 w-4" />
-                Design
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="content" className="space-y-6">
-              <PosterForm 
-                posterData={posterData}
-                setPosterData={setPosterData}
-              />
-            </TabsContent>
-            
-            <TabsContent value="design" className="space-y-6">
-              <DesignPanel 
-                designSettings={designSettings}
-                setDesignSettings={setDesignSettings}
-                qrColor={qrColor}
-                setQrColor={setQrColor}
-              />
-            </TabsContent>
-          </Tabs>
-          
-          <Button 
-            onClick={handleExportPDF} 
-            className="w-full mt-4"
-            variant="outline"
-          >
-            <Download className="mr-2 h-4 w-4" /> Export as PDF
-          </Button>
-        </div>
-      </div>
+      <DesktopSidebar 
+        posterData={posterData}
+        setPosterData={setPosterData}
+        designSettings={designSettings}
+        setDesignSettings={setDesignSettings}
+        qrColor={qrColor}
+        setQrColor={setQrColor}
+        activePanel={activePanel}
+        setActivePanel={setActivePanel}
+        handleExportPDF={handleExportPDF}
+      />
       
       {/* Preview Area */}
-      <div className="w-full lg:w-2/3 p-4 bg-gray-100 overflow-auto">
-        <div className="bg-white p-2 rounded-lg shadow">
-          <PosterPreview 
-            posterData={{...posterData, qrCodeColor: qrColor}} 
-            designSettings={designSettings}
-          />
-        </div>
-      </div>
+      <PosterPreviewArea 
+        posterData={posterData}
+        qrColor={qrColor}
+        designSettings={designSettings}
+      />
       
       {/* Mobile-only Design Panel in Sheet (sidebar) */}
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button 
-            variant="outline" 
-            size="icon"
-            className="fixed bottom-4 right-4 rounded-full h-14 w-14 shadow-lg lg:hidden"
-          >
-            <Palette className="h-6 w-6" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="right" className="w-[85%] sm:w-[385px] overflow-y-auto">
-          <div className="py-4">
-            <DesignPanel 
-              designSettings={designSettings}
-              setDesignSettings={setDesignSettings}
-              qrColor={qrColor}
-              setQrColor={setQrColor}
-            />
-          </div>
-        </SheetContent>
-      </Sheet>
+      <MobileFloatingButton 
+        designSettings={designSettings}
+        setDesignSettings={setDesignSettings}
+        qrColor={qrColor}
+        setQrColor={setQrColor}
+      />
     </div>
   );
 };
