@@ -16,6 +16,12 @@ export const exportToPDF = (elementId: string) => {
   
   // Create a clone of the element to modify for PDF export
   const clonedElement = element.cloneNode(true) as HTMLElement;
+  const posterContent = clonedElement.querySelector('.bg-white.border.border-gray-200');
+  
+  if (!posterContent) {
+    toast.error("Could not find poster content to export");
+    return;
+  }
   
   // Add a hidden div to the document to contain our clone
   const tempDiv = document.createElement('div');
@@ -23,23 +29,24 @@ export const exportToPDF = (elementId: string) => {
   tempDiv.style.left = '-9999px';
   tempDiv.style.top = '-9999px';
   document.body.appendChild(tempDiv);
-  tempDiv.appendChild(clonedElement);
+  tempDiv.appendChild(posterContent);
   
   // A0 dimensions in mm: 841 x 1189 mm
   // Convert to points for PDF (1 mm ≈ 2.83 points)
   const width = 2384; // 841 mm in points
   const height = 3370; // 1189 mm in points
   
-  clonedElement.style.width = `${width}px`;
-  clonedElement.style.height = `${height}px`;
-  clonedElement.style.margin = '0';
-  clonedElement.style.padding = '0';
-  clonedElement.style.overflow = 'hidden';
-  clonedElement.style.position = 'relative';
-  clonedElement.style.backgroundColor = '#ffffff';
+  // Set exact dimensions
+  posterContent.style.width = `${width}px`;
+  posterContent.style.height = `${height}px`;
+  posterContent.style.margin = '0';
+  posterContent.style.padding = '0';
+  posterContent.style.overflow = 'hidden';
+  posterContent.style.position = 'relative';
+  posterContent.style.backgroundColor = '#ffffff';
   
   // Fix the number circles in the key takeaways
-  const numberCircles = clonedElement.querySelectorAll('[data-circle-number]');
+  const numberCircles = posterContent.querySelectorAll('[data-circle-number]');
   numberCircles.forEach((circle) => {
     const circleElement = circle as HTMLElement;
     circleElement.style.width = '4rem';
@@ -52,7 +59,7 @@ export const exportToPDF = (elementId: string) => {
   });
   
   // Increase text sizes to match A0 dimensions
-  const headerTexts = clonedElement.querySelectorAll('h1, h2, h3');
+  const headerTexts = posterContent.querySelectorAll('h1, h2, h3');
   headerTexts.forEach((header) => {
     const headerElement = header as HTMLElement;
     if (header.tagName === 'H1') {
@@ -68,7 +75,7 @@ export const exportToPDF = (elementId: string) => {
   });
   
   // Increase paragraph text size
-  const paragraphs = clonedElement.querySelectorAll('p');
+  const paragraphs = posterContent.querySelectorAll('p');
   paragraphs.forEach((p) => {
     const pElement = p as HTMLElement;
     pElement.style.fontSize = '2.4rem';
@@ -76,7 +83,7 @@ export const exportToPDF = (elementId: string) => {
   });
 
   // Ensure all content sections scale correctly
-  const contentSections = clonedElement.querySelectorAll('[class*="PosterSection"], [class*="KeyTakeaway"]');
+  const contentSections = posterContent.querySelectorAll('[class*="PosterSection"], [class*="KeyTakeaway"]');
   contentSections.forEach((section) => {
     const sectionElement = section as HTMLElement;
     sectionElement.style.padding = '2.5rem';
@@ -107,7 +114,7 @@ export const exportToPDF = (elementId: string) => {
   };
   
   setTimeout(() => {
-    html2pdf().from(clonedElement).set(opt).save().then(() => {
+    html2pdf().from(posterContent).set(opt).save().then(() => {
       toast.success("A0 sized PDF exported successfully!");
       // Clean up
       document.body.removeChild(tempDiv);
