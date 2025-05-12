@@ -19,6 +19,15 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'playfair': ['Playfair Display', 'serif'],
+				'roboto': ['Roboto', 'sans-serif'],
+				'merriweather': ['Merriweather', 'serif'],
+				'montserrat': ['Montserrat', 'sans-serif'],
+				'opensans': ['Open Sans', 'sans-serif'],
+				'lora': ['Lora', 'serif'],
+				'raleway': ['Raleway', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -66,7 +75,22 @@ export default {
 				poster: {
 					blue: '#4052b6',
 					lightblue: '#e6ebff',
-					gray: '#f5f7ff'
+					gray: '#f5f7ff',
+					// Academic color palette
+					navy: '#0A192F',
+					teal: '#64FFDA',
+					slate: '#8892B0',
+					lightSlate: '#CCD6F6',
+					lightestSlate: '#E6F1FF',
+					// Accessible color combinations
+					darkBlue: '#1E3A8A',
+					lightBlue: '#BFDBFE',
+					darkGreen: '#065F46',
+					lightGreen: '#D1FAE5',
+					darkPurple: '#581C87',
+					lightPurple: '#E9D5FF',
+					darkRed: '#991B1B',
+					lightRed: '#FEE2E2',
 				}
 			},
 			borderRadius: {

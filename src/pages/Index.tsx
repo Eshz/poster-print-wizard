@@ -2,10 +2,13 @@
 import React, { useState } from 'react';
 import PosterForm from '@/components/PosterForm';
 import PosterPreview from '@/components/PosterPreview';
+import DesignPanel from '@/components/DesignPanel';
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, Palette, Text } from "lucide-react";
 import html2pdf from 'html2pdf.js';
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Index = () => {
   const [posterData, setPosterData] = useState({
@@ -31,8 +34,22 @@ const Index = () => {
     ]
   });
   
+  const [designSettings, setDesignSettings] = useState({
+    layout: 'classic',
+    titleFont: 'playfair',
+    contentFont: 'roboto',
+    headerBgColor: '#4052b6',
+    headerTextColor: '#FFFFFF',
+    sectionBgColor: '#e6ebff',
+    sectionTitleColor: '#4052b6',
+    sectionTextColor: '#000000',
+    keyPointsBgColor: '#f5f7ff',
+    keyPointsTextColor: '#4052b6',
+  });
+  
   const [generatedPoster, setGeneratedPoster] = useState(posterData);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [activePanel, setActivePanel] = useState<'content' | 'design'>('content');
   
   const handleGeneratePoster = () => {
     setIsGenerating(true);
@@ -73,16 +90,93 @@ const Index = () => {
   
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
-      <div className="w-full lg:w-1/3 p-4 overflow-y-auto">
+      {/* Mobile view tabs */}
+      <div className="lg:hidden w-full p-4">
+        <Tabs defaultValue="content" className="w-full" onValueChange={(value) => setActivePanel(value as 'content' | 'design')}>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="content">
+              <Text className="mr-2 h-4 w-4" />
+              Content
+            </TabsTrigger>
+            <TabsTrigger value="design">
+              <Palette className="mr-2 h-4 w-4" />
+              Design
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="content">
+            <div className="bg-white rounded-lg shadow p-4">
+              <h1 className="text-2xl font-bold mb-6 text-center">Conference Poster Generator</h1>
+              
+              <PosterForm 
+                posterData={posterData}
+                setPosterData={setPosterData}
+                onGenerate={handleGeneratePoster}
+                isGenerating={isGenerating}
+              />
+              
+              <Button 
+                onClick={handleExportPDF} 
+                className="w-full mt-4"
+                variant="outline"
+              >
+                <Download className="mr-2 h-4 w-4" /> Export as PDF
+              </Button>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="design">
+            <div className="bg-white rounded-lg shadow p-4">
+              <DesignPanel 
+                designSettings={designSettings}
+                setDesignSettings={setDesignSettings}
+              />
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
+      
+      {/* Desktop sidebar */}
+      <div className="hidden lg:block lg:w-1/3 p-4">
         <div className="p-4 bg-white rounded-lg shadow">
           <h1 className="text-2xl font-bold mb-6 text-center">Conference Poster Generator</h1>
           
-          <PosterForm 
-            posterData={posterData}
-            setPosterData={setPosterData}
-            onGenerate={handleGeneratePoster}
-            isGenerating={isGenerating}
-          />
+          <Tabs defaultValue="content" className="w-full" onValueChange={(value) => setActivePanel(value as 'content' | 'design')}>
+            <TabsList className="grid w-full grid-cols-2 mb-4">
+              <TabsTrigger value="content">
+                <Text className="mr-2 h-4 w-4" />
+                Content
+              </TabsTrigger>
+              <TabsTrigger value="design">
+                <Palette className="mr-2 h-4 w-4" />
+                Design
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="content" className="space-y-6">
+              <PosterForm 
+                posterData={posterData}
+                setPosterData={setPosterData}
+                onGenerate={handleGeneratePoster}
+                isGenerating={isGenerating}
+              />
+            </TabsContent>
+            
+            <TabsContent value="design" className="space-y-6">
+              <DesignPanel 
+                designSettings={designSettings}
+                setDesignSettings={setDesignSettings}
+              />
+            </TabsContent>
+          </Tabs>
+          
+          <Button 
+            onClick={handleGeneratePoster} 
+            disabled={isGenerating}
+            className="w-full mt-4"
+          >
+            Update Poster
+          </Button>
           
           <Button 
             onClick={handleExportPDF} 
@@ -94,11 +188,36 @@ const Index = () => {
         </div>
       </div>
       
+      {/* Preview Area */}
       <div className="w-full lg:w-2/3 p-4 bg-gray-100 overflow-auto">
         <div className="bg-white p-2 rounded-lg shadow">
-          <PosterPreview posterData={generatedPoster} />
+          <PosterPreview 
+            posterData={generatedPoster} 
+            designSettings={designSettings}
+          />
         </div>
       </div>
+      
+      {/* Mobile-only Design Panel in Sheet (sidebar) */}
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button 
+            variant="outline" 
+            size="icon"
+            className="fixed bottom-4 right-4 rounded-full h-14 w-14 shadow-lg lg:hidden"
+          >
+            <Palette className="h-6 w-6" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="right" className="w-[85%] sm:w-[385px] overflow-y-auto">
+          <div className="py-4">
+            <DesignPanel 
+              designSettings={designSettings}
+              setDesignSettings={setDesignSettings}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };
