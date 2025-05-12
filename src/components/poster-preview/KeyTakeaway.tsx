@@ -38,7 +38,8 @@ const KeyTakeaway: React.FC<KeyTakeawayProps> = ({
             color: designSettings.sectionBgColor,
             width: circleSize,
             height: circleSize,
-            minWidth: circleSize
+            minWidth: circleSize,
+            fontFamily: `var(--font-${designSettings.titleFont})` // Use the title font for numbers
           }}
         >
           {number}

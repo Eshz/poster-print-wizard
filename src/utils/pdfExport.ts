@@ -82,6 +82,25 @@ export const exportToPDF = (elementId: string) => {
     pElement.style.lineHeight = '1.5';
   });
 
+  // Style author information specifically
+  const headerDiv = posterContent.querySelector('.w-full.p-4.text-center') as HTMLElement;
+  if (headerDiv) {
+    const authorInfo = headerDiv.querySelector('.flex.flex-col.md\\:flex-row') as HTMLElement;
+    if (authorInfo) {
+      authorInfo.style.fontSize = '2.4rem';
+      authorInfo.style.lineHeight = '1.4';
+      
+      // Make sure all divs inside author info are properly styled
+      const authorDivs = authorInfo.querySelectorAll('div');
+      authorDivs.forEach((div) => {
+        const divElement = div as HTMLElement;
+        divElement.style.fontSize = '2.4rem';
+        divElement.style.lineHeight = '1.4';
+        divElement.style.margin = '0.5rem 0';
+      });
+    }
+  }
+
   // Ensure all content sections scale correctly
   const contentSections = posterContent.querySelectorAll('[class*="PosterSection"], [class*="KeyTakeaway"]');
   contentSections.forEach((section) => {
