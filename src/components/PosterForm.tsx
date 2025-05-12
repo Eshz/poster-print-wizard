@@ -1,25 +1,19 @@
 
 import React from 'react';
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RefreshCw } from "lucide-react";
 
 interface PosterFormProps {
   posterData: any;
   setPosterData: React.Dispatch<React.SetStateAction<any>>;
-  onGenerate: () => void;
-  isGenerating: boolean;
 }
 
 const PosterForm: React.FC<PosterFormProps> = ({ 
   posterData, 
-  setPosterData, 
-  onGenerate, 
-  isGenerating 
+  setPosterData
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -166,18 +160,6 @@ const PosterForm: React.FC<PosterFormProps> = ({
           ))}
         </TabsContent>
       </Tabs>
-      
-      <Button 
-        onClick={onGenerate} 
-        disabled={isGenerating}
-        className="w-full mt-4"
-      >
-        {isGenerating ? (
-          <><RefreshCw className="mr-2 h-4 w-4 animate-spin" /> Generating...</>
-        ) : (
-          "Generate Poster"
-        )}
-      </Button>
     </div>
   );
 };

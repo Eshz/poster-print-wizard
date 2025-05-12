@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PosterForm from '@/components/PosterForm';
 import PosterPreview from '@/components/PosterPreview';
 import DesignPanel from '@/components/DesignPanel';
@@ -47,20 +47,9 @@ const Index = () => {
     keyPointsTextColor: '#4052b6',
   });
   
-  const [generatedPoster, setGeneratedPoster] = useState(posterData);
-  const [isGenerating, setIsGenerating] = useState(false);
+  // Directly use posterData as the generated poster
+  // No need for a separate state or generation function
   const [activePanel, setActivePanel] = useState<'content' | 'design'>('content');
-  
-  const handleGeneratePoster = () => {
-    setIsGenerating(true);
-    
-    // Simulate a processing delay
-    setTimeout(() => {
-      setGeneratedPoster({...posterData});
-      setIsGenerating(false);
-      toast.success("Poster updated successfully!");
-    }, 500);
-  };
   
   const handleExportPDF = () => {
     const element = document.getElementById('poster-preview');
@@ -111,8 +100,6 @@ const Index = () => {
               <PosterForm 
                 posterData={posterData}
                 setPosterData={setPosterData}
-                onGenerate={handleGeneratePoster}
-                isGenerating={isGenerating}
               />
               
               <Button 
@@ -157,8 +144,6 @@ const Index = () => {
               <PosterForm 
                 posterData={posterData}
                 setPosterData={setPosterData}
-                onGenerate={handleGeneratePoster}
-                isGenerating={isGenerating}
               />
             </TabsContent>
             
@@ -169,14 +154,6 @@ const Index = () => {
               />
             </TabsContent>
           </Tabs>
-          
-          <Button 
-            onClick={handleGeneratePoster} 
-            disabled={isGenerating}
-            className="w-full mt-4"
-          >
-            Update Poster
-          </Button>
           
           <Button 
             onClick={handleExportPDF} 
@@ -192,7 +169,7 @@ const Index = () => {
       <div className="w-full lg:w-2/3 p-4 bg-gray-100 overflow-auto">
         <div className="bg-white p-2 rounded-lg shadow">
           <PosterPreview 
-            posterData={generatedPoster} 
+            posterData={posterData} 
             designSettings={designSettings}
           />
         </div>
