@@ -85,10 +85,14 @@ export const exportToPDF = (elementId: string) => {
   // Style author information specifically
   const headerDiv = posterContent.querySelector('.w-full.p-4.text-center') as HTMLElement;
   if (headerDiv) {
+    // Fix header padding
+    headerDiv.style.padding = '5rem';
+    
     const authorInfo = headerDiv.querySelector('.flex.flex-col.md\\:flex-row') as HTMLElement;
     if (authorInfo) {
       authorInfo.style.fontSize = '2.4rem';
       authorInfo.style.lineHeight = '1.4';
+      authorInfo.style.gap = '2rem';
       
       // Make sure all divs inside author info are properly styled
       const authorDivs = authorInfo.querySelectorAll('div');
@@ -101,13 +105,28 @@ export const exportToPDF = (elementId: string) => {
     }
   }
 
-  // Ensure all content sections scale correctly
+  // Fix padding for all content sections
   const contentSections = posterContent.querySelectorAll('[class*="PosterSection"], [class*="KeyTakeaway"]');
   contentSections.forEach((section) => {
     const sectionElement = section as HTMLElement;
-    sectionElement.style.padding = '2.5rem';
-    sectionElement.style.margin = '0.8rem';
+    sectionElement.style.padding = '4rem';
+    sectionElement.style.margin = '2rem';
     sectionElement.style.borderRadius = '1rem';
+  });
+  
+  // Fix main content area padding
+  const mainContentArea = posterContent.querySelector('.flex-grow.overflow-hidden.p-2');
+  if (mainContentArea) {
+    const mainContentElement = mainContentArea as HTMLElement;
+    mainContentElement.style.padding = '3rem';
+  }
+  
+  // Fix padding in grid layouts
+  const gridLayouts = posterContent.querySelectorAll('.grid.grid-cols-2, .grid.grid-cols-3');
+  gridLayouts.forEach((grid) => {
+    const gridElement = grid as HTMLElement;
+    gridElement.style.gap = '3rem';
+    gridElement.style.padding = '2rem';
   });
   
   toast.info("Preparing PDF export for A0 size (841 x 1189 mm)...");
