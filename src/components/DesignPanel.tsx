@@ -18,7 +18,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Font, Layout, Palette } from 'lucide-react';
+import { Type, Layout, Palette } from 'lucide-react';
 import { isAccessible, accessibleColorPairs, availableFonts } from '@/lib/color-utils';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -105,7 +105,7 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
             Layout
           </TabsTrigger>
           <TabsTrigger value="typography">
-            <Font className="mr-2 h-4 w-4" />
+            <Type className="mr-2 h-4 w-4" />
             Typography
           </TabsTrigger>
           <TabsTrigger value="colors">
