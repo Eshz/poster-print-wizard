@@ -43,6 +43,10 @@ const PosterForm: React.FC<PosterFormProps> = ({
     setPosterData(prev => ({ ...prev, qrCodeUrl: url }));
   };
   
+  const handleQrColorChange = (color: string) => {
+    setPosterData(prev => ({ ...prev, qrCodeColor: color }));
+  };
+  
   return (
     <div className="space-y-6">
       <Card>
@@ -229,7 +233,8 @@ const PosterForm: React.FC<PosterFormProps> = ({
               <QrCode 
                 url={posterData.qrCodeUrl} 
                 setUrl={handleQrUrlChange}
-                color={posterData.qrCodeColor || '#000000'}
+                color={posterData.qrCodeColor}
+                setColor={handleQrColorChange}
               />
             </CardContent>
           </Card>

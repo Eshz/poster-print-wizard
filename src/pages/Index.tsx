@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PosterForm from '@/components/PosterForm';
 import PosterPreview from '@/components/PosterPreview';
 import DesignPanel from '@/components/DesignPanel';
@@ -77,30 +77,45 @@ const Index = () => {
     tempDiv.style.position = 'absolute';
     tempDiv.style.left = '-9999px';
     tempDiv.style.top = '-9999px';
-    tempDiv.style.width = '794px'; // A4 width in pixels at 96 DPI
-    document.body.appendChild(tempDiv);
     tempDiv.appendChild(clonedElement);
+    document.body.appendChild(tempDiv);
     
-    // Ensure all fonts are loaded before generating PDF
+    // Fix the styling for PDF export
+    clonedElement.style.width = '841px'; // A0 width in mm converted to pixels
+    clonedElement.style.height = '1189px'; // A0 height in mm converted to pixels
+    
+    // Fix the number circles in the key takeaways
+    const numberCircles = clonedElement.querySelectorAll('[data-circle-number]');
+    numberCircles.forEach((circle) => {
+      const circleElement = circle as HTMLElement;
+      circleElement.style.width = '2rem';
+      circleElement.style.height = '2rem';
+      circleElement.style.minWidth = '2rem';
+      circleElement.style.display = 'flex';
+      circleElement.style.justifyContent = 'center';
+      circleElement.style.alignItems = 'center';
+    });
+    
     toast.info("Preparing PDF export...");
     
-    // Fix the width and height for PDF export
-    clonedElement.style.width = '794px'; // A4 width
-    clonedElement.style.height = '1123px'; // A4 height
-    clonedElement.style.margin = '0';
-    clonedElement.style.padding = '0';
-    
     const opt = {
-      margin: 10,
+      margin: 0,
       filename: 'conference-poster.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
+      image: { type: 'jpeg', quality: 1 },
       html2canvas: { 
         scale: 2, 
         useCORS: true,
         letterRendering: true,
-        logging: false
+        logging: false,
+        width: 841,
+        height: 1189
       },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      jsPDF: { 
+        unit: 'px', 
+        format: [841, 1189], 
+        orientation: 'portrait',
+        hotfixes: ["px_scaling"]
+      }
     };
     
     setTimeout(() => {

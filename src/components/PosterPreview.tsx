@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface PosterPreviewProps {
@@ -184,10 +183,14 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
             >
               <div className="flex items-start mb-1">
                 <div 
-                  className="h-8 w-8 min-w-[2rem] rounded-full flex items-center justify-center text-lg font-bold mr-1 flex-shrink-0"
+                  data-circle-number="true"
+                  className="h-8 w-8 rounded-full flex items-center justify-center text-lg font-bold mr-1 flex-shrink-0"
                   style={{ 
                     backgroundColor: designSettings.sectionTitleColor, 
-                    color: designSettings.sectionBgColor
+                    color: designSettings.sectionBgColor,
+                    width: "2rem",
+                    height: "2rem",
+                    minWidth: "2rem"
                   }}
                 >
                   {index + 1}
@@ -400,10 +403,14 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
               >
                 <div className="flex items-start mb-1">
                   <div 
-                    className="h-8 w-8 min-w-[2rem] rounded-full flex items-center justify-center text-lg font-bold mr-2 flex-shrink-0"
+                    data-circle-number="true"
+                    className="h-8 w-8 rounded-full flex items-center justify-center text-lg font-bold mr-2 flex-shrink-0"
                     style={{ 
                       backgroundColor: designSettings.sectionTitleColor, 
-                      color: designSettings.sectionBgColor
+                      color: designSettings.sectionBgColor,
+                      width: "2rem",
+                      height: "2rem",
+                      minWidth: "2rem"
                     }}
                   >
                     {index + 1}
@@ -443,10 +450,14 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
               >
                 <div className="flex items-start mb-1">
                   <div 
-                    className="h-8 w-8 min-w-[2rem] rounded-full flex items-center justify-center text-lg font-bold mr-2 flex-shrink-0"
+                    data-circle-number="true"
+                    className="h-8 w-8 rounded-full flex items-center justify-center text-lg font-bold mr-2 flex-shrink-0"
                     style={{ 
                       backgroundColor: designSettings.sectionTitleColor, 
-                      color: designSettings.sectionBgColor
+                      color: designSettings.sectionBgColor,
+                      width: "2rem",
+                      height: "2rem",
+                      minWidth: "2rem"
                     }}
                   >
                     {index + 3}
@@ -658,10 +669,14 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
             >
               <div className="flex items-start mb-2">
                 <div 
-                  className="h-10 w-10 min-w-[2.5rem] rounded-full flex items-center justify-center text-xl font-bold mr-3 flex-shrink-0"
+                  data-circle-number="true"
+                  className="rounded-full flex items-center justify-center text-xl font-bold mr-3 flex-shrink-0"
                   style={{ 
                     backgroundColor: designSettings.sectionTitleColor, 
-                    color: designSettings.sectionBgColor
+                    color: designSettings.sectionBgColor,
+                    width: "2.5rem",
+                    height: "2.5rem",
+                    minWidth: "2.5rem"
                   }}
                 >
                   {index + 1}
