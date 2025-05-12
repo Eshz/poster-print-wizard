@@ -24,6 +24,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
+import { HexColorPicker } from "react-colorful";
 
 interface DesignPanelProps {
   designSettings: {
@@ -39,6 +40,8 @@ interface DesignPanelProps {
     keyPointsTextColor: string;
   };
   setDesignSettings: React.Dispatch<React.SetStateAction<any>>;
+  qrColor: string;
+  setQrColor: (color: string) => void;
 }
 
 const layoutOptions = [
@@ -47,7 +50,12 @@ const layoutOptions = [
   { value: 'focus', label: 'Focus (Center Content)' },
 ];
 
-const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSettings }) => {
+const DesignPanel: React.FC<DesignPanelProps> = ({ 
+  designSettings, 
+  setDesignSettings, 
+  qrColor, 
+  setQrColor 
+}) => {
   const [showColorChecker, setShowColorChecker] = React.useState(false);
   const [color1, setColor1] = React.useState('#FFFFFF');
   const [color2, setColor2] = React.useState('#000000');
@@ -270,6 +278,36 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
                     Check Contrast
                   </Button>
                 
+                  {/* QR Code Color */}
+                  <div className="space-y-2">
+                    <Label htmlFor="qr-color">QR Code Color</Label>
+                    <div className="flex gap-2">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className="w-10 h-10 p-0 border-2"
+                            style={{
+                              backgroundColor: qrColor,
+                              borderColor: qrColor === '#ffffff' ? '#e2e8f0' : qrColor
+                            }}
+                          />
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-3">
+                          <HexColorPicker color={qrColor} onChange={setQrColor} />
+                        </PopoverContent>
+                      </Popover>
+                      <Input
+                        id="qr-color"
+                        type="text"
+                        value={qrColor}
+                        onChange={(e) => setQrColor(e.target.value)}
+                        className="w-28"
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Header Colors */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="headerBgColor">Header Background</Label>
@@ -304,6 +342,7 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
                     </div>
                   </div>
                   
+                  {/* Section Colors */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="sectionBgColor">Section Background</Label>
@@ -338,6 +377,7 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
                     </div>
                   </div>
                   
+                  {/* Key Takeaways Colors */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="keyPointsBgColor">Key Takeaways Background</Label>
@@ -474,4 +514,3 @@ const DesignPanel: React.FC<DesignPanelProps> = ({ designSettings, setDesignSett
 };
 
 export default DesignPanel;
-
