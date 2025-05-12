@@ -7,12 +7,16 @@ interface ModernLayoutProps {
   posterData: any;
   designSettings: any;
   qrCodeUrl: string;
+  showKeypoints: boolean;
+  showQrCode: boolean;
 }
 
 const ModernLayout: React.FC<ModernLayoutProps> = ({
   posterData,
   designSettings,
-  qrCodeUrl
+  qrCodeUrl,
+  showKeypoints,
+  showQrCode
 }) => {
   return (
     <div className="p-4 h-full flex flex-col">
@@ -45,71 +49,77 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
           />
           
           {/* Key Points */}
-          <div className="flex justify-between items-center mb-2">
-            <div 
-              className="border-t-2 border-b-2 py-2 flex-1 text-center"
-              style={{ borderColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
-            >
-              <h2 
-                className={`text-lg font-semibold`}
-                style={{ 
-                  color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
-                  fontFamily: `var(--font-${designSettings.titleFont})`
-                }}
-              >
-                Key Takeaways
-              </h2>
-            </div>
-            
-            {/* QR Code */}
-            {posterData.qrCodeUrl && qrCodeUrl && (
-              <div className="ml-2 flex flex-col items-center">
-                <img 
-                  src={qrCodeUrl} 
-                  alt="QR Code" 
-                  className="w-20 h-20 object-contain"
-                />
-                <p 
-                  className="text-xs text-center mt-1"
-                  style={{ 
-                    color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
-                    fontFamily: `var(--font-${designSettings.contentFont})`
-                  }}
+          {showKeypoints && (
+            <>
+              <div className="flex justify-between items-center mb-2">
+                <div 
+                  className="border-t-2 border-b-2 py-2 flex-1 text-center"
+                  style={{ borderColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
                 >
-                  Scan for more info
-                </p>
+                  <h2 
+                    className={`text-lg font-semibold`}
+                    style={{ 
+                      color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
+                      fontFamily: `var(--font-${designSettings.titleFont})`
+                    }}
+                  >
+                    Key Takeaways
+                  </h2>
+                </div>
+                
+                {/* QR Code */}
+                {showQrCode && qrCodeUrl && (
+                  <div className="ml-2 flex flex-col items-center">
+                    <img 
+                      src={qrCodeUrl} 
+                      alt="QR Code" 
+                      className="w-20 h-20 object-contain"
+                    />
+                    <p 
+                      className="text-xs text-center mt-1"
+                      style={{ 
+                        color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
+                        fontFamily: `var(--font-${designSettings.contentFont})`
+                      }}
+                    >
+                      Scan for more info
+                    </p>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          
-          <div className="space-y-2 flex-grow flex flex-col justify-between">
-            {posterData.keypoints.slice(0, 2).map((point: string, index: number) => (
-              <KeyTakeaway
-                key={index}
-                number={index + 1}
-                title={point}
-                description={posterData.keyDescriptions[index]}
-                designSettings={designSettings}
-                className="p-3 flex-1"
-              />
-            ))}
-          </div>
+              
+              <div className="space-y-2 flex-grow flex flex-col justify-between">
+                {posterData.keypoints.slice(0, 2).map((point: string, index: number) => (
+                  <KeyTakeaway
+                    key={index}
+                    number={index + 1}
+                    title={point}
+                    description={posterData.keyDescriptions[index]}
+                    designSettings={designSettings}
+                    className="p-3 flex-1"
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
         
         {/* Column 3: Conclusions & References + Remaining Key Points */}
         <div className="flex flex-col space-y-4 h-full">
-          <div className="space-y-2 flex-grow flex flex-col justify-between">
-            {posterData.keypoints.slice(2).map((point: string, index: number) => (
-              <KeyTakeaway
-                key={index}
-                number={index + 3}
-                title={point}
-                description={posterData.keyDescriptions[index + 2]}
-                designSettings={designSettings}
-                className="p-3 flex-1"
-              />
-            ))}
-          </div>
+          {showKeypoints && (
+            <div className="space-y-2 flex-grow flex flex-col justify-between">
+              {posterData.keypoints.slice(2).map((point: string, index: number) => (
+                <KeyTakeaway
+                  key={index}
+                  number={index + 3}
+                  title={point}
+                  description={posterData.keyDescriptions[index + 2]}
+                  designSettings={designSettings}
+                  className="p-3 flex-1"
+                />
+              ))}
+            </div>
+          )}
           
           <PosterSection 
             title={posterData.sectionTitles[3]}

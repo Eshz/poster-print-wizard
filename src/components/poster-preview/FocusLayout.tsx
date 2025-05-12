@@ -7,12 +7,16 @@ interface FocusLayoutProps {
   posterData: any;
   designSettings: any;
   qrCodeUrl: string;
+  showKeypoints: boolean;
+  showQrCode: boolean;
 }
 
 const FocusLayout: React.FC<FocusLayoutProps> = ({
   posterData,
   designSettings,
-  qrCodeUrl
+  qrCodeUrl,
+  showKeypoints,
+  showQrCode
 }) => {
   return (
     <div className="p-4 h-full flex flex-col">
@@ -31,7 +35,7 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
           </div>
 
           {/* QR Code */}
-          {posterData.qrCodeUrl && qrCodeUrl && (
+          {showQrCode && qrCodeUrl && (
             <div className="flex flex-col items-center">
               <img 
                 src={qrCodeUrl} 
@@ -70,38 +74,42 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
         />
         
         {/* Key Takeaways Section */}
-        <div 
-          className="border-t-2 border-b-2 py-4 text-center my-6"
-          style={{ borderColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
-        >
-          <h2 
-            className={`text-2xl font-semibold`}
-            style={{ 
-              color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
-              fontFamily: `var(--font-${designSettings.titleFont})`
-            }}
-          >
-            Key Takeaways
-          </h2>
-        </div>
-        
-        {/* Key Points in a row */}
-        <div className="grid grid-cols-2 gap-4 flex-grow">
-          {posterData.keypoints.map((point: string, index: number) => (
-            <KeyTakeaway
-              key={index}
-              number={index + 1}
-              title={point}
-              description={posterData.keyDescriptions[index]}
-              designSettings={designSettings}
-              className="p-4 flex-1"
-              titleSizeClass="text-lg"
-              textSizeClass="text-sm"
-              circleSize="2.5rem"
-              useCircleText={true}
-            />
-          ))}
-        </div>
+        {showKeypoints && (
+          <>
+            <div 
+              className="border-t-2 border-b-2 py-4 text-center my-6"
+              style={{ borderColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
+            >
+              <h2 
+                className={`text-2xl font-semibold`}
+                style={{ 
+                  color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
+                  fontFamily: `var(--font-${designSettings.titleFont})`
+                }}
+              >
+                Key Takeaways
+              </h2>
+            </div>
+            
+            {/* Key Points in a row */}
+            <div className="grid grid-cols-2 gap-4 flex-grow">
+              {posterData.keypoints.map((point: string, index: number) => (
+                <KeyTakeaway
+                  key={index}
+                  number={index + 1}
+                  title={point}
+                  description={posterData.keyDescriptions[index]}
+                  designSettings={designSettings}
+                  className="p-4 flex-1"
+                  titleSizeClass="text-lg"
+                  textSizeClass="text-sm"
+                  circleSize="2.5rem"
+                  useCircleText={true}
+                />
+              ))}
+            </div>
+          </>
+        )}
         
         <PosterSection 
           title={posterData.sectionTitles[3]}

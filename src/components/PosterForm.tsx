@@ -5,6 +5,8 @@ import BasicInfoSection from './poster-form/BasicInfoSection';
 import ContentSection from './poster-form/ContentSection';
 import KeyPointsSection from './poster-form/KeyPointsSection';
 import QrCodeSection from './poster-form/QrCodeSection';
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 interface PosterFormProps {
   posterData: any;
@@ -44,6 +46,10 @@ const PosterForm: React.FC<PosterFormProps> = ({
   
   const handleQrColorChange = (color: string) => {
     setPosterData(prev => ({ ...prev, qrCodeColor: color }));
+  };
+  
+  const handleToggleChange = (field: string) => (checked: boolean) => {
+    setPosterData(prev => ({ ...prev, [field]: checked }));
   };
   
   // Function to reorder sections by swapping field values and titles
@@ -98,21 +104,43 @@ const PosterForm: React.FC<PosterFormProps> = ({
         </TabsContent>
         
         <TabsContent value="keypoints">
-          <KeyPointsSection 
-            keypoints={posterData.keypoints}
-            keyDescriptions={posterData.keyDescriptions}
-            handleKeyPointChange={handleKeyPointChange}
-            handleKeyDescriptionChange={handleKeyDescriptionChange}
-          />
+          <div className="mb-4 flex items-center justify-between">
+            <Label htmlFor="show-keypoints" className="font-medium">Show Key Takeaways</Label>
+            <Switch 
+              id="show-keypoints" 
+              checked={posterData.showKeypoints !== false} 
+              onCheckedChange={handleToggleChange('showKeypoints')}
+            />
+          </div>
+          
+          {posterData.showKeypoints !== false && (
+            <KeyPointsSection 
+              keypoints={posterData.keypoints}
+              keyDescriptions={posterData.keyDescriptions}
+              handleKeyPointChange={handleKeyPointChange}
+              handleKeyDescriptionChange={handleKeyDescriptionChange}
+            />
+          )}
         </TabsContent>
 
         <TabsContent value="qrcode">
-          <QrCodeSection 
-            qrCodeUrl={posterData.qrCodeUrl}
-            qrCodeColor={posterData.qrCodeColor}
-            handleQrUrlChange={handleQrUrlChange}
-            handleQrColorChange={handleQrColorChange}
-          />
+          <div className="mb-4 flex items-center justify-between">
+            <Label htmlFor="show-qrcode" className="font-medium">Show QR Code</Label>
+            <Switch 
+              id="show-qrcode" 
+              checked={posterData.showQrCode !== false} 
+              onCheckedChange={handleToggleChange('showQrCode')}
+            />
+          </div>
+          
+          {posterData.showQrCode !== false && (
+            <QrCodeSection 
+              qrCodeUrl={posterData.qrCodeUrl}
+              qrCodeColor={posterData.qrCodeColor}
+              handleQrUrlChange={handleQrUrlChange}
+              handleQrColorChange={handleQrColorChange}
+            />
+          )}
         </TabsContent>
       </Tabs>
     </div>

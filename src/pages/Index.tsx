@@ -37,7 +37,9 @@ const Index = () => {
       "5. References"
     ],
     qrCodeUrl: "https://example.com/poster",
-    qrCodeColor: "#000000"
+    qrCodeColor: "#000000",
+    showKeypoints: true,
+    showQrCode: true
   });
   
   const [designSettings, setDesignSettings] = useState({

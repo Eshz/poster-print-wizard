@@ -21,6 +21,8 @@ interface PosterPreviewProps {
     sectionTitles: string[];
     qrCodeUrl: string;
     qrCodeColor?: string;
+    showKeypoints?: boolean;
+    showQrCode?: boolean;
   };
   designSettings: {
     layout: string;
@@ -38,7 +40,7 @@ interface PosterPreviewProps {
 
 const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSettings }) => {
   // QR Code generation
-  const qrCodeUrl = posterData.qrCodeUrl ? 
+  const qrCodeUrl = posterData.qrCodeUrl && posterData.showQrCode !== false ? 
     `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(posterData.qrCodeUrl)}&color=${(posterData.qrCodeColor || '#000000').replace('#', '')}` : 
     '';
 
@@ -51,6 +53,8 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
             posterData={posterData}
             designSettings={designSettings}
             qrCodeUrl={qrCodeUrl}
+            showKeypoints={posterData.showKeypoints !== false}
+            showQrCode={posterData.showQrCode !== false}
           />
         );
       case 'focus':
@@ -59,6 +63,8 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
             posterData={posterData}
             designSettings={designSettings}
             qrCodeUrl={qrCodeUrl}
+            showKeypoints={posterData.showKeypoints !== false}
+            showQrCode={posterData.showQrCode !== false}
           />
         );
       case 'classic':
@@ -68,6 +74,8 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
             posterData={posterData}
             designSettings={designSettings}
             qrCodeUrl={qrCodeUrl}
+            showKeypoints={posterData.showKeypoints !== false}
+            showQrCode={posterData.showQrCode !== false}
           />
         );
     }

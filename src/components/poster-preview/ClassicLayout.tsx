@@ -7,12 +7,16 @@ interface ClassicLayoutProps {
   posterData: any;
   designSettings: any;
   qrCodeUrl: string;
+  showKeypoints: boolean;
+  showQrCode: boolean;
 }
 
 const ClassicLayout: React.FC<ClassicLayoutProps> = ({
   posterData,
   designSettings,
-  qrCodeUrl
+  qrCodeUrl,
+  showKeypoints,
+  showQrCode
 }) => {
   return (
     <div className="grid grid-cols-2 gap-2 h-full overflow-hidden">
@@ -40,57 +44,61 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
       {/* Right Column */}
       <div className="flex flex-col space-y-2 h-full overflow-hidden">
         {/* Key Takeaways and QR Code Section */}
-        <div className="flex flex-col space-y-2">
-          <div 
-            className="border-t-2 border-b-2 py-2 text-center mb-1"
-            style={{ borderColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
-          >
-            <div className="flex justify-between items-center px-2">
-              <h2 
-                className={`text-lg md:text-xl font-semibold`}
-                style={{ 
-                  color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
-                  fontFamily: `var(--font-${designSettings.titleFont})`
-                }}
-              >
-                Key Takeaways
-              </h2>
-              
-              {/* QR Code */}
-              {posterData.qrCodeUrl && qrCodeUrl && (
-                <div className="flex flex-col items-center">
-                  <img 
-                    src={qrCodeUrl} 
-                    alt="QR Code" 
-                    className="w-20 h-20 object-contain"
-                  />
-                  <p 
-                    className="text-xs text-center mt-1"
-                    style={{ 
-                      color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
-                      fontFamily: `var(--font-${designSettings.contentFont})`
-                    }}
-                  >
-                    Scan for more info
-                  </p>
-                </div>
-              )}
+        {showKeypoints && (
+          <div className="flex flex-col space-y-2">
+            <div 
+              className="border-t-2 border-b-2 py-2 text-center mb-1"
+              style={{ borderColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
+            >
+              <div className="flex justify-between items-center px-2">
+                <h2 
+                  className={`text-lg md:text-xl font-semibold`}
+                  style={{ 
+                    color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
+                    fontFamily: `var(--font-${designSettings.titleFont})`
+                  }}
+                >
+                  Key Takeaways
+                </h2>
+                
+                {/* QR Code */}
+                {showQrCode && qrCodeUrl && (
+                  <div className="flex flex-col items-center">
+                    <img 
+                      src={qrCodeUrl} 
+                      alt="QR Code" 
+                      className="w-20 h-20 object-contain"
+                    />
+                    <p 
+                      className="text-xs text-center mt-1"
+                      style={{ 
+                        color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
+                        fontFamily: `var(--font-${designSettings.contentFont})`
+                      }}
+                    >
+                      Scan for more info
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
         
         {/* Key Points Grid */}
-        <div className="grid grid-cols-2 gap-2 flex-grow overflow-auto">
-          {posterData.keypoints.map((point: string, index: number) => (
-            <KeyTakeaway
-              key={index}
-              number={index + 1}
-              title={point}
-              description={posterData.keyDescriptions[index]}
-              designSettings={designSettings}
-            />
-          ))}
-        </div>
+        {showKeypoints && (
+          <div className="grid grid-cols-2 gap-2 flex-grow overflow-auto">
+            {posterData.keypoints.map((point: string, index: number) => (
+              <KeyTakeaway
+                key={index}
+                number={index + 1}
+                title={point}
+                description={posterData.keyDescriptions[index]}
+                designSettings={designSettings}
+              />
+            ))}
+          </div>
+        )}
         
         <PosterSection 
           title={posterData.sectionTitles[3]}
