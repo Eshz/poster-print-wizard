@@ -99,6 +99,8 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
         school={posterData.school}
         contact={posterData.contact}
         designSettings={designSettings}
+        qrCodeUrl={qrCodeUrl}
+        showQrCode={posterData.showQrCode !== false}
       />
 
       {/* Dynamic Content Layout - adding overflow control */}

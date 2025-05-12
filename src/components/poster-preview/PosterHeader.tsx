@@ -7,6 +7,8 @@ interface PosterHeaderProps {
   school: string;
   contact: string;
   designSettings: any;
+  qrCodeUrl?: string;
+  showQrCode?: boolean;
 }
 
 const PosterHeader: React.FC<PosterHeaderProps> = ({
@@ -14,12 +16,14 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
   authors,
   school,
   contact,
-  designSettings
+  designSettings,
+  qrCodeUrl,
+  showQrCode
 }) => {
   return (
     <>
       <div 
-        className="w-full p-4 text-center"
+        className="w-full p-4 text-center relative"
         style={{ 
           backgroundColor: designSettings.headerBgColor, 
           color: designSettings.headerTextColor,
@@ -27,11 +31,28 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
         }}
       >
         <h1 className="text-2xl md:text-3xl font-bold mb-2">{title}</h1>
+        
+        {/* QR Code - absolute positioned to the right */}
+        {showQrCode && qrCodeUrl && (
+          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex flex-col items-center">
+            <img 
+              src={qrCodeUrl} 
+              alt="QR Code" 
+              className="w-20 h-20 object-contain"
+            />
+            <p 
+              className="text-xs text-center mt-1"
+              style={{ color: designSettings.headerTextColor }}
+            >
+              Scan for more info
+            </p>
+          </div>
+        )}
       </div>
       
       {/* Author info with borders above and below */}
       <div 
-        className="w-full text-center py-2"
+        className="w-full text-center py-2 mt-2"
         style={{
           borderTop: `2px solid ${designSettings.keyPointsTextColor || designSettings.sectionTitleColor}`,
           borderBottom: `2px solid ${designSettings.keyPointsTextColor || designSettings.sectionTitleColor}`,

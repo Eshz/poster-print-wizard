@@ -1,3 +1,4 @@
+
 import { toast } from "sonner";
 import html2pdf from 'html2pdf.js';
 
@@ -81,19 +82,40 @@ export const exportToPDF = (elementId: string) => {
     pElement.style.lineHeight = '1.5';
   });
 
-  // Style author information specifically
+  // Style header title section specifically
   const headerDiv = posterContent.querySelector('.w-full.p-4.text-center') as HTMLElement;
   if (headerDiv) {
     // Fix header padding
     headerDiv.style.padding = '5rem';
+    
+    // Style the QR code in the header if present
+    const headerQrCode = headerDiv.querySelector('.absolute.right-4') as HTMLElement;
+    if (headerQrCode) {
+      headerQrCode.style.right = '10rem';
+      
+      // Style the QR code image
+      const qrCodeImg = headerQrCode.querySelector('img') as HTMLElement;
+      if (qrCodeImg) {
+        qrCodeImg.style.width = '10rem';
+        qrCodeImg.style.height = '10rem';
+      }
+      
+      // Style the QR code text
+      const qrCodeText = headerQrCode.querySelector('p') as HTMLElement;
+      if (qrCodeText) {
+        qrCodeText.style.fontSize = '1.8rem';
+        qrCodeText.style.marginTop = '1rem';
+      }
+    }
   }
   
   // Style the author info with borders
-  const authorInfoContainer = posterContent.querySelector('.w-full.text-center.py-2') as HTMLElement;
+  const authorInfoContainer = posterContent.querySelector('.w-full.text-center.py-2.mt-2') as HTMLElement;
   if (authorInfoContainer) {
     authorInfoContainer.style.padding = '1.5rem 0';
     authorInfoContainer.style.borderTopWidth = '3px';
     authorInfoContainer.style.borderBottomWidth = '3px';
+    authorInfoContainer.style.marginTop = '2rem';
     
     const authorInfo = authorInfoContainer.querySelector('.flex.flex-col.md\\:flex-row') as HTMLElement;
     if (authorInfo) {
