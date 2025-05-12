@@ -136,13 +136,13 @@ export const exportToPDF = (elementId: string) => {
     gridElement.style.padding = '0.75rem';
   });
   
-  // Specifically target all elements with p-4 flex-grow classes
+  // Specifically target p-4 flex-grow classes with improved selector
   const flexGrowSections = posterContent.querySelectorAll('.p-4.flex-grow, [class*="p-4"][class*="flex-grow"]');
   flexGrowSections.forEach((section) => {
     const sectionElement = section as HTMLElement;
-    sectionElement.style.padding = '2rem';
+    // Increase padding for these specific sections
+    sectionElement.style.padding = '3rem';
     sectionElement.style.margin = '0.5rem';
-    // Reduce space between sections
     sectionElement.style.marginBottom = '1rem';
   });
   
@@ -157,7 +157,7 @@ export const exportToPDF = (elementId: string) => {
   const flexColContainers = posterContent.querySelectorAll('.p-4.h-full.flex.flex-col, .p-4.flex.flex-col');
   flexColContainers.forEach((container) => {
     const containerElement = container as HTMLElement;
-    containerElement.style.padding = '1rem';
+    containerElement.style.padding = '3rem'; // Increase padding here as well
     containerElement.style.gap = '0.75rem';
   });
   
@@ -165,7 +165,6 @@ export const exportToPDF = (elementId: string) => {
   const spaceYComponents = posterContent.querySelectorAll('[class*="space-y-"]');
   spaceYComponents.forEach((component) => {
     const componentElement = component as HTMLElement;
-    // Reset spacing to be smaller
     componentElement.style.gap = '0.75rem';
   });
   
