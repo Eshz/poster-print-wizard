@@ -75,11 +75,14 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
 
   return (
     <div
-      className="w-full aspect-[1/1.414] bg-white border border-gray-200 relative overflow-hidden flex flex-col"
+      className="bg-white border border-gray-200 relative overflow-hidden flex flex-col"
       style={{ 
-        maxWidth: '100%',
+        width: '100%',
+        height: '1131px', // Fixed height based on A0 aspect ratio (1:1.414) scaled down
+        maxWidth: '800px', // Fixed width
         margin: '0 auto',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        aspectRatio: '1/1.414' // A0 aspect ratio
       }}
     >
       {/* Header Section */}
