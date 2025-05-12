@@ -42,18 +42,18 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
     }
   };
 
-  // Classic layout (2 columns)
+  // Classic layout (2 columns) - Updated to fix overflow issues
   const renderClassicLayout = () => (
-    <div className="grid grid-cols-2 gap-2 p-4 h-full">
+    <div className="grid grid-cols-2 gap-2 h-full overflow-hidden">
       {/* Left Column */}
-      <div className="flex flex-col space-y-4 h-full">
+      <div className="flex flex-col space-y-2 h-full overflow-hidden">
         {/* Introduction Section */}
         <div 
-          className="p-4 rounded flex-grow"
+          className="p-3 rounded flex-grow overflow-auto"
           style={{ backgroundColor: designSettings.sectionBgColor }}
         >
           <h2 
-            className={`text-xl md:text-2xl font-semibold mb-2`}
+            className={`text-lg md:text-xl font-semibold mb-1`}
             style={{ 
               color: designSettings.sectionTitleColor,
               fontFamily: `var(--font-${designSettings.titleFont})`
@@ -62,7 +62,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
             1. Introduction
           </h2>
           <p 
-            className={`text-sm md:text-base`}
+            className={`text-xs md:text-sm`}
             style={{ 
               color: designSettings.sectionTextColor,
               fontFamily: `var(--font-${designSettings.contentFont})`
@@ -74,11 +74,11 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
         
         {/* Methods Section */}
         <div 
-          className="p-4 rounded flex-grow"
+          className="p-3 rounded flex-grow overflow-auto"
           style={{ backgroundColor: designSettings.sectionBgColor }}
         >
           <h2 
-            className={`text-xl md:text-2xl font-semibold mb-2`}
+            className={`text-lg md:text-xl font-semibold mb-1`}
             style={{ 
               color: designSettings.sectionTitleColor,
               fontFamily: `var(--font-${designSettings.titleFont})`
@@ -87,7 +87,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
             2. Methods
           </h2>
           <p 
-            className={`text-sm md:text-base`}
+            className={`text-xs md:text-sm`}
             style={{ 
               color: designSettings.sectionTextColor,
               fontFamily: `var(--font-${designSettings.contentFont})`
@@ -99,11 +99,11 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
         
         {/* Findings Section */}
         <div 
-          className="p-4 rounded flex-grow"
+          className="p-3 rounded flex-grow overflow-auto"
           style={{ backgroundColor: designSettings.sectionBgColor }}
         >
           <h2 
-            className={`text-xl md:text-2xl font-semibold mb-2`}
+            className={`text-lg md:text-xl font-semibold mb-1`}
             style={{ 
               color: designSettings.sectionTitleColor,
               fontFamily: `var(--font-${designSettings.titleFont})`
@@ -112,7 +112,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
             3. Findings
           </h2>
           <p 
-            className={`text-sm md:text-base`}
+            className={`text-xs md:text-sm`}
             style={{ 
               color: designSettings.sectionTextColor,
               fontFamily: `var(--font-${designSettings.contentFont})`
@@ -124,14 +124,14 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
       </div>
       
       {/* Right Column */}
-      <div className="flex flex-col space-y-4 h-full">
+      <div className="flex flex-col space-y-2 h-full overflow-hidden">
         {/* Key Takeaways Section */}
         <div 
-          className="border-t-2 border-b-2 py-4 text-center mb-2"
+          className="border-t-2 border-b-2 py-2 text-center mb-1"
           style={{ borderColor: designSettings.sectionTitleColor }}
         >
           <h2 
-            className={`text-xl md:text-2xl font-semibold`}
+            className={`text-lg md:text-xl font-semibold`}
             style={{ 
               color: designSettings.sectionTitleColor,
               fontFamily: `var(--font-${designSettings.titleFont})`
@@ -141,17 +141,17 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
           </h2>
         </div>
         
-        {/* Key Points Grid */}
-        <div className="grid grid-cols-2 gap-2 flex-grow">
+        {/* Key Points Grid - Updated to scroll if needed */}
+        <div className="grid grid-cols-2 gap-2 flex-grow overflow-auto">
           {posterData.keypoints.map((point, index) => (
             <div 
               key={index} 
-              className="p-3 rounded flex flex-col"
+              className="p-2 rounded flex flex-col"
               style={{ backgroundColor: designSettings.keyPointsBgColor || '#f5f7ff' }}
             >
-              <div className="flex items-start mb-2">
+              <div className="flex items-start mb-1">
                 <div 
-                  className="h-10 w-10 rounded-full flex items-center justify-center text-xl font-bold mr-2"
+                  className="h-8 w-8 rounded-full flex items-center justify-center text-lg font-bold mr-1"
                   style={{ 
                     backgroundColor: designSettings.sectionTitleColor, 
                     color: designSettings.sectionBgColor
@@ -160,7 +160,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
                   {index + 1}
                 </div>
                 <h3 
-                  className={`text-lg font-semibold`}
+                  className={`text-sm font-semibold`}
                   style={{ 
                     color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
                     fontFamily: `var(--font-${designSettings.titleFont})`
@@ -170,7 +170,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
                 </h3>
               </div>
               <p 
-                className={`text-sm`}
+                className={`text-xs`}
                 style={{ 
                   color: designSettings.sectionTextColor,
                   fontFamily: `var(--font-${designSettings.contentFont})`
@@ -184,11 +184,11 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
         
         {/* Conclusions Section */}
         <div 
-          className="p-4 rounded flex-grow"
+          className="p-3 rounded flex-grow overflow-auto"
           style={{ backgroundColor: designSettings.sectionBgColor }}
         >
           <h2 
-            className={`text-xl md:text-2xl font-semibold mb-2`}
+            className={`text-lg md:text-xl font-semibold mb-1`}
             style={{ 
               color: designSettings.sectionTitleColor,
               fontFamily: `var(--font-${designSettings.titleFont})`
@@ -197,7 +197,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
             4. Conclusions and implications
           </h2>
           <p 
-            className={`text-sm md:text-base`}
+            className={`text-xs md:text-sm`}
             style={{ 
               color: designSettings.sectionTextColor,
               fontFamily: `var(--font-${designSettings.contentFont})`
@@ -209,11 +209,11 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
         
         {/* References Section */}
         <div 
-          className="p-4 rounded flex-grow"
+          className="p-3 rounded flex-grow overflow-auto"
           style={{ backgroundColor: designSettings.sectionBgColor }}
         >
           <h2 
-            className={`text-xl md:text-2xl font-semibold mb-2`}
+            className={`text-lg md:text-xl font-semibold mb-1`}
             style={{ 
               color: designSettings.sectionTitleColor,
               fontFamily: `var(--font-${designSettings.titleFont})`
@@ -222,7 +222,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
             5. References
           </h2>
           <p 
-            className={`text-sm md:text-base whitespace-pre-line`}
+            className={`text-xs md:text-sm whitespace-pre-line`}
             style={{ 
               color: designSettings.sectionTextColor,
               fontFamily: `var(--font-${designSettings.contentFont})`
@@ -674,22 +674,22 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
     >
       {/* Header Section */}
       <div 
-        className="w-full p-6 text-center"
+        className="w-full p-4 text-center"
         style={{ 
           backgroundColor: designSettings.headerBgColor, 
           color: designSettings.headerTextColor,
           fontFamily: `var(--font-${designSettings.titleFont})`
         }}
       >
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">{posterData.title}</h1>
-        <div className="flex justify-between items-center">
-          <div className="text-sm md:text-lg">{posterData.authors}</div>
-          <div className="text-sm md:text-lg">{posterData.contact}</div>
+        <h1 className="text-2xl md:text-3xl font-bold mb-2">{posterData.title}</h1>
+        <div className="flex justify-between items-center text-xs md:text-sm">
+          <div>{posterData.authors}</div>
+          <div>{posterData.contact}</div>
         </div>
       </div>
 
-      {/* Dynamic Content Layout */}
-      <div className="flex-grow">
+      {/* Dynamic Content Layout - adding overflow control */}
+      <div className="flex-grow overflow-hidden p-2">
         {renderLayout()}
       </div>
     </div>
