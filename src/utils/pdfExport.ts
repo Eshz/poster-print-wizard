@@ -16,7 +16,7 @@ export const exportToPDF = (elementId: string) => {
   
   // Create a clone of the element to modify for PDF export
   const clonedElement = element.cloneNode(true) as HTMLElement;
-  const posterContent = clonedElement.querySelector('.bg-white.border.border-gray-200');
+  const posterContent = clonedElement.querySelector('.bg-white.border.border-gray-200') as HTMLElement;
   
   if (!posterContent) {
     toast.error("Could not find poster content to export");
