@@ -26,10 +26,10 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
       }}
     >
       <h1 className="text-2xl md:text-3xl font-bold mb-2">{title}</h1>
-      <div className="flex flex-col md:flex-row justify-between items-center text-xs md:text-sm">
-        <div className="md:w-1/3 mb-1 md:mb-0">{authors}</div>
-        <div className="md:w-1/3 mb-1 md:mb-0">{school}</div>
-        <div className="md:w-1/3">{contact}</div>
+      <div className="flex flex-col md:flex-row justify-between items-center text-xs md:text-sm gap-2">
+        <div className="mb-1 md:mb-0">{authors}</div>
+        <div className="mb-1 md:mb-0">{school}</div>
+        <div>{contact}</div>
       </div>
     </div>
   );
