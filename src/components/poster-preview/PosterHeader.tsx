@@ -26,10 +26,19 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
       }}
     >
       <h1 className="text-2xl md:text-3xl font-bold mb-2">{title}</h1>
-      <div className="flex flex-col md:flex-row justify-between items-center text-xs md:text-sm gap-2">
-        <div className="mb-1 md:mb-0">{authors}</div>
-        <div className="mb-1 md:mb-0">{school}</div>
-        <div>{contact}</div>
+      <div 
+        className="flex flex-col md:flex-row justify-between items-center text-xs md:text-sm gap-2 p-2 rounded-md"
+        style={{ 
+          backgroundColor: designSettings.keyPointsBgColor || '#f5f7ff',
+          color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
+          fontFamily: `var(--font-${designSettings.contentFont})`,
+          margin: '0 auto',
+          maxWidth: '95%'
+        }}
+      >
+        <div className="mb-1 md:mb-0 font-semibold">{authors}</div>
+        <div className="mb-1 md:mb-0 font-semibold">{school}</div>
+        <div className="font-semibold">{contact}</div>
       </div>
     </div>
   );
