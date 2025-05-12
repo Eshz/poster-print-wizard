@@ -114,41 +114,59 @@ export const exportToPDF = (elementId: string) => {
   const contentSections = posterContent.querySelectorAll('[class*="PosterSection"], [class*="KeyTakeaway"]');
   contentSections.forEach((section) => {
     const sectionElement = section as HTMLElement;
-    sectionElement.style.padding = '3rem';
-    sectionElement.style.margin = '1rem';
-    sectionElement.style.borderRadius = '1rem';
+    sectionElement.style.padding = '2rem';
+    sectionElement.style.margin = '0.75rem';
+    sectionElement.style.borderRadius = '0.75rem';
   });
   
-  // Fix main content area padding
+  // Fix main content area padding - specific target for flex-grow overflow-hidden p-2
   const mainContentArea = posterContent.querySelector('.flex-grow.overflow-hidden.p-2');
   if (mainContentArea) {
     const mainContentElement = mainContentArea as HTMLElement;
-    mainContentElement.style.padding = '2rem';
+    mainContentElement.style.padding = '1rem';
+    // Make sure it doesn't take too much space
+    mainContentElement.style.maxHeight = '80%';
   }
   
   // Adjust spacing in grid layouts
   const gridLayouts = posterContent.querySelectorAll('.grid.grid-cols-2, .grid.grid-cols-3');
   gridLayouts.forEach((grid) => {
     const gridElement = grid as HTMLElement;
-    gridElement.style.gap = '1.5rem';
-    gridElement.style.padding = '1rem';
+    gridElement.style.gap = '1rem';
+    gridElement.style.padding = '0.75rem';
   });
   
   // Specifically target all elements with p-4 flex-grow classes
   const flexGrowSections = posterContent.querySelectorAll('.p-4.flex-grow, [class*="p-4"][class*="flex-grow"]');
   flexGrowSections.forEach((section) => {
     const sectionElement = section as HTMLElement;
-    sectionElement.style.padding = '3rem';
-    sectionElement.style.margin = '1rem';
+    sectionElement.style.padding = '2rem';
+    sectionElement.style.margin = '0.5rem';
     // Reduce space between sections
-    sectionElement.style.marginBottom = '1.5rem';
+    sectionElement.style.marginBottom = '1rem';
   });
   
   // Reduce space-y classes
   const spaceYElements = posterContent.querySelectorAll('[class*="space-y"]');
   spaceYElements.forEach((element) => {
     const spaceElement = element as HTMLElement;
-    spaceElement.style.gap = '1rem';
+    spaceElement.style.gap = '0.75rem';
+  });
+  
+  // Fix spacing in the p-4 h-full flex flex-col containers
+  const flexColContainers = posterContent.querySelectorAll('.p-4.h-full.flex.flex-col, .p-4.flex.flex-col');
+  flexColContainers.forEach((container) => {
+    const containerElement = container as HTMLElement;
+    containerElement.style.padding = '1rem';
+    containerElement.style.gap = '0.75rem';
+  });
+  
+  // Adjust any space-y components
+  const spaceYComponents = posterContent.querySelectorAll('[class*="space-y-"]');
+  spaceYComponents.forEach((component) => {
+    const componentElement = component as HTMLElement;
+    // Reset spacing to be smaller
+    componentElement.style.gap = '0.75rem';
   });
   
   toast.info("Preparing PDF export for A0 size (841 x 1189 mm)...");
