@@ -153,11 +153,19 @@ export const exportToPDF = (elementId: string) => {
     spaceElement.style.gap = '0.75rem';
   });
   
-  // Fix spacing in the p-4 h-full flex flex-col containers
-  const flexColContainers = posterContent.querySelectorAll('.p-4.h-full.flex.flex-col, .p-4.flex.flex-col');
+  // Specifically target and adjust the container with p-4 h-full flex flex-col class
+  const mainContainers = posterContent.querySelectorAll('.p-4.h-full.flex.flex-col');
+  mainContainers.forEach((container) => {
+    const containerElement = container as HTMLElement;
+    containerElement.style.padding = '2rem'; // Reduced padding from 3rem
+    containerElement.style.gap = '0.5rem';  // Reduced gap from 0.75rem
+  });
+  
+  // Adjust standard flex column containers (different from the main containers)
+  const flexColContainers = posterContent.querySelectorAll('.p-4.flex.flex-col:not(.p-4.h-full.flex.flex-col)');
   flexColContainers.forEach((container) => {
     const containerElement = container as HTMLElement;
-    containerElement.style.padding = '3rem'; // Increase padding here as well
+    containerElement.style.padding = '2.5rem'; 
     containerElement.style.gap = '0.75rem';
   });
   
@@ -203,3 +211,4 @@ export const exportToPDF = (elementId: string) => {
     });
   }, 3000); // Give more time for large format to load properly
 };
+
