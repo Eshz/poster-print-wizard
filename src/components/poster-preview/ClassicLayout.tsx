@@ -2,6 +2,7 @@
 import React from 'react';
 import PosterSection from './PosterSection';
 import KeyTakeaway from './KeyTakeaway';
+import ImagesDisplay from './ImagesDisplay';
 
 interface ClassicLayoutProps {
   posterData: any;
@@ -18,6 +19,8 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
   showKeypoints,
   showQrCode
 }) => {
+  const hasImages = posterData.images && posterData.images.filter(img => img.visible).length > 0;
+  
   return (
     <div className="grid grid-cols-2 gap-2 h-full overflow-hidden">
       {/* Left Column */}
@@ -39,6 +42,17 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
           content={posterData.findings}
           designSettings={designSettings}
         />
+        
+        {/* Images Section - Left Column */}
+        {hasImages && (
+          <div className="flex-grow-0">
+            <ImagesDisplay 
+              images={posterData.images}
+              designSettings={designSettings}
+              className="h-full"
+            />
+          </div>
+        )}
       </div>
       
       {/* Right Column */}

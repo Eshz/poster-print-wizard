@@ -5,6 +5,7 @@ import BasicInfoSection from './poster-form/BasicInfoSection';
 import ContentSection from './poster-form/ContentSection';
 import KeyPointsSection from './poster-form/KeyPointsSection';
 import QrCodeSection from './poster-form/QrCodeSection';
+import ImagesSection from './poster-form/ImagesSection';
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
@@ -48,36 +49,12 @@ const PosterForm: React.FC<PosterFormProps> = ({
     setPosterData(prev => ({ ...prev, qrCodeColor: color }));
   };
   
-  const handleToggleChange = (field: string) => (checked: boolean) => {
-    setPosterData(prev => ({ ...prev, [field]: checked }));
+  const handleImagesChange = (images: { url: string; visible: boolean; caption: string }[]) => {
+    setPosterData(prev => ({ ...prev, images }));
   };
   
-  // Function to reorder sections by swapping field values and titles
-  const reorderSections = (dragIndex: number, dropIndex: number) => {
-    // Create a mapping of field names to their order
-    const sectionFields = ["introduction", "methods", "findings", "conclusions", "references"];
-    
-    // Create copies of the data
-    const newData = { ...posterData };
-    const newSectionTitles = [...posterData.sectionTitles];
-    
-    // Store the dragged item's values
-    const draggedTitle = newSectionTitles[dragIndex];
-    const draggedContent = posterData[sectionFields[dragIndex]];
-    
-    // Swap the section titles
-    newSectionTitles[dragIndex] = newSectionTitles[dropIndex];
-    newSectionTitles[dropIndex] = draggedTitle;
-    
-    // Swap the section contents
-    newData[sectionFields[dragIndex]] = posterData[sectionFields[dropIndex]];
-    newData[sectionFields[dropIndex]] = draggedContent;
-    
-    // Update the section titles in the new data
-    newData.sectionTitles = newSectionTitles;
-    
-    // Update state
-    setPosterData(newData);
+  const handleToggleChange = (field: string) => (checked: boolean) => {
+    setPosterData(prev => ({ ...prev, [field]: checked }));
   };
   
   return (
@@ -88,9 +65,10 @@ const PosterForm: React.FC<PosterFormProps> = ({
       />
       
       <Tabs defaultValue="content" className="w-full">
-        <TabsList className="grid grid-cols-3 mb-4">
+        <TabsList className="grid grid-cols-4 mb-4">
           <TabsTrigger value="content">Main Content</TabsTrigger>
           <TabsTrigger value="keypoints">Key Takeaways</TabsTrigger>
+          <TabsTrigger value="images">Images</TabsTrigger>
           <TabsTrigger value="qrcode">QR Code</TabsTrigger>
         </TabsList>
         
@@ -99,7 +77,6 @@ const PosterForm: React.FC<PosterFormProps> = ({
             posterData={posterData}
             handleChange={handleChange}
             handleSectionTitleChange={handleSectionTitleChange}
-            reorderSections={reorderSections}
           />
         </TabsContent>
         
@@ -121,6 +98,13 @@ const PosterForm: React.FC<PosterFormProps> = ({
               handleKeyDescriptionChange={handleKeyDescriptionChange}
             />
           )}
+        </TabsContent>
+        
+        <TabsContent value="images">
+          <ImagesSection 
+            images={posterData.images || []}
+            onImagesChange={handleImagesChange}
+          />
         </TabsContent>
 
         <TabsContent value="qrcode">

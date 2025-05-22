@@ -3,20 +3,17 @@ import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { MoveVertical } from "lucide-react";
 
 interface ContentSectionProps {
   posterData: any;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleSectionTitleChange: (index: number, value: string) => void;
-  reorderSections?: (dragIndex: number, dropIndex: number) => void;
 }
 
 const ContentSection: React.FC<ContentSectionProps> = ({ 
   posterData, 
   handleChange,
-  handleSectionTitleChange,
-  reorderSections
+  handleSectionTitleChange
 }) => {
   // Sections data structure - maps the section index to the corresponding field name
   const sections = [
@@ -27,42 +24,14 @@ const ContentSection: React.FC<ContentSectionProps> = ({
     { index: 4, field: "references", title: "Section 5 Title" }
   ];
 
-  // Drag and drop functionality
-  const handleDragStart = (e: React.DragEvent, index: number) => {
-    e.dataTransfer.setData("text/plain", index.toString());
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault(); // Allow drop
-  };
-
-  const handleDrop = (e: React.DragEvent, targetIndex: number) => {
-    e.preventDefault();
-    if (!reorderSections) return;
-    
-    const dragIndex = parseInt(e.dataTransfer.getData("text/plain"));
-    if (dragIndex === targetIndex) return;
-    
-    reorderSections(dragIndex, targetIndex);
-  };
-
   return (
     <div className="space-y-4">
       {sections.map((section) => (
         <div 
           key={section.index}
-          draggable={!!reorderSections}
-          onDragStart={(e) => handleDragStart(e, section.index)}
-          onDragOver={handleDragOver}
-          onDrop={(e) => handleDrop(e, section.index)}
-          className={`${reorderSections ? 'border border-dashed border-gray-300 p-3 rounded-md' : ''}`}
+          className="border border-gray-200 p-3 rounded-md"
         >
           <div className="flex items-center gap-2 mb-1">
-            {reorderSections && (
-              <div className="cursor-move text-gray-500 hover:text-gray-700">
-                <MoveVertical size={18} />
-              </div>
-            )}
             <Label htmlFor={`sectionTitle-${section.index}`}>{section.title}</Label>
             <Input 
               id={`sectionTitle-${section.index}`}

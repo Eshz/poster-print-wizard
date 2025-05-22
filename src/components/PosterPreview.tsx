@@ -23,6 +23,7 @@ interface PosterPreviewProps {
     qrCodeColor?: string;
     showKeypoints?: boolean;
     showQrCode?: boolean;
+    images?: { url: string; visible: boolean; caption: string }[];
   };
   designSettings: {
     layout: string;

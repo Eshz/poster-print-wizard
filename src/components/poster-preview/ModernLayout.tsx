@@ -2,6 +2,7 @@
 import React from 'react';
 import PosterSection from './PosterSection';
 import KeyTakeaway from './KeyTakeaway';
+import ImagesDisplay from './ImagesDisplay';
 
 interface ModernLayoutProps {
   posterData: any;
@@ -18,6 +19,8 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
   showKeypoints,
   showQrCode
 }) => {
+  const hasImages = posterData.images && posterData.images.filter(img => img.visible).length > 0;
+  
   return (
     <div className="p-4 h-full flex flex-col">
       {/* Three column layout */}
@@ -37,6 +40,14 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
             designSettings={designSettings}
             className="p-4 flex-grow"
           />
+          
+          {/* Images in first column */}
+          {hasImages && (
+            <ImagesDisplay 
+              images={posterData.images}
+              designSettings={designSettings}
+            />
+          )}
         </div>
         
         {/* Column 2: Findings & Key Points */}

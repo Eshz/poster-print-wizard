@@ -2,6 +2,7 @@
 import React from 'react';
 import PosterSection from './PosterSection';
 import KeyTakeaway from './KeyTakeaway';
+import ImagesDisplay from './ImagesDisplay';
 
 interface FocusLayoutProps {
   posterData: any;
@@ -18,6 +19,8 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
   showKeypoints,
   showQrCode
 }) => {
+  const hasImages = posterData.images && posterData.images.filter(img => img.visible).length > 0;
+  
   return (
     <div className="p-4 h-full flex flex-col">
       <div className="max-w-4xl mx-auto space-y-6 flex-grow flex flex-col">
@@ -63,6 +66,16 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
           titleSizeClass="text-2xl"
           textSizeClass="text-base"
         />
+        
+        {/* Images Section */}
+        {hasImages && (
+          <div className="my-4">
+            <ImagesDisplay 
+              images={posterData.images}
+              designSettings={designSettings}
+            />
+          </div>
+        )}
         
         <PosterSection 
           title={posterData.sectionTitles[2]}

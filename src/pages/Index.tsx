@@ -39,7 +39,8 @@ const Index = () => {
     qrCodeUrl: "https://example.com/poster",
     qrCodeColor: "#000000",
     showKeypoints: true,
-    showQrCode: true
+    showQrCode: true,
+    images: []
   });
   
   const [designSettings, setDesignSettings] = useState({
