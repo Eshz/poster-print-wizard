@@ -45,7 +45,7 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
         
         {/* Images Section - Left Column */}
         {hasImages && (
-          <div className="flex-grow-0">
+          <div className="flex-grow">
             <ImagesDisplay 
               images={posterData.images}
               designSettings={designSettings}

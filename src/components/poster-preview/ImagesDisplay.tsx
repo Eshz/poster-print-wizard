@@ -46,7 +46,7 @@ const ImagesDisplay: React.FC<ImagesDisplayProps> = ({
             <img 
               src={image.url} 
               alt={image.caption || `Image ${index + 1}`}
-              className="w-full object-contain max-h-64" // Increased max-height from 48 to 64
+              className="w-full object-contain max-h-96" // Increased max-height from 64 to 96
             />
           </div>
           
