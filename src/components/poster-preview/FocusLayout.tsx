@@ -21,6 +21,19 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
 }) => {
   const hasImages = posterData.images && posterData.images.filter(img => img.visible).length > 0;
   
+  // Ensure sectionTitles exists with fallback values
+  const sectionTitles = posterData?.sectionTitles || [
+    "1. Introduction",
+    "2. Methods",
+    "3. Findings",
+    "4. Conclusions",
+    "5. References"
+  ];
+  
+  // Ensure keypoints and keyDescriptions exist with fallback values
+  const keypoints = posterData?.keypoints || ["Key Point 1", "Key Point 2", "Key Point 3", "Key Point 4"];
+  const keyDescriptions = posterData?.keyDescriptions || ["Description 1", "Description 2", "Description 3", "Description 4"];
+  
   return (
     <div className="p-4 h-full flex flex-col">
       <div className="max-w-4xl mx-auto space-y-6 flex-grow flex flex-col">
@@ -28,8 +41,8 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
         <div className="flex justify-between items-start mb-4">
           <div className="w-4/5">
             <PosterSection 
-              title={posterData.sectionTitles[0]}
-              content={posterData.introduction}
+              title={sectionTitles[0] || "Introduction"}
+              content={posterData?.introduction || ""}
               designSettings={designSettings}
               className="p-4"
               titleSizeClass="text-2xl"
@@ -59,8 +72,8 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
         </div>
         
         <PosterSection 
-          title={posterData.sectionTitles[1]}
-          content={posterData.methods}
+          title={sectionTitles[1] || "Methods"}
+          content={posterData?.methods || ""}
           designSettings={designSettings}
           className="p-4 flex-grow"
           titleSizeClass="text-2xl"
@@ -78,8 +91,8 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
         )}
         
         <PosterSection 
-          title={posterData.sectionTitles[2]}
-          content={posterData.findings}
+          title={sectionTitles[2] || "Findings"}
+          content={posterData?.findings || ""}
           designSettings={designSettings}
           className="p-4 flex-grow"
           titleSizeClass="text-2xl"
@@ -106,12 +119,12 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
             
             {/* Key Points in a row */}
             <div className="grid grid-cols-2 gap-4 flex-grow">
-              {posterData.keypoints.map((point: string, index: number) => (
+              {keypoints.map((point: string, index: number) => (
                 <KeyTakeaway
                   key={index}
                   number={index + 1}
                   title={point}
-                  description={posterData.keyDescriptions[index]}
+                  description={keyDescriptions[index] || ""}
                   designSettings={designSettings}
                   className="p-4 flex-1"
                   titleSizeClass="text-lg"
@@ -125,8 +138,8 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
         )}
         
         <PosterSection 
-          title={posterData.sectionTitles[3]}
-          content={posterData.conclusions}
+          title={sectionTitles[3] || "Conclusions"}
+          content={posterData?.conclusions || ""}
           designSettings={designSettings}
           className="p-4 flex-grow"
           titleSizeClass="text-2xl"
@@ -134,8 +147,8 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
         />
         
         <PosterSection 
-          title={posterData.sectionTitles[4]}
-          content={posterData.references}
+          title={sectionTitles[4] || "References"}
+          content={posterData?.references || ""}
           designSettings={designSettings}
           className="p-4 flex-grow"
           titleSizeClass="text-2xl"

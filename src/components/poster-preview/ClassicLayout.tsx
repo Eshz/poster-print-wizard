@@ -21,25 +21,38 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
 }) => {
   const hasImages = posterData.images && posterData.images.filter(img => img.visible).length > 0;
   
+  // Ensure sectionTitles exists with fallback values
+  const sectionTitles = posterData?.sectionTitles || [
+    "1. Introduction",
+    "2. Methods",
+    "3. Findings",
+    "4. Conclusions",
+    "5. References"
+  ];
+  
+  // Ensure keypoints and keyDescriptions exist with fallback values
+  const keypoints = posterData?.keypoints || ["Key Point 1", "Key Point 2", "Key Point 3", "Key Point 4"];
+  const keyDescriptions = posterData?.keyDescriptions || ["Description 1", "Description 2", "Description 3", "Description 4"];
+  
   return (
     <div className="grid grid-cols-2 gap-2 h-full overflow-hidden">
       {/* Left Column */}
       <div className="flex flex-col space-y-2 h-full overflow-hidden">
         <PosterSection 
-          title={posterData.sectionTitles[0]}
-          content={posterData.introduction}
+          title={sectionTitles[0] || "Introduction"}
+          content={posterData?.introduction || ""}
           designSettings={designSettings}
         />
         
         <PosterSection 
-          title={posterData.sectionTitles[1]}
-          content={posterData.methods}
+          title={sectionTitles[1] || "Methods"}
+          content={posterData?.methods || ""}
           designSettings={designSettings}
         />
         
         <PosterSection 
-          title={posterData.sectionTitles[2]}
-          content={posterData.findings}
+          title={sectionTitles[2] || "Findings"}
+          content={posterData?.findings || ""}
           designSettings={designSettings}
         />
         
@@ -80,12 +93,12 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
         {/* Key Points Grid */}
         {showKeypoints && (
           <div className="grid grid-cols-2 gap-2 flex-grow overflow-auto">
-            {posterData.keypoints.map((point: string, index: number) => (
+            {keypoints.map((point: string, index: number) => (
               <KeyTakeaway
                 key={index}
                 number={index + 1}
                 title={point}
-                description={posterData.keyDescriptions[index]}
+                description={keyDescriptions[index] || ""}
                 designSettings={designSettings}
               />
             ))}
@@ -93,14 +106,14 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
         )}
         
         <PosterSection 
-          title={posterData.sectionTitles[3]}
-          content={posterData.conclusions}
+          title={sectionTitles[3] || "Conclusions"}
+          content={posterData?.conclusions || ""}
           designSettings={designSettings}
         />
         
         <PosterSection 
-          title={posterData.sectionTitles[4]}
-          content={posterData.references}
+          title={sectionTitles[4] || "References"}
+          content={posterData?.references || ""}
           designSettings={designSettings}
           isPreLine={true}
         />
