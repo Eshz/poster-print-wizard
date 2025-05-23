@@ -24,6 +24,15 @@ const ContentSection: React.FC<ContentSectionProps> = ({
     { index: 4, field: "references", title: "Section 5 Title" }
   ];
 
+  // Make sure sectionTitles exists in posterData and has default values if needed
+  const sectionTitles = posterData?.sectionTitles || [
+    "1. Introduction",
+    "2. Methods",
+    "3. Findings",
+    "4. Conclusions",
+    "5. References"
+  ];
+
   return (
     <div className="space-y-4">
       {sections.map((section) => (
@@ -35,7 +44,7 @@ const ContentSection: React.FC<ContentSectionProps> = ({
             <Label htmlFor={`sectionTitle-${section.index}`}>{section.title}</Label>
             <Input 
               id={`sectionTitle-${section.index}`}
-              value={posterData.sectionTitles[section.index]}
+              value={sectionTitles[section.index] || `Section ${section.index + 1}`}
               onChange={(e) => handleSectionTitleChange(section.index, e.target.value)}
               className="max-w-[250px]"
             />
@@ -43,7 +52,7 @@ const ContentSection: React.FC<ContentSectionProps> = ({
           <Textarea
             id={section.field}
             name={section.field}
-            value={posterData[section.field]}
+            value={posterData?.[section.field] || ""}
             onChange={handleChange}
             rows={3}
             className="mb-2"
