@@ -54,7 +54,7 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
         )}
       </div>
       
-      {/* Author info with borders above and below */}
+      {/* Author info with borders above and below - updated font family */}
       <div 
         className="w-full text-center py-2 mt-2"
         style={{
@@ -67,7 +67,7 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
           className="flex flex-col md:flex-row justify-between items-center text-xs md:text-sm gap-2 px-4 mx-auto"
           style={{ 
             color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
-            fontFamily: `var(--font-${designSettings.contentFont})`,
+            fontFamily: `var(--font-${designSettings.titleFont})`, // Changed from contentFont to titleFont
             maxWidth: '95%'
           }}
         >
