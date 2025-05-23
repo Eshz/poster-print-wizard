@@ -33,7 +33,7 @@ export const getProject = (id: string): ProjectData | null => {
 };
 
 // Save a new project or update an existing one
-export const saveProject = (project: Omit<ProjectData, "createdAt" | "updatedAt"> & { createdAt?: number }): ProjectData => {
+export const saveProject = (project: ProjectData): ProjectData => {
   const projects = getProjects();
   const now = Date.now();
   
@@ -42,8 +42,7 @@ export const saveProject = (project: Omit<ProjectData, "createdAt" | "updatedAt"
   
   const updatedProject = {
     ...project,
-    updatedAt: now,
-    createdAt: project.createdAt || now
+    updatedAt: now
   };
   
   if (existingIndex >= 0) {

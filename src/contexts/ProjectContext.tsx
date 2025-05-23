@@ -111,9 +111,9 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
 
   const saveCurrentProject = () => {
     if (currentProject) {
+      // Since saveProject now expects a full ProjectData object, we can pass the current project directly
       const updated = saveProject({
-        ...currentProject,
-        updatedAt: Date.now()
+        ...currentProject
       });
       setCurrentProject(updated);
       setProjects(prev => {
