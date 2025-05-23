@@ -7,8 +7,8 @@ import { Upload, Image, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 interface ImagesSectionProps {
-  images: { url: string; visible: boolean; caption: string }[];
-  onImagesChange: (images: { url: string; visible: boolean; caption: string }[]) => void;
+  images: { url: string; visible: boolean; caption: string; upperCaption?: string }[];
+  onImagesChange: (images: { url: string; visible: boolean; caption: string; upperCaption?: string }[]) => void;
 }
 
 const ImagesSection: React.FC<ImagesSectionProps> = ({ 
@@ -43,7 +43,8 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
             newImages.push({
               url: event.target.result as string,
               visible: true,
-              caption: ''
+              caption: '',
+              upperCaption: ''
             });
             onImagesChange(newImages);
           }
@@ -67,6 +68,12 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
   const handleCaptionChange = (index: number, caption: string) => {
     const newImages = [...images];
     newImages[index].caption = caption;
+    onImagesChange(newImages);
+  };
+  
+  const handleUpperCaptionChange = (index: number, upperCaption: string) => {
+    const newImages = [...images];
+    newImages[index].upperCaption = upperCaption;
     onImagesChange(newImages);
   };
   
@@ -118,7 +125,14 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
               
               <div className="flex flex-col space-y-2">
                 <Input
-                  placeholder="Image caption"
+                  placeholder="Upper caption"
+                  value={image.upperCaption || ''}
+                  onChange={(e) => handleUpperCaptionChange(index, e.target.value)}
+                  className="text-sm"
+                />
+                
+                <Input
+                  placeholder="Lower caption"
                   value={image.caption}
                   onChange={(e) => handleCaptionChange(index, e.target.value)}
                   className="text-sm"

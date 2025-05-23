@@ -2,7 +2,7 @@
 import React from 'react';
 
 interface ImagesDisplayProps {
-  images: { url: string; visible: boolean; caption: string }[];
+  images: { url: string; visible: boolean; caption: string; upperCaption?: string }[];
   designSettings: any;
   className?: string;
 }
@@ -29,24 +29,24 @@ const ImagesDisplay: React.FC<ImagesDisplayProps> = ({
             padding: '0.5rem'
           }}
         >
-          {/* Caption above the image with title font */}
-          {image.caption && (
+          {/* Upper Caption with title font and authors size */}
+          {image.upperCaption && (
             <p 
-              className="text-sm font-semibold text-center px-2 py-1 w-full"
+              className="text-xs font-semibold text-center px-2 py-1 w-full"
               style={{ 
                 color: designSettings.sectionTitleColor,
                 fontFamily: `var(--font-${designSettings.titleFont})`
               }}
             >
-              {image.caption}
+              {image.upperCaption}
             </p>
           )}
           
           <div className="rounded overflow-hidden w-full">
             <img 
               src={image.url} 
-              alt={image.caption || `Image ${index + 1}`}
-              className="w-full object-contain max-h-64" // Keeping original height constraint
+              alt={image.caption || image.upperCaption || `Image ${index + 1}`}
+              className="w-full object-contain max-h-64" 
             />
           </div>
           
