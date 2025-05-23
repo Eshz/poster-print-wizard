@@ -32,7 +32,7 @@ const MobileTabs: React.FC<MobileTabsProps> = ({
 }) => {
   return (
     <div className="lg:hidden w-full p-4">
-      <Tabs defaultValue="content" className="w-full" onValueChange={(value) => setActivePanel(value as 'content' | 'design')}>
+      <Tabs defaultValue={activePanel} className="w-full" onValueChange={(value) => setActivePanel(value as 'content' | 'design')}>
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="content">
             <Text className="mr-2 h-4 w-4" />
@@ -46,8 +46,6 @@ const MobileTabs: React.FC<MobileTabsProps> = ({
         
         <TabsContent value="content">
           <div className="bg-white rounded-lg shadow p-4">
-            <h1 className="text-2xl font-bold mb-6 text-center">Conference Poster Generator</h1>
-            
             <PosterForm 
               posterData={posterData}
               setPosterData={setPosterData}

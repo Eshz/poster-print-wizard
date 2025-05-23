@@ -32,9 +32,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
   return (
     <div className="hidden lg:block lg:w-1/3 p-4">
       <div className="p-4 bg-white rounded-lg shadow">
-        <h1 className="text-2xl font-bold mb-6 text-center">Conference Poster Generator</h1>
-        
-        <Tabs defaultValue="content" className="w-full" onValueChange={(value) => setActivePanel(value as 'content' | 'design')}>
+        <Tabs defaultValue={activePanel} className="w-full" onValueChange={(value) => setActivePanel(value as 'content' | 'design')}>
           <TabsList className="grid w-full grid-cols-2 mb-4">
             <TabsTrigger value="content">
               <Text className="mr-2 h-4 w-4" />
