@@ -18,11 +18,11 @@ const ImagesDisplay: React.FC<ImagesDisplayProps> = ({
   if (visibleImages.length === 0) return null;
   
   return (
-    <div className={`grid grid-cols-1 sm:grid-cols-2 gap-2 ${className}`}>
+    <div className={`flex flex-col space-y-4 ${className}`}>
       {visibleImages.map((image, index) => (
         <div 
           key={index}
-          className="flex flex-col items-center space-y-1"
+          className="flex flex-col items-center space-y-1 w-full"
           style={{ 
             backgroundColor: designSettings.sectionBgColor,
             borderRadius: '0.375rem',
@@ -46,7 +46,7 @@ const ImagesDisplay: React.FC<ImagesDisplayProps> = ({
             <img 
               src={image.url} 
               alt={image.caption || `Image ${index + 1}`}
-              className="w-full object-contain max-h-96" // Increased max-height from 64 to 96
+              className="w-full object-contain max-h-64" // Keeping original height constraint
             />
           </div>
           
