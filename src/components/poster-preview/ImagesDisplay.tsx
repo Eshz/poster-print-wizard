@@ -32,7 +32,7 @@ const ImagesDisplay: React.FC<ImagesDisplayProps> = ({
           {/* Upper Caption with title font and authors size */}
           {image.upperCaption && (
             <p 
-              className="text-xs font-semibold text-center px-2 py-1 w-full"
+              className="text-xs font-semibold text-left px-2 py-1 w-full"
               style={{ 
                 color: designSettings.sectionTitleColor,
                 fontFamily: `var(--font-${designSettings.titleFont})`
@@ -53,7 +53,7 @@ const ImagesDisplay: React.FC<ImagesDisplayProps> = ({
           {/* Caption below the image with content font */}
           {image.caption && (
             <p 
-              className="text-xs text-center px-2 py-1 w-full"
+              className="text-xs text-left px-2 py-1 w-full"
               style={{ 
                 color: designSettings.sectionTextColor,
                 fontFamily: `var(--font-${designSettings.contentFont})`
