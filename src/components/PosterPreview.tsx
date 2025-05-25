@@ -24,6 +24,7 @@ interface PosterPreviewProps {
     sectionTitles: string[];
     qrCodeUrl: string;
     qrCodeColor?: string;
+    qrCodeCaption?: string;
     showKeypoints?: boolean;
     showQrCode?: boolean;
     images?: { url: string; visible: boolean; caption: string }[];
@@ -129,6 +130,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
           designSettings={designSettings}
           qrCodeUrl={qrCodeUrl}
           showQrCode={posterData.showQrCode !== false}
+          qrCodeCaption={posterData.qrCodeCaption}
         />
 
         {/* Dynamic Content Layout - adding overflow control */}

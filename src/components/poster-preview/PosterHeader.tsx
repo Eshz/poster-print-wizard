@@ -9,6 +9,7 @@ interface PosterHeaderProps {
   designSettings: any;
   qrCodeUrl?: string;
   showQrCode?: boolean;
+  qrCodeCaption?: string;
 }
 
 const PosterHeader: React.FC<PosterHeaderProps> = ({
@@ -18,7 +19,8 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
   contact,
   designSettings,
   qrCodeUrl,
-  showQrCode
+  showQrCode,
+  qrCodeCaption
 }) => {
   return (
     <>
@@ -34,18 +36,26 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
           <h1 className="text-2xl md:text-3xl font-bold mb-2 uppercase">{title}</h1>
         </div>
         
-        {/* QR Code - absolute positioned to the right */}
+        {/* QR Code - absolute positioned to the right with margins */}
         {showQrCode && qrCodeUrl && (
-          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex flex-col items-center">
-            <div className="bg-white p-2 rounded shadow-sm">
+          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex flex-col items-center my-4">
+            <div className="bg-white p-2 rounded shadow-sm mb-2">
               <img 
                 src={qrCodeUrl} 
                 alt="QR Code" 
                 className="w-20 h-20 object-contain"
               />
             </div>
+            {qrCodeCaption && (
+              <p 
+                className="text-xs text-center mb-2"
+                style={{ color: designSettings.headerTextColor }}
+              >
+                {qrCodeCaption}
+              </p>
+            )}
             <p 
-              className="text-xs text-center mt-1"
+              className="text-xs text-center"
               style={{ color: designSettings.headerTextColor }}
             >
               Scan for more info
