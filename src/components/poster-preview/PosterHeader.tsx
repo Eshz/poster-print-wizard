@@ -39,7 +39,7 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
         
         {/* QR Code - absolute positioned to the right with proper padding */}
         {showQrCode && qrCodeUrl && (
-          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex flex-col items-center p-2">
+          <div className="absolute right-6 top-1/2 transform -translate-y-1/2 flex flex-col items-center p-4">
             <div className="bg-white p-2 rounded shadow-sm mb-2">
               <img 
                 src={qrCodeUrl} 
