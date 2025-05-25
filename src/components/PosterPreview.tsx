@@ -97,8 +97,8 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
         height: POSTER_UI_HEIGHT * uiToA0Scale
       };
       
-      const scaleX = (containerRect.width - 96) / posterAtFullSize.width; // 96px padding
-      const scaleY = (containerRect.height - 96) / posterAtFullSize.height; // 96px padding
+      const scaleX = (containerRect.width - 32) / posterAtFullSize.width; // 32px padding (reduced from 96px)
+      const scaleY = (containerRect.height - 32) / posterAtFullSize.height; // 32px padding (reduced from 96px)
       const fitToWindowScale = Math.min(scaleX, scaleY, 1);
 
       // Notify parent of fit-to-window scale
