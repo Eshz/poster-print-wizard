@@ -22,10 +22,10 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
   showQrCode,
   qrCodeCaption
 }) => {
-  // Calculate relative widths based on content length
-  const authorsLength = authors.length;
-  const schoolLength = school.length;
-  const contactLength = contact.length;
+  // Calculate relative widths based on content length - with safe defaults
+  const authorsLength = (authors || '').length;
+  const schoolLength = (school || '').length;
+  const contactLength = (contact || '').length;
   const totalLength = authorsLength + schoolLength + contactLength;
   
   // Calculate flex basis percentages, with minimum 25% and maximum 50% per element
@@ -50,7 +50,7 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
         }}
       >
         <div className="flex-1 transition-all duration-300 flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-bold mb-2 uppercase flex-1">{title}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold mb-2 uppercase flex-1">{title || 'Poster Title'}</h1>
           
           {/* QR Code positioned within the flex-1 container */}
           {showQrCode && qrCodeUrl && (
@@ -109,19 +109,19 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
             className="mb-1 md:mb-0 font-semibold min-w-0 break-words"
             style={{ flexBasis: `${authorsFlex}%` }}
           >
-            {authors}
+            {authors || 'Authors'}
           </div>
           <div 
             className="mb-1 md:mb-0 font-semibold min-w-0 break-words"
             style={{ flexBasis: `${schoolFlex}%` }}
           >
-            {school}
+            {school || 'Institution'}
           </div>
           <div 
             className="font-semibold min-w-0 break-words"
             style={{ flexBasis: `${contactFlex}%` }}
           >
-            {contact}
+            {contact || 'Contact'}
           </div>
         </div>
       </div>
