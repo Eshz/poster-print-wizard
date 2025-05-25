@@ -12,6 +12,7 @@ interface KeyTakeawayProps {
   circleSize?: string;
   useCircleText?: boolean;
   listMode?: boolean;
+  visible?: boolean;
 }
 
 const KeyTakeaway: React.FC<KeyTakeawayProps> = ({
@@ -24,8 +25,14 @@ const KeyTakeaway: React.FC<KeyTakeawayProps> = ({
   textSizeClass = "text-xs",
   circleSize = "2rem",
   useCircleText = false,
-  listMode = false
+  listMode = false,
+  visible = true
 }) => {
+  // Don't render if not visible
+  if (!visible) {
+    return null;
+  }
+
   if (listMode) {
     return (
       <div className="flex items-start gap-4 py-3 border-b border-gray-200 last:border-b-0">

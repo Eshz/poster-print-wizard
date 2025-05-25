@@ -33,6 +33,15 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
   
   const keypoints = posterData?.keypoints || ["Key Point 1", "Key Point 2", "Key Point 3", "Key Point 4"];
   const keyDescriptions = posterData?.keyDescriptions || ["Description 1", "Description 2", "Description 3", "Description 4"];
+  const keyVisibility = posterData?.keyVisibility || [true, true, true, true];
+  
+  // Filter visible key points
+  const visibleKeyPoints = keypoints.map((point, index) => ({
+    point,
+    description: keyDescriptions[index] || "",
+    visible: keyVisibility[index] !== false,
+    originalIndex: index
+  })).filter(item => item.visible);
   
   // Calculate content density and text sizes
   const sections = [
@@ -43,7 +52,7 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
     posterData?.references || ""
   ];
   
-  const contentDensity = getContentDensity(sections, posterData.images, keypoints);
+  const contentDensity = getContentDensity(sections, posterData.images, visibleKeyPoints.map(item => item.point));
   const textSizes = calculateDynamicTextSizes(contentDensity, hasImages, sections.length);
   
   // Adjust key points layout based on content density
@@ -142,7 +151,7 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
         )}
         
         {/* Key Takeaways Section with strikethrough title */}
-        {showKeypoints && (
+        {showKeypoints && visibleKeyPoints.length > 0 && (
           <>
             <div className={`relative text-center ${contentDensity === 'high' ? 'my-2' : 'my-6'}`}>
               {/* Strikethrough line */}
@@ -165,17 +174,18 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
             
             {/* List layout for key points */}
             <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-              {keypoints.map((point: string, index: number) => (
+              {visibleKeyPoints.map((item, index) => (
                 <KeyTakeaway
-                  key={index}
+                  key={item.originalIndex}
                   number={index + 1}
-                  title={point}
-                  description={keyDescriptions[index] || ""}
+                  title={item.point}
+                  description={item.description}
                   designSettings={designSettings}
                   titleSizeClass={textSizes.bodyText}
                   textSizeClass={textSizes.caption}
                   circleSize={contentDensity === 'high' ? '2rem' : '2.5rem'}
                   listMode={true}
+                  visible={true}
                 />
               ))}
             </div>

@@ -35,6 +35,12 @@ const PosterForm: React.FC<PosterFormProps> = ({
     setPosterData(prev => ({ ...prev, keyDescriptions: updatedDescriptions }));
   };
 
+  const handleKeyVisibilityChange = (index: number, visible: boolean) => {
+    const updatedVisibility = [...(posterData.keyVisibility || [true, true, true, true])];
+    updatedVisibility[index] = visible;
+    setPosterData(prev => ({ ...prev, keyVisibility: updatedVisibility }));
+  };
+
   const handleSectionTitleChange = (index: number, value: string) => {
     const updatedSectionTitles = [...posterData.sectionTitles];
     updatedSectionTitles[index] = value;
@@ -94,8 +100,10 @@ const PosterForm: React.FC<PosterFormProps> = ({
             <KeyPointsSection 
               keypoints={posterData.keypoints}
               keyDescriptions={posterData.keyDescriptions}
+              keyVisibility={posterData.keyVisibility || [true, true, true, true]}
               handleKeyPointChange={handleKeyPointChange}
               handleKeyDescriptionChange={handleKeyDescriptionChange}
+              handleKeyVisibilityChange={handleKeyVisibilityChange}
             />
           )}
         </TabsContent>

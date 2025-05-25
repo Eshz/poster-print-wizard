@@ -1,3 +1,4 @@
+
 import React from 'react';
 import PosterSection from './PosterSection';
 import KeyTakeaway from './KeyTakeaway';
@@ -33,6 +34,15 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
   
   const keypoints = posterData?.keypoints || ["Key Point 1", "Key Point 2", "Key Point 3", "Key Point 4"];
   const keyDescriptions = posterData?.keyDescriptions || ["Description 1", "Description 2", "Description 3", "Description 4"];
+  const keyVisibility = posterData?.keyVisibility || [true, true, true, true];
+  
+  // Filter visible key points
+  const visibleKeyPoints = keypoints.map((point, index) => ({
+    point,
+    description: keyDescriptions[index] || "",
+    visible: keyVisibility[index] !== false,
+    originalIndex: index
+  })).filter(item => item.visible);
   
   // Calculate content density and text sizes
   const sections = [
@@ -43,7 +53,7 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
     posterData?.references || ""
   ];
   
-  const contentDensity = getContentDensity(sections, posterData.images, keypoints);
+  const contentDensity = getContentDensity(sections, posterData.images, visibleKeyPoints.map(item => item.point));
   const textSizes = calculateDynamicTextSizes(contentDensity, hasImages, sections.length);
   
   // Determine if we need a four-column layout for very dense content
@@ -100,7 +110,7 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
           
           {/* Column 3: Key Points */}
           <div className="flex flex-col space-y-2 h-full">
-            {showKeypoints && (
+            {showKeypoints && visibleKeyPoints.length > 0 && (
               <>
                 <div className="relative text-center">
                   <div 
@@ -120,17 +130,18 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
                 </div>
                 
                 <div className="bg-white rounded border border-gray-200 overflow-hidden flex-grow overflow-auto">
-                  {keypoints.map((point: string, index: number) => (
+                  {visibleKeyPoints.map((item, index) => (
                     <KeyTakeaway
-                      key={index}
+                      key={item.originalIndex}
                       number={index + 1}
-                      title={point}
-                      description={keyDescriptions[index] || ""}
+                      title={item.point}
+                      description={item.description}
                       designSettings={designSettings}
                       titleSizeClass="text-xs"
                       textSizeClass="text-xs"
                       listMode={true}
                       circleSize="1.2rem"
+                      visible={true}
                     />
                   ))}
                 </div>
@@ -228,7 +239,7 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
           )}
           
           {/* Key Points */}
-          {showKeypoints && (
+          {showKeypoints && visibleKeyPoints.length > 0 && (
             <>
               <div className="relative text-center mb-2">
                 <div 
@@ -248,16 +259,17 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
               </div>
               
               <div className="bg-white rounded border border-gray-200 overflow-hidden flex-grow overflow-auto">
-                {keypoints.slice(0, 2).map((point: string, index: number) => (
+                {visibleKeyPoints.slice(0, 2).map((item, index) => (
                   <KeyTakeaway
-                    key={index}
+                    key={item.originalIndex}
                     number={index + 1}
-                    title={point}
-                    description={keyDescriptions[index] || ""}
+                    title={item.point}
+                    description={item.description}
                     designSettings={designSettings}
                     titleSizeClass={textSizes.bodyText}
                     textSizeClass={textSizes.caption}
                     listMode={true}
+                    visible={true}
                   />
                 ))}
               </div>
@@ -267,18 +279,19 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
         
         {/* Column 3: Conclusions & References + Remaining Key Points */}
         <div className="flex flex-col space-y-4 h-full">
-          {showKeypoints && keypoints.length > 2 && (
+          {showKeypoints && visibleKeyPoints.length > 2 && (
             <div className="bg-white rounded border border-gray-200 overflow-hidden">
-              {keypoints.slice(2).map((point: string, index: number) => (
+              {visibleKeyPoints.slice(2).map((item, index) => (
                 <KeyTakeaway
-                  key={index}
+                  key={item.originalIndex}
                   number={index + 3}
-                  title={point}
-                  description={keyDescriptions[index + 2] || ""}
+                  title={item.point}
+                  description={item.description}
                   designSettings={designSettings}
                   titleSizeClass={textSizes.bodyText}
                   textSizeClass={textSizes.caption}
                   listMode={true}
+                  visible={true}
                 />
               ))}
             </div>

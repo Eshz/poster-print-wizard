@@ -1,3 +1,4 @@
+
 import React from 'react';
 import PosterSection from './PosterSection';
 import KeyTakeaway from './KeyTakeaway';
@@ -33,6 +34,15 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
   
   const keypoints = posterData?.keypoints || ["Key Point 1", "Key Point 2", "Key Point 3", "Key Point 4"];
   const keyDescriptions = posterData?.keyDescriptions || ["Description 1", "Description 2", "Description 3", "Description 4"];
+  const keyVisibility = posterData?.keyVisibility || [true, true, true, true];
+  
+  // Filter visible key points
+  const visibleKeyPoints = keypoints.map((point, index) => ({
+    point,
+    description: keyDescriptions[index] || "",
+    visible: keyVisibility[index] !== false,
+    originalIndex: index
+  })).filter(item => item.visible);
   
   // Calculate content density and text sizes
   const sections = [
@@ -43,7 +53,7 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
     posterData?.references || ""
   ];
   
-  const contentDensity = getContentDensity(sections, posterData.images, keypoints);
+  const contentDensity = getContentDensity(sections, posterData.images, visibleKeyPoints.map(item => item.point));
   const textSizes = calculateDynamicTextSizes(contentDensity, hasImages, sections.length);
   
   // Determine layout based on content
@@ -87,7 +97,7 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
           />
           
           {/* Key Points in compact layout */}
-          {showKeypoints && (
+          {showKeypoints && visibleKeyPoints.length > 0 && (
             <>
               <div className="relative text-center my-2">
                 <div 
@@ -107,17 +117,18 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
               </div>
               
               <div className="bg-white rounded border border-gray-200 overflow-hidden flex-grow overflow-auto">
-                {keypoints.slice(0, 2).map((point: string, index: number) => (
+                {visibleKeyPoints.slice(0, 2).map((item, index) => (
                   <KeyTakeaway
-                    key={index}
+                    key={item.originalIndex}
                     number={index + 1}
-                    title={point}
-                    description={keyDescriptions[index] || ""}
+                    title={item.point}
+                    description={item.description}
                     designSettings={designSettings}
                     titleSizeClass={textSizes.caption}
                     textSizeClass="text-xs"
                     listMode={true}
                     circleSize="1.5rem"
+                    visible={true}
                   />
                 ))}
               </div>
@@ -139,19 +150,20 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
           )}
           
           {/* Remaining Key Points */}
-          {showKeypoints && keypoints.length > 2 && (
+          {showKeypoints && visibleKeyPoints.length > 2 && (
             <div className="bg-white rounded border border-gray-200 overflow-hidden">
-              {keypoints.slice(2).map((point: string, index: number) => (
+              {visibleKeyPoints.slice(2).map((item, index) => (
                 <KeyTakeaway
-                  key={index}
+                  key={item.originalIndex}
                   number={index + 3}
-                  title={point}
-                  description={keyDescriptions[index + 2] || ""}
+                  title={item.point}
+                  description={item.description}
                   designSettings={designSettings}
                   titleSizeClass={textSizes.caption}
                   textSizeClass="text-xs"
                   listMode={true}
                   circleSize="1.5rem"
+                  visible={true}
                 />
               ))}
             </div>
@@ -222,7 +234,7 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
       {/* Right Column */}
       <div className="flex flex-col space-y-2 h-full overflow-hidden">
         {/* Key Takeaways Section with strikethrough title */}
-        {showKeypoints && (
+        {showKeypoints && visibleKeyPoints.length > 0 && (
           <>
             <div className="relative text-center my-2">
               <div 
@@ -243,16 +255,17 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
             
             {/* List layout for key points */}
             <div className="bg-white rounded border border-gray-200 overflow-hidden flex-grow overflow-auto">
-              {keypoints.map((point: string, index: number) => (
+              {visibleKeyPoints.map((item, index) => (
                 <KeyTakeaway
-                  key={index}
+                  key={item.originalIndex}
                   number={index + 1}
-                  title={point}
-                  description={keyDescriptions[index] || ""}
+                  title={item.point}
+                  description={item.description}
                   designSettings={designSettings}
                   titleSizeClass={textSizes.bodyText}
                   textSizeClass={textSizes.caption}
                   listMode={true}
+                  visible={true}
                 />
               ))}
             </div>
