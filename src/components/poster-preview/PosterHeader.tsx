@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface PosterHeaderProps {
@@ -21,6 +22,22 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
   showQrCode,
   qrCodeCaption
 }) => {
+  // Calculate relative widths based on content length
+  const authorsLength = authors.length;
+  const schoolLength = school.length;
+  const contactLength = contact.length;
+  const totalLength = authorsLength + schoolLength + contactLength;
+  
+  // Calculate flex basis percentages, with minimum 25% and maximum 50% per element
+  const getFlexBasis = (length: number) => {
+    const percentage = (length / totalLength) * 100;
+    return Math.max(25, Math.min(50, percentage));
+  };
+  
+  const authorsFlex = getFlexBasis(authorsLength);
+  const schoolFlex = getFlexBasis(schoolLength);
+  const contactFlex = getFlexBasis(contactLength);
+
   return (
     <>
       <div 
@@ -72,7 +89,7 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
         </div>
       </div>
       
-      {/* Author info with white top border only - Updated with smaller font sizes and better spacing */}
+      {/* Author info with white top border only - Updated with dynamic width distribution */}
       <div 
         className="w-full text-center py-2"
         style={{
@@ -88,9 +105,24 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
             maxWidth: '98%'
           }}
         >
-          <div className="mb-1 md:mb-0 font-semibold flex-1 min-w-0 break-words">{authors}</div>
-          <div className="mb-1 md:mb-0 font-semibold flex-1 min-w-0 break-words">{school}</div>
-          <div className="font-semibold flex-1 min-w-0 break-words">{contact}</div>
+          <div 
+            className="mb-1 md:mb-0 font-semibold min-w-0 break-words"
+            style={{ flexBasis: `${authorsFlex}%` }}
+          >
+            {authors}
+          </div>
+          <div 
+            className="mb-1 md:mb-0 font-semibold min-w-0 break-words"
+            style={{ flexBasis: `${schoolFlex}%` }}
+          >
+            {school}
+          </div>
+          <div 
+            className="font-semibold min-w-0 break-words"
+            style={{ flexBasis: `${contactFlex}%` }}
+          >
+            {contact}
+          </div>
         </div>
       </div>
     </>
