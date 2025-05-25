@@ -8,17 +8,17 @@ export const PREVIEW_WIDTH = 800;
 export const PREVIEW_HEIGHT = 1131;
 
 /**
- * Creates optimized PDF export configuration
+ * Creates optimized PDF export configuration for A0 posters
  */
 export const createPdfConfig = () => ({
   margin: 0,
   filename: 'conference-poster-A0.pdf',
   image: { 
     type: 'jpeg', 
-    quality: 0.95
+    quality: 0.98 // Higher quality for better text rendering
   },
   html2canvas: { 
-    scale: 2, // Higher scale for better quality
+    scale: 3, // Higher scale for crisp text and graphics
     useCORS: true,
     letterRendering: true,
     logging: false,
@@ -27,13 +27,16 @@ export const createPdfConfig = () => ({
     allowTaint: true,
     imageTimeout: 0,
     removeContainer: true,
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
+    dpi: 300, // High DPI for print quality
+    foreignObjectRendering: true
   },
   jsPDF: { 
     unit: 'pt', 
     format: [A0_WIDTH_POINTS, A0_HEIGHT_POINTS], 
     orientation: 'portrait',
     hotfixes: ["px_scaling"],
-    compress: true
+    compress: true,
+    precision: 2
   }
 });
