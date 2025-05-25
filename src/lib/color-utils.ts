@@ -84,17 +84,40 @@ export const hexToRgb = (hex: string): { r: number; g: number; b: number } | nul
 };
 
 /**
- * Predefined accessible color combinations
+ * Predefined accessible color combinations - Updated with pastel hues
  */
 export const accessibleColorPairs = [
+  // Classic high contrast options
   { bg: '#FFFFFF', fg: '#000000', name: 'Black on White' },
   { bg: '#000000', fg: '#FFFFFF', name: 'White on Black' },
-  { bg: '#FFFF00', fg: '#000000', name: 'Yellow on Black' },
-  { bg: '#4052b6', fg: '#FFFFFF', name: 'Default Blue' },
-  { bg: '#1E3A8A', fg: '#BFDBFE', name: 'Dark Blue / Light Blue' },
-  { bg: '#065F46', fg: '#D1FAE5', name: 'Dark Green / Light Green' },
-  { bg: '#581C87', fg: '#E9D5FF', name: 'Dark Purple / Light Purple' },
-  { bg: '#991B1B', fg: '#FEE2E2', name: 'Dark Red / Light Red' },
+  
+  // Pastel Blue Theme (inspired by the reference image)
+  { bg: '#E6F3FF', fg: '#2D5AA0', name: 'Soft Blue Theme' },
+  { bg: '#2D5AA0', fg: '#E6F3FF', name: 'Deep Blue / Light Blue' },
+  
+  // Pastel Purple Theme
+  { bg: '#F0E6FF', fg: '#5B2C87', name: 'Soft Purple Theme' },
+  { bg: '#5B2C87', fg: '#F0E6FF', name: 'Deep Purple / Light Purple' },
+  
+  // Pastel Lavender Theme (matching the header in the image)
+  { bg: '#E8E4F3', fg: '#3F2E5B', name: 'Lavender Theme' },
+  { bg: '#3F2E5B', fg: '#E8E4F3', name: 'Deep Lavender / Light Lavender' },
+  
+  // Pastel Mint Theme
+  { bg: '#E6F7F1', fg: '#1B5E3F', name: 'Soft Mint Theme' },
+  { bg: '#1B5E3F', fg: '#E6F7F1', name: 'Deep Green / Light Mint' },
+  
+  // Pastel Rose Theme
+  { bg: '#FFF0F5', fg: '#8B2252', name: 'Soft Rose Theme' },
+  { bg: '#8B2252', fg: '#FFF0F5', name: 'Deep Rose / Light Pink' },
+  
+  // Pastel Peach Theme
+  { bg: '#FFF5E6', fg: '#B5620E', name: 'Soft Peach Theme' },
+  { bg: '#B5620E', fg: '#FFF5E6', name: 'Deep Orange / Light Peach' },
+  
+  // Academic Blues (similar to the poster in the image)
+  { bg: '#F8FAFF', fg: '#1E3A8A', name: 'Academic Blue' },
+  { bg: '#1E3A8A', fg: '#F8FAFF', name: 'Classic Academic' },
 ];
 
 /**

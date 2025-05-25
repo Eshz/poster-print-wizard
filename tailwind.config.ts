@@ -73,6 +73,7 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				poster: {
+					// Original colors
 					blue: '#4052b6',
 					lightblue: '#e6ebff',
 					gray: '#f5f7ff',
@@ -91,6 +92,35 @@ export default {
 					lightPurple: '#E9D5FF',
 					darkRed: '#991B1B',
 					lightRed: '#FEE2E2',
+					
+					// New Pastel Theme Colors
+					// Soft Blues
+					pastelBlue: '#E6F3FF',
+					deepBlue: '#2D5AA0',
+					
+					// Soft Purples
+					pastelPurple: '#F0E6FF',
+					deepPurple: '#5B2C87',
+					
+					// Soft Lavender (matching the reference image)
+					pastelLavender: '#E8E4F3',
+					deepLavender: '#3F2E5B',
+					
+					// Soft Mint
+					pastelMint: '#E6F7F1',
+					deepMint: '#1B5E3F',
+					
+					// Soft Rose
+					pastelRose: '#FFF0F5',
+					deepRose: '#8B2252',
+					
+					// Soft Peach
+					pastelPeach: '#FFF5E6',
+					deepPeach: '#B5620E',
+					
+					// Academic theme
+					academicLight: '#F8FAFF',
+					academicDark: '#1E3A8A',
 				}
 			},
 			borderRadius: {
