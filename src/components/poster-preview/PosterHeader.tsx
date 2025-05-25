@@ -25,14 +25,15 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
   return (
     <>
       <div 
-        className="w-full p-4 text-center relative"
+        className="w-full p-4 text-center relative flex items-center justify-center"
         style={{ 
           backgroundColor: designSettings.headerBgColor, 
           color: designSettings.headerTextColor,
-          fontFamily: `var(--font-${designSettings.titleFont})`
+          fontFamily: `var(--font-${designSettings.titleFont})`,
+          minHeight: showQrCode && qrCodeUrl ? '120px' : 'auto'
         }}
       >
-        <div className={`${showQrCode && qrCodeUrl ? 'pr-32' : ''} transition-all duration-300`}>
+        <div className={`flex-1 ${showQrCode && qrCodeUrl ? 'pr-32' : ''} transition-all duration-300`}>
           <h1 className="text-2xl md:text-3xl font-bold mb-2 uppercase">{title}</h1>
         </div>
         
@@ -48,7 +49,7 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
             </div>
             {qrCodeCaption && (
               <p 
-                className="text-xs text-center mb-2 px-1 leading-tight"
+                className="text-xs text-center mb-2 px-1 leading-tight max-w-24"
                 style={{ 
                   color: designSettings.headerTextColor,
                   fontFamily: `var(--font-${designSettings.contentFont})`
@@ -59,7 +60,7 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
             )}
             {!qrCodeCaption && (
               <p 
-                className="text-xs text-center px-1 leading-tight"
+                className="text-xs text-center px-1 leading-tight max-w-24"
                 style={{ 
                   color: designSettings.headerTextColor,
                   fontFamily: `var(--font-${designSettings.contentFont})`
@@ -85,7 +86,7 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
           className="flex flex-col md:flex-row justify-between items-center text-xs md:text-sm gap-2 px-4 mx-auto"
           style={{ 
             color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
-            fontFamily: `var(--font-${designSettings.titleFont})`, // Changed from contentFont to titleFont
+            fontFamily: `var(--font-${designSettings.titleFont})`,
             maxWidth: '95%'
           }}
         >
