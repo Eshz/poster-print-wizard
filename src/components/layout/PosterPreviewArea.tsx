@@ -14,17 +14,8 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = ({
   qrColor, 
   designSettings 
 }) => {
-  const [manualZoom, setManualZoom] = useState<number | null>(null);
-  const [autoZoom, setAutoZoom] = useState<number>(1);
-
-  // Reset manual zoom when auto zoom changes significantly
-  useEffect(() => {
-    if (manualZoom && Math.abs(manualZoom - autoZoom) < 0.05) {
-      setManualZoom(null);
-    }
-  }, [autoZoom, manualZoom]);
-
-  const currentZoom = manualZoom || autoZoom;
+  const [manualZoom, setManualZoom] = useState<number>(1); // Start at 100% (actual size)
+  const [containerScale, setContainerScale] = useState<number>(1);
 
   const handleZoomChange = (zoom: number) => {
     setManualZoom(zoom);
@@ -34,7 +25,7 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = ({
     <div className="w-full lg:w-2/3 p-4 bg-gray-100 overflow-hidden relative">
       <div className="bg-white p-6 rounded-lg shadow h-full flex items-center justify-center relative">
         <ZoomControls 
-          currentZoom={currentZoom}
+          currentZoom={manualZoom}
           onZoomChange={handleZoomChange}
         />
         
@@ -51,7 +42,7 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = ({
             }} 
             designSettings={designSettings}
             manualZoom={manualZoom}
-            onAutoZoomChange={setAutoZoom}
+            onContainerScaleChange={setContainerScale}
           />
         </div>
       </div>

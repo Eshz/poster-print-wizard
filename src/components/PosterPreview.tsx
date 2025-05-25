@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import ClassicLayout from './poster-preview/ClassicLayout';
 import ModernLayout from './poster-preview/ModernLayout';
@@ -40,15 +41,15 @@ interface PosterPreviewProps {
     keyPointsBgColor: string;
     keyPointsTextColor: string;
   };
-  manualZoom?: number | null;
-  onAutoZoomChange?: (zoom: number) => void;
+  manualZoom?: number;
+  onContainerScaleChange?: (scale: number) => void;
 }
 
 const PosterPreview: React.FC<PosterPreviewProps> = ({ 
   posterData, 
   designSettings, 
-  manualZoom = null, 
-  onAutoZoomChange 
+  manualZoom = 1,
+  onContainerScaleChange 
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const posterRef = useRef<HTMLDivElement>(null);
@@ -61,7 +62,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
   // Check content visibility
   const visibilityCheck = checkContentVisibility(posterData, designSettings);
 
-  // Calculate scale to fit poster in container
+  // Calculate container scale and apply manual zoom
   useEffect(() => {
     const calculateScale = () => {
       if (!containerRef.current || !posterRef.current) return;
@@ -70,23 +71,20 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
       if (!container) return;
 
       const containerRect = container.getBoundingClientRect();
-      const posterWidth = 800; // Fixed poster width
-      const posterHeight = 1131; // Fixed poster height (A0 ratio)
+      const posterWidth = 800; // A0 poster width
+      const posterHeight = 1131; // A0 poster height
 
-      // Calculate scale to fit both width and height
-      const scaleX = (containerRect.width - 48) / posterWidth; // Account for padding
-      const scaleY = (containerRect.height - 48) / posterHeight; // Account for padding
-      const autoScale = Math.min(scaleX, scaleY, 1); // Don't scale up beyond 100%
+      // Calculate scale to fit in container (this is just for reference, not applied)
+      const scaleX = (containerRect.width - 48) / posterWidth;
+      const scaleY = (containerRect.height - 48) / posterHeight;
+      const containerScale = Math.min(scaleX, scaleY, 1);
 
-      // Use manual zoom if provided, otherwise use auto-calculated scale
-      const finalScale = manualZoom || autoScale;
+      // Apply manual zoom (1.0 = actual A0 size)
+      posterRef.current.style.transform = `scale(${manualZoom})`;
 
-      // Apply scale to the poster
-      posterRef.current.style.transform = `scale(${finalScale})`;
-
-      // Notify parent of auto zoom change
-      if (onAutoZoomChange && !manualZoom) {
-        onAutoZoomChange(autoScale);
+      // Notify parent of container scale for reference
+      if (onContainerScaleChange) {
+        onContainerScaleChange(containerScale);
       }
     };
 
@@ -96,7 +94,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
     return () => {
       window.removeEventListener('resize', calculateScale);
     };
-  }, [manualZoom, onAutoZoomChange]);
+  }, [manualZoom, onContainerScaleChange]);
 
   // Apply the selected layout
   const renderLayout = () => {
@@ -161,8 +159,8 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
         ref={posterRef}
         className="bg-white border border-gray-200 relative overflow-hidden flex flex-col shadow-lg"
         style={{ 
-          width: '800px', // Fixed width
-          height: '1131px', // Fixed height (A0 aspect ratio)
+          width: '800px', // A0 width
+          height: '1131px', // A0 height
           transformOrigin: 'center'
         }}
       >
