@@ -14,9 +14,17 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = ({
   designSettings 
 }) => {
   return (
-    <div className="w-full lg:w-2/3 p-4 bg-gray-100 overflow-auto">
+    <div className="w-full lg:w-2/3 p-4 bg-gray-100 overflow-hidden">
       <div className="bg-white p-6 rounded-lg shadow h-full flex items-center justify-center">
-        <div id="poster-preview" className="w-full h-full flex items-center justify-center">
+        <div 
+          id="poster-preview" 
+          className="w-full h-full flex items-center justify-center"
+          style={{
+            // Create a container that scales based on available space
+            transform: 'scale(var(--poster-scale, 1))',
+            transformOrigin: 'center'
+          }}
+        >
           <PosterPreview 
             posterData={{
               ...posterData, 

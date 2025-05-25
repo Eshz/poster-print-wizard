@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import ClassicLayout from './poster-preview/ClassicLayout';
 import ModernLayout from './poster-preview/ModernLayout';
 import FocusLayout from './poster-preview/FocusLayout';
@@ -44,6 +44,9 @@ interface PosterPreviewProps {
 }
 
 const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSettings }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const posterRef = useRef<HTMLDivElement>(null);
+
   // QR Code generation
   const qrCodeUrl = posterData.qrCodeUrl && posterData.showQrCode !== false ? 
     `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(posterData.qrCodeUrl)}&color=${(posterData.qrCodeColor || '#000000').replace('#', '')}` : 
@@ -51,6 +54,35 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
 
   // Check content visibility
   const visibilityCheck = checkContentVisibility(posterData, designSettings);
+
+  // Calculate scale to fit poster in container
+  useEffect(() => {
+    const calculateScale = () => {
+      if (!containerRef.current || !posterRef.current) return;
+
+      const container = containerRef.current.parentElement;
+      if (!container) return;
+
+      const containerRect = container.getBoundingClientRect();
+      const posterWidth = 800; // Fixed poster width
+      const posterHeight = 1131; // Fixed poster height (A0 ratio)
+
+      // Calculate scale to fit both width and height
+      const scaleX = (containerRect.width - 48) / posterWidth; // Account for padding
+      const scaleY = (containerRect.height - 48) / posterHeight; // Account for padding
+      const scale = Math.min(scaleX, scaleY, 1); // Don't scale up beyond 100%
+
+      // Apply scale to the container
+      containerRef.current.style.setProperty('--poster-scale', scale.toString());
+    };
+
+    calculateScale();
+    window.addEventListener('resize', calculateScale);
+    
+    return () => {
+      window.removeEventListener('resize', calculateScale);
+    };
+  }, []);
 
   // Apply the selected layout
   const renderLayout = () => {
@@ -90,7 +122,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center">
+    <div ref={containerRef} className="flex flex-col items-center justify-center">
       {/* Content Visibility Warning */}
       {!visibilityCheck.isContentVisible && (
         <div className="mb-4 w-full max-w-2xl flex-shrink-0">
@@ -112,11 +144,13 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
       )}
 
       <div
-        className="bg-white border border-gray-200 relative overflow-hidden flex flex-col shadow-lg flex-grow"
+        ref={posterRef}
+        className="bg-white border border-gray-200 relative overflow-hidden flex flex-col shadow-lg"
         style={{ 
-          width: '100%',
-          height: '100%',
-          aspectRatio: '1/1.414' // A0 aspect ratio
+          width: '800px', // Fixed width
+          height: '1131px', // Fixed height (A0 aspect ratio)
+          transform: 'scale(var(--poster-scale, 1))',
+          transformOrigin: 'center'
         }}
       >
         {/* Header Section */}
