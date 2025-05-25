@@ -103,6 +103,10 @@ export const accessibleColorPairs = [
   { bg: '#E8E4F3', fg: '#3F2E5B', name: 'Lavender Theme' },
   { bg: '#3F2E5B', fg: '#E8E4F3', name: 'Deep Lavender / Light Lavender' },
   
+  // Mixed Purple-Blue Theme (using colors from the uploaded image)
+  { bg: '#BBCDE8', fg: '#202B5B', name: 'Purple-Blue Mix' },
+  { bg: '#B0C6F3', fg: '#3E3C72', name: 'Soft Purple-Blue' },
+  
   // Pastel Mint Theme
   { bg: '#E6F7F1', fg: '#1B5E3F', name: 'Soft Mint Theme' },
   { bg: '#1B5E3F', fg: '#E6F7F1', name: 'Deep Green / Light Mint' },

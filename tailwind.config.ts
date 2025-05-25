@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -105,6 +104,12 @@ export default {
 					// Soft Lavender (matching the reference image)
 					pastelLavender: '#E8E4F3',
 					deepLavender: '#3F2E5B',
+					
+					// Mixed Purple-Blue (from uploaded color palette)
+					purpleBlueLight: '#BBCDE8',
+					purpleBlueDark: '#202B5B',
+					purpleBlueAlt: '#B0C6F3',
+					purpleBlueAltDark: '#3E3C72',
 					
 					// Soft Mint
 					pastelMint: '#E6F7F1',
