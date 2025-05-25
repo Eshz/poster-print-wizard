@@ -129,7 +129,7 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
                   </h2>
                 </div>
                 
-                <div className="bg-white rounded border border-gray-200 overflow-hidden flex-grow overflow-auto">
+                <div className="bg-white rounded border border-gray-200 overflow-hidden">
                   {visibleKeyPoints.map((item, index) => (
                     <KeyTakeaway
                       key={item.originalIndex}
@@ -258,7 +258,7 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
                 </h2>
               </div>
               
-              <div className="bg-white rounded border border-gray-200 overflow-hidden flex-grow overflow-auto">
+              <div className="bg-white rounded border border-gray-200 overflow-hidden">
                 {visibleKeyPoints.slice(0, 2).map((item, index) => (
                   <KeyTakeaway
                     key={item.originalIndex}

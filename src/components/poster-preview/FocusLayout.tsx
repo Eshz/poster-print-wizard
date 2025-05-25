@@ -1,3 +1,4 @@
+
 import React from 'react';
 import PosterSection from './PosterSection';
 import KeyTakeaway from './KeyTakeaway';
@@ -172,7 +173,7 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
               </h2>
             </div>
             
-            {/* List layout for key points */}
+            {/* List layout for key points - content-adaptive height */}
             <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
               {visibleKeyPoints.map((item, index) => (
                 <KeyTakeaway

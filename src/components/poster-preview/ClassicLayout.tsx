@@ -116,7 +116,7 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
                 </h2>
               </div>
               
-              <div className="bg-white rounded border border-gray-200 overflow-hidden flex-grow overflow-auto">
+              <div className="bg-white rounded border border-gray-200 overflow-hidden">
                 {visibleKeyPoints.slice(0, 2).map((item, index) => (
                   <KeyTakeaway
                     key={item.originalIndex}
@@ -253,8 +253,8 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
               </h2>
             </div>
             
-            {/* List layout for key points */}
-            <div className="bg-white rounded border border-gray-200 overflow-hidden flex-grow overflow-auto">
+            {/* List layout for key points - removed flex-grow */}
+            <div className="bg-white rounded border border-gray-200 overflow-hidden">
               {visibleKeyPoints.map((item, index) => (
                 <KeyTakeaway
                   key={item.originalIndex}
