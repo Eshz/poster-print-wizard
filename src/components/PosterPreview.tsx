@@ -90,10 +90,10 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center">
+    <div className="w-full h-full flex flex-col items-center justify-center">
       {/* Content Visibility Warning */}
       {!visibilityCheck.isContentVisible && (
-        <div className="mb-4 w-full max-w-2xl">
+        <div className="mb-4 w-full max-w-2xl flex-shrink-0">
           <Alert variant="destructive">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
@@ -112,12 +112,10 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
       )}
 
       <div
-        className="bg-white border border-gray-200 relative overflow-hidden flex flex-col shadow-lg"
+        className="bg-white border border-gray-200 relative overflow-hidden flex flex-col shadow-lg flex-grow"
         style={{ 
-          width: 'min(800px, 90vw)',  // Responsive width with max
-          height: 'min(1131px, 90vh)', // Responsive height with max
-          maxWidth: '800px',
-          maxHeight: '1131px',
+          width: '100%',
+          height: '100%',
           aspectRatio: '1/1.414' // A0 aspect ratio
         }}
       >

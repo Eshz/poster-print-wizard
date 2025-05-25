@@ -15,19 +15,17 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = ({
 }) => {
   return (
     <div className="w-full lg:w-2/3 p-4 bg-gray-100 overflow-auto">
-      <div className="bg-white p-6 rounded-lg shadow h-full flex items-center justify-center min-h-0">
-        <div id="poster-preview" className="poster-container w-full h-full flex items-center justify-center">
-          <div className="max-w-full max-h-full flex items-center justify-center">
-            <PosterPreview 
-              posterData={{
-                ...posterData, 
-                qrCodeColor: qrColor,
-                showKeypoints: posterData.showKeypoints,
-                showQrCode: posterData.showQrCode
-              }} 
-              designSettings={designSettings}
-            />
-          </div>
+      <div className="bg-white p-6 rounded-lg shadow h-full flex items-center justify-center">
+        <div id="poster-preview" className="w-full h-full flex items-center justify-center">
+          <PosterPreview 
+            posterData={{
+              ...posterData, 
+              qrCodeColor: qrColor,
+              showKeypoints: posterData.showKeypoints,
+              showQrCode: posterData.showQrCode
+            }} 
+            designSettings={designSettings}
+          />
         </div>
       </div>
     </div>
