@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import ClassicLayout from './poster-preview/ClassicLayout';
 import ModernLayout from './poster-preview/ModernLayout';
@@ -41,9 +40,16 @@ interface PosterPreviewProps {
     keyPointsBgColor: string;
     keyPointsTextColor: string;
   };
+  manualZoom?: number | null;
+  onAutoZoomChange?: (zoom: number) => void;
 }
 
-const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSettings }) => {
+const PosterPreview: React.FC<PosterPreviewProps> = ({ 
+  posterData, 
+  designSettings, 
+  manualZoom = null, 
+  onAutoZoomChange 
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const posterRef = useRef<HTMLDivElement>(null);
 
@@ -70,10 +76,18 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
       // Calculate scale to fit both width and height
       const scaleX = (containerRect.width - 48) / posterWidth; // Account for padding
       const scaleY = (containerRect.height - 48) / posterHeight; // Account for padding
-      const scale = Math.min(scaleX, scaleY, 1); // Don't scale up beyond 100%
+      const autoScale = Math.min(scaleX, scaleY, 1); // Don't scale up beyond 100%
 
-      // Apply scale to the container
-      containerRef.current.style.setProperty('--poster-scale', scale.toString());
+      // Use manual zoom if provided, otherwise use auto-calculated scale
+      const finalScale = manualZoom || autoScale;
+
+      // Apply scale to the poster
+      posterRef.current.style.transform = `scale(${finalScale})`;
+
+      // Notify parent of auto zoom change
+      if (onAutoZoomChange && !manualZoom) {
+        onAutoZoomChange(autoScale);
+      }
     };
 
     calculateScale();
@@ -82,7 +96,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
     return () => {
       window.removeEventListener('resize', calculateScale);
     };
-  }, []);
+  }, [manualZoom, onAutoZoomChange]);
 
   // Apply the selected layout
   const renderLayout = () => {
@@ -149,7 +163,6 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
         style={{ 
           width: '800px', // Fixed width
           height: '1131px', // Fixed height (A0 aspect ratio)
-          transform: 'scale(var(--poster-scale, 1))',
           transformOrigin: 'center'
         }}
       >
