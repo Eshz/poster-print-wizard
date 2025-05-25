@@ -2,7 +2,7 @@
 import { toast } from "sonner";
 import html2pdf from 'html2pdf.js';
 import { compressImages } from './imageCompression';
-import { prepareElementForPdf } from './elementScaling';
+import { scaleElementForPdf } from './elementScaling';
 import { createPdfConfig } from './pdfConfig';
 
 /**
@@ -53,8 +53,8 @@ export const exportToPDF = (elementId: string) => {
   // Compress images before processing
   compressImages(clonedElement);
   
-  // Prepare the element for PDF export (no manual scaling)
-  prepareElementForPdf(clonedElement);
+  // Scale the element for PDF export
+  scaleElementForPdf(clonedElement);
   
   toast.info("Preparing high-quality A0 PDF export...");
   
