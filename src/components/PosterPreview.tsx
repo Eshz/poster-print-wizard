@@ -76,6 +76,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
       />
 
       <div
+        id="poster-content"
         ref={posterRef}
         className="bg-white border border-gray-200 relative overflow-hidden flex flex-col shadow-lg"
         style={{ 

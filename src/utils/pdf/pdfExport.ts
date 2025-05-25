@@ -33,28 +33,18 @@ const cleanupTempContainer = (tempDiv: HTMLElement) => {
  * @param elementId The ID of the DOM element to export
  */
 export const exportToPDF = (elementId: string) => {
-  const element = document.getElementById(elementId);
+  // Target the actual poster content directly
+  const element = document.getElementById('poster-content');
   
   if (!element) {
-    toast.error("Could not find element to export");
-    return;
-  }
-  
-  // Find the actual poster content more specifically
-  const posterContent = element.querySelector('[style*="width: 800px"][style*="height: 1131px"]') as HTMLElement ||
-                       element.querySelector('.bg-white.border.border-gray-200') as HTMLElement ||
-                       element.querySelector('.bg-white') as HTMLElement;
-  
-  if (!posterContent) {
-    console.log("Available elements in poster-preview:", element.innerHTML.substring(0, 500));
     toast.error("Could not find poster content to export");
     return;
   }
   
-  console.log("Found poster content:", posterContent);
+  console.log("Found poster content element:", element);
   
   // Create a clean copy of the poster for PDF export
-  const clonedElement = posterContent.cloneNode(true) as HTMLElement;
+  const clonedElement = element.cloneNode(true) as HTMLElement;
   
   // Ensure the cloned element has the right dimensions
   clonedElement.style.width = '800px';
