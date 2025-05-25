@@ -73,21 +73,20 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
         </div>
       </div>
       
-      {/* Author info with borders above and below - updated font family */}
+      {/* Author info with white top border only */}
       <div 
-        className="w-full text-center py-2 mt-2"
+        className="w-full text-center py-2"
         style={{
-          borderTop: `2px solid ${designSettings.keyPointsTextColor || designSettings.sectionTitleColor}`,
-          borderBottom: `2px solid ${designSettings.keyPointsTextColor || designSettings.sectionTitleColor}`,
-          backgroundColor: designSettings.keyPointsBgColor || '#f5f7ff',
+          borderTop: '1px solid #ffffff',
+          backgroundColor: designSettings.headerBgColor,
         }}
       >
         <div 
-          className="flex flex-col md:flex-row justify-between items-center text-xs md:text-sm gap-2 px-4 mx-auto"
+          className="flex flex-col md:flex-row justify-between items-center gap-2 px-4 mx-auto"
           style={{ 
-            color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
+            color: designSettings.headerTextColor,
             fontFamily: `var(--font-${designSettings.titleFont})`,
-            maxWidth: '95%'
+            maxWidth: '98%'
           }}
         >
           <div className="mb-1 md:mb-0 font-semibold">{authors}</div>
