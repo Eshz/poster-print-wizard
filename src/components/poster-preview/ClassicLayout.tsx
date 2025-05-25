@@ -1,4 +1,3 @@
-
 import React from 'react';
 import PosterSection from './PosterSection';
 import KeyTakeaway from './KeyTakeaway';
@@ -73,6 +72,7 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
             title={sectionTitles[0] || "Introduction"}
             content={posterData?.introduction || ""}
             designSettings={designSettings}
+            className="p-2 rounded flex-shrink-0"
             titleSizeClass={textSizes.sectionHeading}
             textSizeClass={textSizes.bodyText}
           />
@@ -81,9 +81,13 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
             title={sectionTitles[1] || "Methods"}
             content={posterData?.methods || ""}
             designSettings={designSettings}
+            className="p-2 rounded flex-shrink-0"
             titleSizeClass={textSizes.sectionHeading}
             textSizeClass={textSizes.bodyText}
           />
+          
+          {/* Flexible spacer */}
+          <div className="flex-grow"></div>
         </div>
         
         {/* Middle Column - Findings & Key Points */}
@@ -92,6 +96,7 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
             title={sectionTitles[2] || "Findings"}
             content={posterData?.findings || ""}
             designSettings={designSettings}
+            className="p-2 rounded flex-shrink-0"
             titleSizeClass={textSizes.sectionHeading}
             textSizeClass={textSizes.bodyText}
           />
@@ -173,6 +178,7 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
             title={sectionTitles[3] || "Conclusions"}
             content={posterData?.conclusions || ""}
             designSettings={designSettings}
+            className="p-2 rounded flex-shrink-0"
             titleSizeClass={textSizes.sectionHeading}
             textSizeClass={textSizes.bodyText}
           />
@@ -181,6 +187,7 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
             title={sectionTitles[4] || "References"}
             content={posterData?.references || ""}
             designSettings={designSettings}
+            className="p-2 rounded flex-shrink-0"
             titleSizeClass={textSizes.sectionHeading}
             textSizeClass={textSizes.caption}
             isPreLine={true}
@@ -199,6 +206,7 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
           title={sectionTitles[0] || "Introduction"}
           content={posterData?.introduction || ""}
           designSettings={designSettings}
+          className="p-2 rounded flex-shrink-0"
           titleSizeClass={textSizes.sectionHeading}
           textSizeClass={textSizes.bodyText}
         />
@@ -207,6 +215,7 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
           title={sectionTitles[1] || "Methods"}
           content={posterData?.methods || ""}
           designSettings={designSettings}
+          className="p-2 rounded flex-shrink-0"
           titleSizeClass={textSizes.sectionHeading}
           textSizeClass={textSizes.bodyText}
         />
@@ -215,6 +224,7 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
           title={sectionTitles[2] || "Findings"}
           content={posterData?.findings || ""}
           designSettings={designSettings}
+          className="p-2 rounded flex-shrink-0"
           titleSizeClass={textSizes.sectionHeading}
           textSizeClass={textSizes.bodyText}
         />
@@ -228,6 +238,11 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
               className="h-full"
             />
           </div>
+        )}
+        
+        {/* Flexible spacer if no images */}
+        {(!hasImages || shouldMoveImagesToSeparateColumn) && (
+          <div className="flex-grow"></div>
         )}
       </div>
       
@@ -276,6 +291,7 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
           title={sectionTitles[3] || "Conclusions"}
           content={posterData?.conclusions || ""}
           designSettings={designSettings}
+          className="p-2 rounded flex-shrink-0"
           titleSizeClass={textSizes.sectionHeading}
           textSizeClass={textSizes.bodyText}
         />
@@ -284,10 +300,14 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
           title={sectionTitles[4] || "References"}
           content={posterData?.references || ""}
           designSettings={designSettings}
+          className="p-2 rounded flex-shrink-0"
           titleSizeClass={textSizes.sectionHeading}
           textSizeClass={textSizes.caption}
           isPreLine={true}
         />
+        
+        {/* Flexible spacer */}
+        <div className="flex-grow"></div>
       </div>
     </div>
   );
