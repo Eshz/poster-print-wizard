@@ -14,6 +14,8 @@ const createTempContainer = (clonedElement: HTMLElement) => {
   tempDiv.style.left = '-9999px';
   tempDiv.style.top = '-9999px';
   tempDiv.style.zIndex = '-1000';
+  tempDiv.style.width = '800px';
+  tempDiv.style.height = '1131px';
   document.body.appendChild(tempDiv);
   tempDiv.appendChild(clonedElement);
   return tempDiv;
@@ -38,16 +40,28 @@ export const exportToPDF = (elementId: string) => {
     return;
   }
   
-  // Find the actual poster content, ignoring any zoom transformations
-  const posterContent = element.querySelector('.bg-white.border.border-gray-200') as HTMLElement;
+  // Find the actual poster content more specifically
+  const posterContent = element.querySelector('[style*="width: 800px"][style*="height: 1131px"]') as HTMLElement ||
+                       element.querySelector('.bg-white.border.border-gray-200') as HTMLElement ||
+                       element.querySelector('.bg-white') as HTMLElement;
   
   if (!posterContent) {
+    console.log("Available elements in poster-preview:", element.innerHTML.substring(0, 500));
     toast.error("Could not find poster content to export");
     return;
   }
   
+  console.log("Found poster content:", posterContent);
+  
   // Create a clean copy of the poster for PDF export
   const clonedElement = posterContent.cloneNode(true) as HTMLElement;
+  
+  // Ensure the cloned element has the right dimensions
+  clonedElement.style.width = '800px';
+  clonedElement.style.height = '1131px';
+  clonedElement.style.position = 'relative';
+  clonedElement.style.overflow = 'visible';
+  
   const tempDiv = createTempContainer(clonedElement);
   
   // Compress images before processing
