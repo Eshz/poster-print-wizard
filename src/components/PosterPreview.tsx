@@ -1,4 +1,3 @@
-
 import React from 'react';
 import ClassicLayout from './poster-preview/ClassicLayout';
 import ModernLayout from './poster-preview/ModernLayout';
@@ -90,7 +89,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
   };
 
   return (
-    <div className="relative">
+    <div className="relative max-w-full">
       {/* Content Visibility Warning */}
       {!visibilityCheck.isContentVisible && (
         <div className="mb-4">
@@ -112,11 +111,10 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
       )}
 
       <div
-        className="bg-white border border-gray-200 relative overflow-hidden flex flex-col"
+        className="bg-white border border-gray-200 relative overflow-hidden flex flex-col mx-auto"
         style={{ 
           width: '800px',  // Fixed exact width
           height: '1131px', // Fixed height based on A0 aspect ratio (1:1.414) scaled down
-          margin: '0 auto',
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
           aspectRatio: '1/1.414' // A0 aspect ratio
         }}

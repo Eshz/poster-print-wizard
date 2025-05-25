@@ -15,9 +15,9 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = ({
 }) => {
   return (
     <div className="w-full lg:w-2/3 p-4 bg-gray-100 overflow-auto">
-      <div className="bg-white p-2 rounded-lg shadow">
-        <div id="poster-preview" className="poster-container flex justify-center">
-          <div className="w-[800px] min-w-[800px] max-w-[800px]"> {/* Fixed width container with no responsiveness */}
+      <div className="bg-white p-4 rounded-lg shadow h-full flex items-center justify-center">
+        <div id="poster-preview" className="poster-container">
+          <div className="w-[800px] min-w-[800px] max-w-[800px] mx-auto"> {/* Added mx-auto for centering */}
             <PosterPreview 
               posterData={{
                 ...posterData, 
