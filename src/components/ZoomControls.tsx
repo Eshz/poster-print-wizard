@@ -1,11 +1,12 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ZoomIn, ZoomOut } from 'lucide-react';
+import { ZoomIn, ZoomOut, Maximize } from 'lucide-react';
 
 interface ZoomControlsProps {
   currentZoom: number;
   onZoomChange: (zoom: number) => void;
+  containerScale?: number;
   minZoom?: number;
   maxZoom?: number;
 }
@@ -13,6 +14,7 @@ interface ZoomControlsProps {
 const ZoomControls: React.FC<ZoomControlsProps> = ({ 
   currentZoom, 
   onZoomChange, 
+  containerScale = 1,
   minZoom = 0.1, 
   maxZoom = 2 
 }) => {
@@ -30,6 +32,10 @@ const ZoomControls: React.FC<ZoomControlsProps> = ({
 
   const handleZoomReset = () => {
     onZoomChange(1);
+  };
+
+  const handleFitToWindow = () => {
+    onZoomChange(containerScale);
   };
 
   return (
@@ -60,6 +66,17 @@ const ZoomControls: React.FC<ZoomControlsProps> = ({
         className="h-8 w-8 p-0"
       >
         <ZoomIn className="h-4 w-4" />
+      </Button>
+
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={handleFitToWindow}
+        className="h-8 px-2"
+        title="Fit to Window"
+      >
+        <Maximize className="h-4 w-4 mr-1" />
+        Fit
       </Button>
     </div>
   );

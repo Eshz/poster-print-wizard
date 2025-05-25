@@ -27,6 +27,7 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = ({
         <ZoomControls 
           currentZoom={manualZoom}
           onZoomChange={handleZoomChange}
+          containerScale={containerScale}
         />
         
         <div 
