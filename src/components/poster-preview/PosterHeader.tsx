@@ -33,44 +33,44 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
           minHeight: showQrCode && qrCodeUrl ? '120px' : 'auto'
         }}
       >
-        <div className={`flex-1 ${showQrCode && qrCodeUrl ? 'pr-32' : ''} transition-all duration-300`}>
-          <h1 className="text-2xl md:text-3xl font-bold mb-2 uppercase">{title}</h1>
-        </div>
-        
-        {/* QR Code - absolute positioned to the right with proper padding */}
-        {showQrCode && qrCodeUrl && (
-          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex flex-col items-center p-2">
-            <div className="bg-white p-2 rounded shadow-sm mb-2">
-              <img 
-                src={qrCodeUrl} 
-                alt="QR Code" 
-                className="w-20 h-20 object-contain"
-              />
+        <div className={`flex-1 ${showQrCode && qrCodeUrl ? 'pr-32' : ''} transition-all duration-300 flex items-center justify-between`}>
+          <h1 className="text-2xl md:text-3xl font-bold mb-2 uppercase flex-1">{title}</h1>
+          
+          {/* QR Code positioned within the flex-1 container */}
+          {showQrCode && qrCodeUrl && (
+            <div className="flex flex-col items-center p-2 ml-4">
+              <div className="bg-white p-2 rounded shadow-sm mb-2">
+                <img 
+                  src={qrCodeUrl} 
+                  alt="QR Code" 
+                  className="w-20 h-20 object-contain"
+                />
+              </div>
+              {qrCodeCaption && (
+                <p 
+                  className="text-xs text-center mb-2 px-1 leading-tight max-w-24"
+                  style={{ 
+                    color: designSettings.headerTextColor,
+                    fontFamily: `var(--font-${designSettings.contentFont})`
+                  }}
+                >
+                  {qrCodeCaption}
+                </p>
+              )}
+              {!qrCodeCaption && (
+                <p 
+                  className="text-xs text-center px-1 leading-tight max-w-24"
+                  style={{ 
+                    color: designSettings.headerTextColor,
+                    fontFamily: `var(--font-${designSettings.contentFont})`
+                  }}
+                >
+                  Scan for more info
+                </p>
+              )}
             </div>
-            {qrCodeCaption && (
-              <p 
-                className="text-xs text-center mb-2 px-1 leading-tight max-w-24"
-                style={{ 
-                  color: designSettings.headerTextColor,
-                  fontFamily: `var(--font-${designSettings.contentFont})`
-                }}
-              >
-                {qrCodeCaption}
-              </p>
-            )}
-            {!qrCodeCaption && (
-              <p 
-                className="text-xs text-center px-1 leading-tight max-w-24"
-                style={{ 
-                  color: designSettings.headerTextColor,
-                  fontFamily: `var(--font-${designSettings.contentFont})`
-                }}
-              >
-                Scan for more info
-              </p>
-            )}
-          </div>
-        )}
+          )}
+        </div>
       </div>
       
       {/* Author info with borders above and below - updated font family */}
