@@ -1,3 +1,4 @@
+
 import { toast } from "sonner";
 import html2pdf from 'html2pdf.js';
 
@@ -40,42 +41,54 @@ export const exportToPDF = (elementId: string) => {
     return;
   }
   
-  // Create a clone of the element to modify for PDF export
-  const clonedElement = element.cloneNode(true) as HTMLElement;
-  const posterContent = clonedElement.querySelector('.bg-white.border.border-gray-200') as HTMLElement;
+  // Find the actual poster content, ignoring any zoom transformations
+  const posterContent = element.querySelector('.bg-white.border.border-gray-200') as HTMLElement;
   
   if (!posterContent) {
     toast.error("Could not find poster content to export");
     return;
   }
   
+  // Create a completely new poster for PDF export by cloning the original
+  const clonedElement = posterContent.cloneNode(true) as HTMLElement;
+  
   // Add a hidden div to the document to contain our clone
   const tempDiv = document.createElement('div');
   tempDiv.style.position = 'absolute';
   tempDiv.style.left = '-9999px';
   tempDiv.style.top = '-9999px';
+  tempDiv.style.zIndex = '-1000';
   document.body.appendChild(tempDiv);
-  tempDiv.appendChild(posterContent);
+  tempDiv.appendChild(clonedElement);
+  
+  // Reset any transformations that might be applied from zoom
+  clonedElement.style.transform = 'none';
+  clonedElement.style.transformOrigin = 'initial';
   
   // Compress images before processing
-  compressImages(posterContent);
+  compressImages(clonedElement);
   
   // A0 dimensions in mm: 841 x 1189 mm
   // Convert to points for PDF (1 mm ≈ 2.83 points)
   const width = 2384; // 841 mm in points
   const height = 3370; // 1189 mm in points
   
-  // Set exact dimensions
-  posterContent.style.width = `${width}px`;
-  posterContent.style.height = `${height}px`;
-  posterContent.style.margin = '0';
-  posterContent.style.padding = '0';
-  posterContent.style.overflow = 'hidden';
-  posterContent.style.position = 'relative';
-  posterContent.style.backgroundColor = '#ffffff';
+  // Set exact dimensions for PDF
+  clonedElement.style.width = `${width}px`;
+  clonedElement.style.height = `${height}px`;
+  clonedElement.style.margin = '0';
+  clonedElement.style.padding = '0';
+  clonedElement.style.overflow = 'hidden';
+  clonedElement.style.position = 'relative';
+  clonedElement.style.backgroundColor = '#ffffff';
+  clonedElement.style.boxSizing = 'border-box';
+  
+  // Reset flex properties for consistent layout
+  clonedElement.style.display = 'flex';
+  clonedElement.style.flexDirection = 'column';
   
   // Fix the number circles in the key takeaways
-  const numberCircles = posterContent.querySelectorAll('[data-circle-number]');
+  const numberCircles = clonedElement.querySelectorAll('[data-circle-number]');
   numberCircles.forEach((circle) => {
     const circleElement = circle as HTMLElement;
     circleElement.style.width = '4rem';
@@ -85,48 +98,55 @@ export const exportToPDF = (elementId: string) => {
     circleElement.style.justifyContent = 'center';
     circleElement.style.alignItems = 'center';
     circleElement.style.fontSize = '2rem';
+    circleElement.style.fontWeight = 'bold';
   });
   
   // Increase text sizes to match A0 dimensions
-  const headerTexts = posterContent.querySelectorAll('h1, h2, h3');
+  const headerTexts = clonedElement.querySelectorAll('h1, h2, h3');
   headerTexts.forEach((header) => {
     const headerElement = header as HTMLElement;
     if (header.tagName === 'H1') {
       headerElement.style.fontSize = '6rem';
       headerElement.style.lineHeight = '1.2';
+      headerElement.style.fontWeight = 'bold';
     } else if (header.tagName === 'H2') {
-      headerElement.style.fontSize = '4rem';
+      headerElement.style.fontSize = '3.5rem';
       headerElement.style.lineHeight = '1.3';
+      headerElement.style.fontWeight = '600';
     } else if (header.tagName === 'H3') {
-      headerElement.style.fontSize = '2.8rem';
+      headerElement.style.fontSize = '2.5rem';
       headerElement.style.lineHeight = '1.4';
+      headerElement.style.fontWeight = '600';
     }
   });
   
   // Increase paragraph text size
-  const paragraphs = posterContent.querySelectorAll('p');
+  const paragraphs = clonedElement.querySelectorAll('p');
   paragraphs.forEach((p) => {
     const pElement = p as HTMLElement;
-    pElement.style.fontSize = '2.4rem';
-    pElement.style.lineHeight = '1.5';
+    pElement.style.fontSize = '2rem';
+    pElement.style.lineHeight = '1.6';
   });
 
   // Style header title section specifically
-  const headerDiv = posterContent.querySelector('.w-full.p-4.text-center') as HTMLElement;
+  const headerDiv = clonedElement.querySelector('.w-full.p-4.text-center') as HTMLElement;
   if (headerDiv) {
     // Fix header padding
-    headerDiv.style.padding = '5rem';
+    headerDiv.style.padding = '4rem';
+    headerDiv.style.position = 'relative';
     
     // Adjust the title container if QR code is visible
     const titleContainer = headerDiv.querySelector('div[class*="pr-24"]') as HTMLElement;
     if (titleContainer) {
-      titleContainer.style.paddingRight = '15rem'; // More space in the exported PDF
+      titleContainer.style.paddingRight = '15rem';
     }
     
     // Style the QR code in the header if present
     const headerQrCode = headerDiv.querySelector('.absolute.right-4') as HTMLElement;
     if (headerQrCode) {
-      headerQrCode.style.right = '10rem';
+      headerQrCode.style.right = '8rem';
+      headerQrCode.style.top = '50%';
+      headerQrCode.style.transform = 'translateY(-50%)';
       
       // Style the QR code container with white background
       const qrCodeContainer = headerQrCode.querySelector('.bg-white') as HTMLElement;
@@ -140,122 +160,112 @@ export const exportToPDF = (elementId: string) => {
       // Style the QR code image
       const qrCodeImg = headerQrCode.querySelector('img') as HTMLElement;
       if (qrCodeImg) {
-        qrCodeImg.style.width = '10rem';
-        qrCodeImg.style.height = '10rem';
+        qrCodeImg.style.width = '8rem';
+        qrCodeImg.style.height = '8rem';
       }
       
       // Style the QR code text
       const qrCodeText = headerQrCode.querySelector('p') as HTMLElement;
       if (qrCodeText) {
-        qrCodeText.style.fontSize = '1.8rem';
+        qrCodeText.style.fontSize = '1.5rem';
         qrCodeText.style.marginTop = '1rem';
       }
     }
   }
   
   // Style the author info with borders
-  const authorInfoContainer = posterContent.querySelector('.w-full.text-center.py-2.mt-2') as HTMLElement;
+  const authorInfoContainer = clonedElement.querySelector('.w-full.text-center.py-2.mt-2') as HTMLElement;
   if (authorInfoContainer) {
-    authorInfoContainer.style.padding = '1.5rem 0';
+    authorInfoContainer.style.padding = '2rem 0';
     authorInfoContainer.style.borderTopWidth = '3px';
     authorInfoContainer.style.borderBottomWidth = '3px';
     authorInfoContainer.style.marginTop = '2rem';
+    authorInfoContainer.style.marginBottom = '2rem';
     
     const authorInfo = authorInfoContainer.querySelector('.flex.flex-col.md\\:flex-row') as HTMLElement;
     if (authorInfo) {
-      authorInfo.style.fontSize = '2.4rem';
+      authorInfo.style.fontSize = '2rem';
       authorInfo.style.padding = '0 4rem';
-      authorInfo.style.gap = '3rem';
+      authorInfo.style.gap = '2rem';
+      authorInfo.style.justifyContent = 'center';
+      authorInfo.style.alignItems = 'center';
       
       // Make sure all divs inside author info are properly styled
       const authorDivs = authorInfo.querySelectorAll('div');
       authorDivs.forEach((div) => {
         const divElement = div as HTMLElement;
-        divElement.style.fontSize = '2.4rem';
+        divElement.style.fontSize = '2rem';
         divElement.style.lineHeight = '1.4';
         divElement.style.margin = '0.5rem 0';
       });
     }
   }
 
-  // Fix padding for all content sections
-  const contentSections = posterContent.querySelectorAll('[class*="PosterSection"], [class*="KeyTakeaway"]');
-  contentSections.forEach((section) => {
-    const sectionElement = section as HTMLElement;
-    sectionElement.style.padding = '2rem';
-    sectionElement.style.margin = '0.75rem';
-    sectionElement.style.borderRadius = '0.75rem';
-  });
-  
-  // Fix main content area padding - specific target for flex-grow overflow-hidden p-2
-  const mainContentArea = posterContent.querySelector('.flex-grow.overflow-hidden.p-2');
+  // Fix main content area - target the flex-grow container
+  const mainContentArea = clonedElement.querySelector('.flex-grow.overflow-hidden, .flex-grow');
   if (mainContentArea) {
     const mainContentElement = mainContentArea as HTMLElement;
-    mainContentElement.style.padding = '1rem';
-    // Make sure it doesn't take too much space
-    mainContentElement.style.maxHeight = '80%';
+    mainContentElement.style.padding = '2rem';
+    mainContentElement.style.flex = '1 1 auto';
+    mainContentElement.style.overflow = 'visible';
   }
   
-  // Adjust spacing in grid layouts
-  const gridLayouts = posterContent.querySelectorAll('.grid.grid-cols-2, .grid.grid-cols-3');
+  // Fix content sections with better targeting
+  const contentSections = clonedElement.querySelectorAll('.p-4, .p-3, .p-2');
+  contentSections.forEach((section) => {
+    const sectionElement = section as HTMLElement;
+    // Only adjust sections that are likely content sections (not main containers)
+    if (!sectionElement.classList.contains('h-full')) {
+      sectionElement.style.padding = '2rem';
+      sectionElement.style.margin = '1rem';
+      sectionElement.style.borderRadius = '0.5rem';
+    }
+  });
+  
+  // Adjust grid layouts for better spacing
+  const gridLayouts = clonedElement.querySelectorAll('.grid');
   gridLayouts.forEach((grid) => {
     const gridElement = grid as HTMLElement;
-    gridElement.style.gap = '1rem';
-    gridElement.style.padding = '0.75rem';
+    gridElement.style.gap = '2rem';
+    gridElement.style.padding = '1rem';
   });
   
-  // Specifically target p-4 flex-grow classes with improved selector
-  const flexGrowSections = posterContent.querySelectorAll('.p-4.flex-grow, [class*="p-4"][class*="flex-grow"]');
-  flexGrowSections.forEach((section) => {
-    const sectionElement = section as HTMLElement;
-    // Increase padding for these specific sections
-    sectionElement.style.padding = '3rem';
-    sectionElement.style.margin = '0.5rem';
-    sectionElement.style.marginBottom = '1rem';
-  });
-  
-  // Reduce space-y classes
-  const spaceYElements = posterContent.querySelectorAll('[class*="space-y"]');
+  // Fix space-y classes by converting to flex gap
+  const spaceYElements = clonedElement.querySelectorAll('[class*="space-y"]');
   spaceYElements.forEach((element) => {
     const spaceElement = element as HTMLElement;
-    spaceElement.style.gap = '0.75rem';
+    spaceElement.style.display = 'flex';
+    spaceElement.style.flexDirection = 'column';
+    spaceElement.style.gap = '1.5rem';
   });
   
-  // Specifically target and adjust the container with p-4 h-full flex flex-col class
-  const mainContainers = posterContent.querySelectorAll('.p-4.h-full.flex.flex-col');
-  mainContainers.forEach((container) => {
-    const containerElement = container as HTMLElement;
-    containerElement.style.padding = '2rem'; // Reduced padding from 3rem
-    containerElement.style.gap = '0.5rem';  // Reduced gap from 0.75rem
+  // Ensure proper font sizes for different content types
+  const smallTexts = clonedElement.querySelectorAll('.text-xs, .text-sm');
+  smallTexts.forEach((text) => {
+    const textElement = text as HTMLElement;
+    textElement.style.fontSize = '1.8rem';
+    textElement.style.lineHeight = '1.5';
   });
   
-  // Adjust standard flex column containers (different from the main containers)
-  const flexColContainers = posterContent.querySelectorAll('.p-4.flex.flex-col:not(.p-4.h-full.flex.flex-col)');
-  flexColContainers.forEach((container) => {
-    const containerElement = container as HTMLElement;
-    containerElement.style.padding = '2.5rem'; 
-    containerElement.style.gap = '0.75rem';
+  const mediumTexts = clonedElement.querySelectorAll('.text-base, .text-lg');
+  mediumTexts.forEach((text) => {
+    const textElement = text as HTMLElement;
+    textElement.style.fontSize = '2.2rem';
+    textElement.style.lineHeight = '1.5';
   });
   
-  // Adjust any space-y components
-  const spaceYComponents = posterContent.querySelectorAll('[class*="space-y-"]');
-  spaceYComponents.forEach((component) => {
-    const componentElement = component as HTMLElement;
-    componentElement.style.gap = '0.75rem';
-  });
+  toast.info("Preparing PDF export for A0 size (841 x 1189 mm)...");
   
-  toast.info("Preparing compressed PDF export for A0 size (841 x 1189 mm)...");
-  
-  // Optimized settings for compression
+  // Optimized settings for high-quality export
   const opt = {
     margin: 0,
-    filename: 'conference-poster-A0-compressed.pdf',
+    filename: 'conference-poster-A0.pdf',
     image: { 
       type: 'jpeg', 
-      quality: 0.85 // Reduced from 1 to 0.85 for better compression
+      quality: 0.9
     },
     html2canvas: { 
-      scale: 2, // Reduced from 4 to 2 for smaller file size
+      scale: 2.5,
       useCORS: true,
       letterRendering: true,
       logging: false,
@@ -263,44 +273,40 @@ export const exportToPDF = (elementId: string) => {
       height: height,
       allowTaint: true,
       imageTimeout: 0,
-      removeContainer: true
+      removeContainer: true,
+      backgroundColor: '#ffffff'
     },
     jsPDF: { 
       unit: 'pt', 
       format: [width, height], 
       orientation: 'portrait',
       hotfixes: ["px_scaling"],
-      compress: true // Enable PDF compression
+      compress: true
     }
   };
   
   setTimeout(() => {
-    html2pdf().from(posterContent).set(opt).outputPdf('blob').then((pdfBlob: Blob) => {
-      // Additional compression using canvas-based technique
-      const reader = new FileReader();
-      reader.onload = function() {
-        // Create download link for the compressed PDF
-        const url = URL.createObjectURL(pdfBlob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'conference-poster-A0-compressed.pdf';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        
-        const sizeInMB = (pdfBlob.size / (1024 * 1024)).toFixed(2);
-        toast.success(`Compressed A0 PDF exported successfully! File size: ${sizeInMB}MB`);
-        
-        // Clean up
-        document.body.removeChild(tempDiv);
-      };
-      reader.readAsArrayBuffer(pdfBlob);
+    html2pdf().from(clonedElement).set(opt).outputPdf('blob').then((pdfBlob: Blob) => {
+      // Create download link
+      const url = URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'conference-poster-A0.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      const sizeInMB = (pdfBlob.size / (1024 * 1024)).toFixed(2);
+      toast.success(`A0 PDF exported successfully! File size: ${sizeInMB}MB`);
+      
+      // Clean up
+      document.body.removeChild(tempDiv);
     }).catch(err => {
       console.error("PDF export failed:", err);
       toast.error("PDF export failed. Please try again.");
       // Clean up
       document.body.removeChild(tempDiv);
     });
-  }, 3000); // Give more time for large format to load properly
+  }, 2000);
 };
