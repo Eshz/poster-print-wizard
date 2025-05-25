@@ -81,11 +81,6 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
 
       const containerRect = container.getBoundingClientRect();
       
-      // Calculate what scale would fit our UI representation in the container
-      const scaleX = (containerRect.width - 48) / POSTER_UI_WIDTH;
-      const scaleY = (containerRect.height - 48) / POSTER_UI_HEIGHT;
-      const containerFitScale = Math.min(scaleX, scaleY, 1);
-
       // Calculate the scale factor from UI representation to actual A0 size
       const uiToA0Scale = A0_WIDTH_PX / POSTER_UI_WIDTH;
       
@@ -96,9 +91,19 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
       // Apply the zoom scale
       posterRef.current.style.transform = `scale(${actualA0Scale})`;
 
-      // Notify parent of container fit scale for reference
+      // Calculate what scale would fit the ACTUAL POSTER SIZE (at 100% zoom) in the container
+      const posterAtFullSize = {
+        width: POSTER_UI_WIDTH * uiToA0Scale,
+        height: POSTER_UI_HEIGHT * uiToA0Scale
+      };
+      
+      const scaleX = (containerRect.width - 96) / posterAtFullSize.width; // 96px padding
+      const scaleY = (containerRect.height - 96) / posterAtFullSize.height; // 96px padding
+      const fitToWindowScale = Math.min(scaleX, scaleY, 1);
+
+      // Notify parent of fit-to-window scale
       if (onContainerScaleChange) {
-        onContainerScaleChange(containerFitScale);
+        onContainerScaleChange(fitToWindowScale);
       }
     };
 
