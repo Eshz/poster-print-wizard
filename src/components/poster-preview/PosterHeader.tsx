@@ -73,7 +73,7 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
         </div>
       </div>
       
-      {/* Author info with white top border only */}
+      {/* Author info with white top border only - Updated with smaller font sizes */}
       <div 
         className="w-full text-center py-2"
         style={{
@@ -82,16 +82,16 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
         }}
       >
         <div 
-          className="flex flex-col md:flex-row justify-between items-center gap-2 px-4 mx-auto"
+          className="flex flex-col md:flex-row justify-between items-center gap-1 px-2 mx-auto text-xs md:text-sm"
           style={{ 
             color: designSettings.headerTextColor,
             fontFamily: `var(--font-${designSettings.titleFont})`,
             maxWidth: '98%'
           }}
         >
-          <div className="mb-1 md:mb-0 font-semibold">{authors}</div>
-          <div className="mb-1 md:mb-0 font-semibold">{school}</div>
-          <div className="font-semibold">{contact}</div>
+          <div className="mb-1 md:mb-0 font-semibold truncate flex-shrink-0">{authors}</div>
+          <div className="mb-1 md:mb-0 font-semibold truncate flex-shrink-0">{school}</div>
+          <div className="font-semibold truncate flex-shrink-0">{contact}</div>
         </div>
       </div>
     </>
