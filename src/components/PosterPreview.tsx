@@ -54,6 +54,15 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const posterRef = useRef<HTMLDivElement>(null);
 
+  // A0 dimensions in pixels at 96 DPI (standard screen DPI)
+  // A0 = 841 × 1189 mm = 33.1 × 46.8 inches = 3179 × 4494 pixels at 96 DPI
+  const A0_WIDTH_PX = 3179;
+  const A0_HEIGHT_PX = 4494;
+  
+  // Our poster representation dimensions (scaled down for UI)
+  const POSTER_UI_WIDTH = 800;
+  const POSTER_UI_HEIGHT = 1131;
+
   // QR Code generation
   const qrCodeUrl = posterData.qrCodeUrl && posterData.showQrCode !== false ? 
     `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(posterData.qrCodeUrl)}&color=${(posterData.qrCodeColor || '#000000').replace('#', '')}` : 
@@ -71,20 +80,25 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
       if (!container) return;
 
       const containerRect = container.getBoundingClientRect();
-      const posterWidth = 800; // A0 poster width
-      const posterHeight = 1131; // A0 poster height
+      
+      // Calculate what scale would fit our UI representation in the container
+      const scaleX = (containerRect.width - 48) / POSTER_UI_WIDTH;
+      const scaleY = (containerRect.height - 48) / POSTER_UI_HEIGHT;
+      const containerFitScale = Math.min(scaleX, scaleY, 1);
 
-      // Calculate scale to fit in container (this is just for reference, not applied)
-      const scaleX = (containerRect.width - 48) / posterWidth;
-      const scaleY = (containerRect.height - 48) / posterHeight;
-      const containerScale = Math.min(scaleX, scaleY, 1);
+      // Calculate the scale factor from UI representation to actual A0 size
+      const uiToA0Scale = A0_WIDTH_PX / POSTER_UI_WIDTH;
+      
+      // At 100% zoom, we want to show actual A0 size
+      // So we need to scale up our UI representation by the uiToA0Scale factor
+      const actualA0Scale = manualZoom * uiToA0Scale;
+      
+      // Apply the zoom scale
+      posterRef.current.style.transform = `scale(${actualA0Scale})`;
 
-      // Apply manual zoom (1.0 = actual A0 size)
-      posterRef.current.style.transform = `scale(${manualZoom})`;
-
-      // Notify parent of container scale for reference
+      // Notify parent of container fit scale for reference
       if (onContainerScaleChange) {
-        onContainerScaleChange(containerScale);
+        onContainerScaleChange(containerFitScale);
       }
     };
 
@@ -159,8 +173,8 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
         ref={posterRef}
         className="bg-white border border-gray-200 relative overflow-hidden flex flex-col shadow-lg"
         style={{ 
-          width: '800px', // A0 width
-          height: '1131px', // A0 height
+          width: `${POSTER_UI_WIDTH}px`, // UI representation width
+          height: `${POSTER_UI_HEIGHT}px`, // UI representation height
           transformOrigin: 'center'
         }}
       >
