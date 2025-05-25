@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BasicInfoSection from './poster-form/BasicInfoSection';
@@ -61,6 +60,10 @@ const PosterForm: React.FC<PosterFormProps> = ({
   
   const handleToggleChange = (field: string) => (checked: boolean) => {
     setPosterData(prev => ({ ...prev, [field]: checked }));
+  };
+  
+  const handleQrCaptionChange = (caption: string) => {
+    setPosterData(prev => ({ ...prev, qrCodeCaption: caption }));
   };
   
   return (
@@ -129,8 +132,10 @@ const PosterForm: React.FC<PosterFormProps> = ({
             <QrCodeSection 
               qrCodeUrl={posterData.qrCodeUrl}
               qrCodeColor={posterData.qrCodeColor}
+              qrCodeCaption={posterData.qrCodeCaption || ''}
               handleQrUrlChange={handleQrUrlChange}
               handleQrColorChange={handleQrColorChange}
+              handleQrCaptionChange={handleQrCaptionChange}
             />
           )}
         </TabsContent>
