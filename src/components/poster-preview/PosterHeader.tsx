@@ -33,7 +33,7 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
           minHeight: showQrCode && qrCodeUrl ? '120px' : 'auto'
         }}
       >
-        <div className={`flex-1 ${showQrCode && qrCodeUrl ? 'pr-32' : ''} transition-all duration-300 flex items-center justify-between`}>
+        <div className="flex-1 transition-all duration-300 flex items-center justify-between">
           <h1 className="text-2xl md:text-3xl font-bold mb-2 uppercase flex-1">{title}</h1>
           
           {/* QR Code positioned within the flex-1 container */}
