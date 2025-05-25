@@ -47,7 +47,7 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
     
-    /* Font family variables */
+    /* Font family variables - Updated defaults */
     --font-playfair: 'Playfair Display', serif;
     --font-roboto: 'Roboto', sans-serif;
     --font-merriweather: 'Merriweather', serif;
@@ -103,5 +103,16 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+  
+  /* Default poster fonts */
+  .poster-title {
+    font-family: 'Merriweather', serif;
+    font-weight: 700; /* Bold */
+  }
+  
+  .poster-body {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500; /* Medium */
   }
 }

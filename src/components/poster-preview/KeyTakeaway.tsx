@@ -11,6 +11,7 @@ interface KeyTakeawayProps {
   textSizeClass?: string;
   circleSize?: string;
   useCircleText?: boolean;
+  listMode?: boolean;
 }
 
 const KeyTakeaway: React.FC<KeyTakeawayProps> = ({
@@ -22,8 +23,55 @@ const KeyTakeaway: React.FC<KeyTakeawayProps> = ({
   titleSizeClass = "text-sm",
   textSizeClass = "text-xs",
   circleSize = "2rem",
-  useCircleText = false
+  useCircleText = false,
+  listMode = false
 }) => {
+  if (listMode) {
+    return (
+      <div className="flex items-start gap-4 py-3 border-b border-gray-200 last:border-b-0">
+        {/* Left cell - Number */}
+        <div className="flex-shrink-0 w-12 flex justify-center">
+          <div 
+            className="rounded-full flex items-center justify-center text-lg font-bold"
+            style={{ 
+              backgroundColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor, 
+              color: designSettings.sectionBgColor,
+              width: circleSize,
+              height: circleSize,
+              minWidth: circleSize,
+              fontFamily: `var(--font-${designSettings.titleFont})`
+            }}
+          >
+            {number}
+          </div>
+        </div>
+        
+        {/* Right cell - Content */}
+        <div className="flex-1">
+          <h3 
+            className={`${titleSizeClass} font-bold mb-1`}
+            style={{ 
+              color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
+              fontFamily: `var(--font-${designSettings.titleFont})`
+            }}
+          >
+            {title}
+          </h3>
+          <p 
+            className={textSizeClass}
+            style={{ 
+              color: designSettings.sectionTextColor,
+              fontFamily: `var(--font-${designSettings.contentFont})`
+            }}
+          >
+            {description}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Original grid mode
   return (
     <div 
       className={className}
@@ -39,13 +87,13 @@ const KeyTakeaway: React.FC<KeyTakeawayProps> = ({
             width: circleSize,
             height: circleSize,
             minWidth: circleSize,
-            fontFamily: `var(--font-${designSettings.titleFont})` // Use the title font for numbers
+            fontFamily: `var(--font-${designSettings.titleFont})`
           }}
         >
           {number}
         </div>
         <h3 
-          className={`${titleSizeClass} font-semibold`}
+          className={`${titleSizeClass} font-bold`}
           style={{ 
             color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
             fontFamily: `var(--font-${designSettings.titleFont})`

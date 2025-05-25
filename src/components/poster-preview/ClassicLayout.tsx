@@ -1,4 +1,3 @@
-
 import React from 'react';
 import PosterSection from './PosterSection';
 import KeyTakeaway from './KeyTakeaway';
@@ -90,22 +89,24 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
           {/* Key Points in compact layout */}
           {showKeypoints && (
             <>
-              <div 
-                className="border-t-2 border-b-2 py-1 text-center"
-                style={{ borderColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
-              >
+              <div className="relative text-center my-2">
+                <div 
+                  className="absolute top-1/2 left-0 right-0 h-0.5 transform -translate-y-1/2"
+                  style={{ backgroundColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
+                />
                 <h2 
-                  className={`${textSizes.sectionHeading} font-semibold`}
+                  className={`${textSizes.bodyText} font-bold relative inline-block px-2`}
                   style={{ 
                     color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
-                    fontFamily: `var(--font-${designSettings.titleFont})`
+                    fontFamily: `var(--font-${designSettings.titleFont})`,
+                    backgroundColor: '#ffffff'
                   }}
                 >
                   Key Takeaways
                 </h2>
               </div>
               
-              <div className="grid grid-cols-1 gap-1 flex-grow overflow-auto">
+              <div className="bg-white rounded border border-gray-200 overflow-hidden flex-grow overflow-auto">
                 {keypoints.slice(0, 2).map((point: string, index: number) => (
                   <KeyTakeaway
                     key={index}
@@ -113,8 +114,10 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
                     title={point}
                     description={keyDescriptions[index] || ""}
                     designSettings={designSettings}
-                    titleSizeClass={textSizes.bodyText}
-                    textSizeClass={textSizes.caption}
+                    titleSizeClass={textSizes.caption}
+                    textSizeClass="text-xs"
+                    listMode={true}
+                    circleSize="1.5rem"
                   />
                 ))}
               </div>
@@ -137,7 +140,7 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
           
           {/* Remaining Key Points */}
           {showKeypoints && keypoints.length > 2 && (
-            <div className="grid grid-cols-1 gap-1">
+            <div className="bg-white rounded border border-gray-200 overflow-hidden">
               {keypoints.slice(2).map((point: string, index: number) => (
                 <KeyTakeaway
                   key={index}
@@ -145,8 +148,10 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
                   title={point}
                   description={keyDescriptions[index + 2] || ""}
                   designSettings={designSettings}
-                  titleSizeClass={textSizes.bodyText}
-                  textSizeClass={textSizes.caption}
+                  titleSizeClass={textSizes.caption}
+                  textSizeClass="text-xs"
+                  listMode={true}
+                  circleSize="1.5rem"
                 />
               ))}
             </div>
@@ -216,41 +221,42 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
       
       {/* Right Column */}
       <div className="flex flex-col space-y-2 h-full overflow-hidden">
-        {/* Key Takeaways Section */}
+        {/* Key Takeaways Section with strikethrough title */}
         {showKeypoints && (
-          <div className="flex flex-col space-y-2">
-            <div 
-              className="border-t-2 border-b-2 py-2 text-center mb-1"
-              style={{ borderColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
-            >
+          <>
+            <div className="relative text-center my-2">
+              <div 
+                className="absolute top-1/2 left-0 right-0 h-0.5 transform -translate-y-1/2"
+                style={{ backgroundColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
+              />
               <h2 
-                className={`${textSizes.sectionHeading} font-semibold`}
+                className={`${textSizes.bodyText} font-bold relative inline-block px-4`}
                 style={{ 
                   color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
-                  fontFamily: `var(--font-${designSettings.titleFont})`
+                  fontFamily: `var(--font-${designSettings.titleFont})`,
+                  backgroundColor: '#ffffff'
                 }}
               >
                 Key Takeaways
               </h2>
             </div>
-          </div>
-        )}
-        
-        {/* Key Points Grid */}
-        {showKeypoints && (
-          <div className="grid grid-cols-2 gap-2 flex-grow overflow-auto">
-            {keypoints.map((point: string, index: number) => (
-              <KeyTakeaway
-                key={index}
-                number={index + 1}
-                title={point}
-                description={keyDescriptions[index] || ""}
-                designSettings={designSettings}
-                titleSizeClass={textSizes.bodyText}
-                textSizeClass={textSizes.caption}
-              />
-            ))}
-          </div>
+            
+            {/* List layout for key points */}
+            <div className="bg-white rounded border border-gray-200 overflow-hidden flex-grow overflow-auto">
+              {keypoints.map((point: string, index: number) => (
+                <KeyTakeaway
+                  key={index}
+                  number={index + 1}
+                  title={point}
+                  description={keyDescriptions[index] || ""}
+                  designSettings={designSettings}
+                  titleSizeClass={textSizes.bodyText}
+                  textSizeClass={textSizes.caption}
+                  listMode={true}
+                />
+              ))}
+            </div>
+          </>
         )}
         
         <PosterSection 

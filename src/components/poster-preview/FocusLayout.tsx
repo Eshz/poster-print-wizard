@@ -1,4 +1,3 @@
-
 import React from 'react';
 import PosterSection from './PosterSection';
 import KeyTakeaway from './KeyTakeaway';
@@ -142,26 +141,30 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
           </div>
         )}
         
-        {/* Key Takeaways Section */}
+        {/* Key Takeaways Section with strikethrough title */}
         {showKeypoints && (
           <>
-            <div 
-              className={`border-t-2 border-b-2 py-4 text-center ${contentDensity === 'high' ? 'my-2' : 'my-6'}`}
-              style={{ borderColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
-            >
+            <div className={`relative text-center ${contentDensity === 'high' ? 'my-2' : 'my-6'}`}>
+              {/* Strikethrough line */}
+              <div 
+                className="absolute top-1/2 left-0 right-0 h-0.5 transform -translate-y-1/2"
+                style={{ backgroundColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
+              />
+              {/* Title with background */}
               <h2 
-                className={`${textSizes.sectionHeading} font-semibold`}
+                className={`${textSizes.bodyText} font-bold relative inline-block px-4`}
                 style={{ 
                   color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
-                  fontFamily: `var(--font-${designSettings.titleFont})`
+                  fontFamily: `var(--font-${designSettings.titleFont})`,
+                  backgroundColor: '#ffffff'
                 }}
               >
                 Key Takeaways
               </h2>
             </div>
             
-            {/* Adaptive key points grid */}
-            <div className={`grid ${keyPointCols} gap-4 flex-grow`}>
+            {/* List layout for key points */}
+            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
               {keypoints.map((point: string, index: number) => (
                 <KeyTakeaway
                   key={index}
@@ -169,11 +172,10 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
                   title={point}
                   description={keyDescriptions[index] || ""}
                   designSettings={designSettings}
-                  className="p-4 flex-1"
                   titleSizeClass={textSizes.bodyText}
                   textSizeClass={textSizes.caption}
                   circleSize={contentDensity === 'high' ? '2rem' : '2.5rem'}
-                  useCircleText={true}
+                  listMode={true}
                 />
               ))}
             </div>
