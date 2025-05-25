@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface PosterHeaderProps {
@@ -89,9 +88,9 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
             maxWidth: '98%'
           }}
         >
-          <div className="mb-1 md:mb-0 font-semibold truncate flex-1 min-w-0">{authors}</div>
-          <div className="mb-1 md:mb-0 font-semibold truncate flex-1 min-w-0">{school}</div>
-          <div className="font-semibold truncate flex-1 min-w-0">{contact}</div>
+          <div className="mb-1 md:mb-0 font-semibold flex-1 min-w-0 break-words">{authors}</div>
+          <div className="mb-1 md:mb-0 font-semibold flex-1 min-w-0 break-words">{school}</div>
+          <div className="font-semibold flex-1 min-w-0 break-words">{contact}</div>
         </div>
       </div>
     </>
