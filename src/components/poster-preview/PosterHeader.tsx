@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface PosterHeaderProps {
@@ -73,7 +72,7 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
         </div>
       </div>
       
-      {/* Author info with white top border only - Updated with smaller font sizes */}
+      {/* Author info with white top border only - Updated with smaller font sizes and better spacing */}
       <div 
         className="w-full text-center py-2"
         style={{
@@ -82,7 +81,7 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
         }}
       >
         <div 
-          className="flex flex-col md:flex-row justify-between items-center gap-1 px-2 mx-auto text-xs md:text-sm"
+          className="flex flex-col md:flex-row justify-between items-center gap-4 px-2 mx-auto text-xs md:text-sm"
           style={{ 
             color: designSettings.headerTextColor,
             fontFamily: `var(--font-${designSettings.titleFont})`,
