@@ -4,6 +4,9 @@ import ClassicLayout from './poster-preview/ClassicLayout';
 import ModernLayout from './poster-preview/ModernLayout';
 import FocusLayout from './poster-preview/FocusLayout';
 import PosterHeader from './poster-preview/PosterHeader';
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertTriangle } from "lucide-react";
+import { checkContentVisibility } from '@/utils/contentVisibilityChecker';
 
 interface PosterPreviewProps {
   posterData: {
@@ -45,6 +48,9 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
     `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(posterData.qrCodeUrl)}&color=${(posterData.qrCodeColor || '#000000').replace('#', '')}` : 
     '';
 
+  // Check content visibility
+  const visibilityCheck = checkContentVisibility(posterData, designSettings);
+
   // Apply the selected layout
   const renderLayout = () => {
     switch(designSettings.layout) {
@@ -83,30 +89,52 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({ posterData, designSetting
   };
 
   return (
-    <div
-      className="bg-white border border-gray-200 relative overflow-hidden flex flex-col"
-      style={{ 
-        width: '800px',  // Fixed exact width
-        height: '1131px', // Fixed height based on A0 aspect ratio (1:1.414) scaled down
-        margin: '0 auto',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        aspectRatio: '1/1.414' // A0 aspect ratio
-      }}
-    >
-      {/* Header Section */}
-      <PosterHeader
-        title={posterData.title}
-        authors={posterData.authors}
-        school={posterData.school}
-        contact={posterData.contact}
-        designSettings={designSettings}
-        qrCodeUrl={qrCodeUrl}
-        showQrCode={posterData.showQrCode !== false}
-      />
+    <div className="relative">
+      {/* Content Visibility Warning */}
+      {!visibilityCheck.isContentVisible && (
+        <div className="mb-4">
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              <strong>Content Visibility Warning:</strong>
+              <ul className="mt-2 space-y-1">
+                {visibilityCheck.warnings.map((warning, index) => (
+                  <li key={index} className="text-sm">• {warning}</li>
+                ))}
+              </ul>
+              <p className="mt-2 text-sm">
+                Consider reducing content length, hiding some images, or switching to a different layout.
+              </p>
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
 
-      {/* Dynamic Content Layout - adding overflow control */}
-      <div className="flex-grow overflow-hidden p-2">
-        {renderLayout()}
+      <div
+        className="bg-white border border-gray-200 relative overflow-hidden flex flex-col"
+        style={{ 
+          width: '800px',  // Fixed exact width
+          height: '1131px', // Fixed height based on A0 aspect ratio (1:1.414) scaled down
+          margin: '0 auto',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          aspectRatio: '1/1.414' // A0 aspect ratio
+        }}
+      >
+        {/* Header Section */}
+        <PosterHeader
+          title={posterData.title}
+          authors={posterData.authors}
+          school={posterData.school}
+          contact={posterData.contact}
+          designSettings={designSettings}
+          qrCodeUrl={qrCodeUrl}
+          showQrCode={posterData.showQrCode !== false}
+        />
+
+        {/* Dynamic Content Layout - adding overflow control */}
+        <div className="flex-grow overflow-hidden p-2">
+          {renderLayout()}
+        </div>
       </div>
     </div>
   );
