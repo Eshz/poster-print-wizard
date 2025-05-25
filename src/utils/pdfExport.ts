@@ -1,9 +1,35 @@
-
 import { toast } from "sonner";
 import html2pdf from 'html2pdf.js';
 
 /**
- * Exports a DOM element as an A0-sized PDF
+ * Compresses images in the DOM element for better PDF optimization
+ */
+const compressImages = (element: HTMLElement) => {
+  const images = element.querySelectorAll('img');
+  images.forEach((img) => {
+    const imgElement = img as HTMLImageElement;
+    
+    // Create a canvas to compress the image
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    if (ctx && imgElement.complete) {
+      // Set canvas dimensions
+      canvas.width = imgElement.naturalWidth;
+      canvas.height = imgElement.naturalHeight;
+      
+      // Draw and compress the image
+      ctx.drawImage(imgElement, 0, 0);
+      
+      // Convert to compressed data URL (JPEG with 0.7 quality)
+      const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+      imgElement.src = compressedDataUrl;
+    }
+  });
+};
+
+/**
+ * Exports a DOM element as a compressed A0-sized PDF
  * @param elementId The ID of the DOM element to export
  */
 export const exportToPDF = (elementId: string) => {
@@ -30,6 +56,9 @@ export const exportToPDF = (elementId: string) => {
   tempDiv.style.top = '-9999px';
   document.body.appendChild(tempDiv);
   tempDiv.appendChild(posterContent);
+  
+  // Compress images before processing
+  compressImages(posterContent);
   
   // A0 dimensions in mm: 841 x 1189 mm
   // Convert to points for PDF (1 mm ≈ 2.83 points)
@@ -215,33 +244,58 @@ export const exportToPDF = (elementId: string) => {
     componentElement.style.gap = '0.75rem';
   });
   
-  toast.info("Preparing PDF export for A0 size (841 x 1189 mm)...");
+  toast.info("Preparing compressed PDF export for A0 size (841 x 1189 mm)...");
   
+  // Optimized settings for compression
   const opt = {
     margin: 0,
-    filename: 'conference-poster-A0.pdf',
-    image: { type: 'jpeg', quality: 1 },
+    filename: 'conference-poster-A0-compressed.pdf',
+    image: { 
+      type: 'jpeg', 
+      quality: 0.85 // Reduced from 1 to 0.85 for better compression
+    },
     html2canvas: { 
-      scale: 4, // Increase scale for better quality on large format
+      scale: 2, // Reduced from 4 to 2 for smaller file size
       useCORS: true,
       letterRendering: true,
       logging: false,
       width: width,
-      height: height
+      height: height,
+      allowTaint: true,
+      imageTimeout: 0,
+      removeContainer: true
     },
     jsPDF: { 
       unit: 'pt', 
       format: [width, height], 
       orientation: 'portrait',
-      hotfixes: ["px_scaling"]
+      hotfixes: ["px_scaling"],
+      compress: true // Enable PDF compression
     }
   };
   
   setTimeout(() => {
-    html2pdf().from(posterContent).set(opt).save().then(() => {
-      toast.success("A0 sized PDF exported successfully!");
-      // Clean up
-      document.body.removeChild(tempDiv);
+    html2pdf().from(posterContent).set(opt).outputPdf('blob').then((pdfBlob: Blob) => {
+      // Additional compression using canvas-based technique
+      const reader = new FileReader();
+      reader.onload = function() {
+        // Create download link for the compressed PDF
+        const url = URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'conference-poster-A0-compressed.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        const sizeInMB = (pdfBlob.size / (1024 * 1024)).toFixed(2);
+        toast.success(`Compressed A0 PDF exported successfully! File size: ${sizeInMB}MB`);
+        
+        // Clean up
+        document.body.removeChild(tempDiv);
+      };
+      reader.readAsArrayBuffer(pdfBlob);
     }).catch(err => {
       console.error("PDF export failed:", err);
       toast.error("PDF export failed. Please try again.");
