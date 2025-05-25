@@ -25,7 +25,7 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
   return (
     <>
       <div 
-        className={`w-full text-center relative flex items-center justify-center ${showQrCode && qrCodeUrl ? 'p-2' : 'p-4'}`}
+        className={`w-full text-center relative flex items-center justify-center px-4 ${showQrCode && qrCodeUrl ? 'py-2' : 'py-4'}`}
         style={{ 
           backgroundColor: designSettings.headerBgColor, 
           color: designSettings.headerTextColor,
