@@ -3,6 +3,7 @@ import React from 'react';
 import PosterSection from './PosterSection';
 import KeyTakeaway from './KeyTakeaway';
 import ImagesDisplay from './ImagesDisplay';
+import { calculateDynamicTextSizes, getContentDensity } from '@/utils/dynamicTextSizing';
 
 interface ClassicLayoutProps {
   posterData: any;
@@ -20,6 +21,7 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
   showQrCode
 }) => {
   const hasImages = posterData.images && posterData.images.filter(img => img.visible).length > 0;
+  const visibleImages = posterData.images?.filter(img => img.visible) || [];
   
   // Ensure sectionTitles exists with fallback values
   const sectionTitles = posterData?.sectionTitles || [
@@ -30,10 +32,148 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
     "5. References"
   ];
   
-  // Ensure keypoints and keyDescriptions exist with fallback values
   const keypoints = posterData?.keypoints || ["Key Point 1", "Key Point 2", "Key Point 3", "Key Point 4"];
   const keyDescriptions = posterData?.keyDescriptions || ["Description 1", "Description 2", "Description 3", "Description 4"];
   
+  // Calculate content density and text sizes
+  const sections = [
+    posterData?.introduction || "",
+    posterData?.methods || "",
+    posterData?.findings || "",
+    posterData?.conclusions || "",
+    posterData?.references || ""
+  ];
+  
+  const contentDensity = getContentDensity(sections, posterData.images, keypoints);
+  const textSizes = calculateDynamicTextSizes(contentDensity, hasImages, sections.length);
+  
+  // Determine layout based on content
+  const shouldUseThreeColumn = hasImages && visibleImages.length > 2;
+  const shouldMoveImagesToSeparateColumn = hasImages && (
+    sections.reduce((acc, section) => acc + section.length, 0) > 2000 ||
+    visibleImages.length > 1
+  );
+
+  if (shouldUseThreeColumn || shouldMoveImagesToSeparateColumn) {
+    // Three-column layout for heavy content
+    return (
+      <div className="grid grid-cols-3 gap-2 h-full overflow-hidden">
+        {/* Left Column - Introduction & Methods */}
+        <div className="flex flex-col space-y-2 h-full overflow-hidden">
+          <PosterSection 
+            title={sectionTitles[0] || "Introduction"}
+            content={posterData?.introduction || ""}
+            designSettings={designSettings}
+            titleSizeClass={textSizes.sectionHeading}
+            textSizeClass={textSizes.bodyText}
+          />
+          
+          <PosterSection 
+            title={sectionTitles[1] || "Methods"}
+            content={posterData?.methods || ""}
+            designSettings={designSettings}
+            titleSizeClass={textSizes.sectionHeading}
+            textSizeClass={textSizes.bodyText}
+          />
+        </div>
+        
+        {/* Middle Column - Findings & Key Points */}
+        <div className="flex flex-col space-y-2 h-full overflow-hidden">
+          <PosterSection 
+            title={sectionTitles[2] || "Findings"}
+            content={posterData?.findings || ""}
+            designSettings={designSettings}
+            titleSizeClass={textSizes.sectionHeading}
+            textSizeClass={textSizes.bodyText}
+          />
+          
+          {/* Key Points in compact layout */}
+          {showKeypoints && (
+            <>
+              <div 
+                className="border-t-2 border-b-2 py-1 text-center"
+                style={{ borderColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
+              >
+                <h2 
+                  className={`${textSizes.sectionHeading} font-semibold`}
+                  style={{ 
+                    color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
+                    fontFamily: `var(--font-${designSettings.titleFont})`
+                  }}
+                >
+                  Key Takeaways
+                </h2>
+              </div>
+              
+              <div className="grid grid-cols-1 gap-1 flex-grow overflow-auto">
+                {keypoints.slice(0, 2).map((point: string, index: number) => (
+                  <KeyTakeaway
+                    key={index}
+                    number={index + 1}
+                    title={point}
+                    description={keyDescriptions[index] || ""}
+                    designSettings={designSettings}
+                    titleSizeClass={textSizes.bodyText}
+                    textSizeClass={textSizes.caption}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+        
+        {/* Right Column - Images, Conclusions, References */}
+        <div className="flex flex-col space-y-2 h-full overflow-hidden">
+          {/* Images Section */}
+          {hasImages && (
+            <div className="flex-shrink-0">
+              <ImagesDisplay 
+                images={posterData.images}
+                designSettings={designSettings}
+                className="max-h-64"
+              />
+            </div>
+          )}
+          
+          {/* Remaining Key Points */}
+          {showKeypoints && keypoints.length > 2 && (
+            <div className="grid grid-cols-1 gap-1">
+              {keypoints.slice(2).map((point: string, index: number) => (
+                <KeyTakeaway
+                  key={index}
+                  number={index + 3}
+                  title={point}
+                  description={keyDescriptions[index + 2] || ""}
+                  designSettings={designSettings}
+                  titleSizeClass={textSizes.bodyText}
+                  textSizeClass={textSizes.caption}
+                />
+              ))}
+            </div>
+          )}
+          
+          <PosterSection 
+            title={sectionTitles[3] || "Conclusions"}
+            content={posterData?.conclusions || ""}
+            designSettings={designSettings}
+            titleSizeClass={textSizes.sectionHeading}
+            textSizeClass={textSizes.bodyText}
+          />
+          
+          <PosterSection 
+            title={sectionTitles[4] || "References"}
+            content={posterData?.references || ""}
+            designSettings={designSettings}
+            titleSizeClass={textSizes.sectionHeading}
+            textSizeClass={textSizes.caption}
+            isPreLine={true}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // Original two-column layout for lighter content
   return (
     <div className="grid grid-cols-2 gap-2 h-full overflow-hidden">
       {/* Left Column */}
@@ -42,22 +182,28 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
           title={sectionTitles[0] || "Introduction"}
           content={posterData?.introduction || ""}
           designSettings={designSettings}
+          titleSizeClass={textSizes.sectionHeading}
+          textSizeClass={textSizes.bodyText}
         />
         
         <PosterSection 
           title={sectionTitles[1] || "Methods"}
           content={posterData?.methods || ""}
           designSettings={designSettings}
+          titleSizeClass={textSizes.sectionHeading}
+          textSizeClass={textSizes.bodyText}
         />
         
         <PosterSection 
           title={sectionTitles[2] || "Findings"}
           content={posterData?.findings || ""}
           designSettings={designSettings}
+          titleSizeClass={textSizes.sectionHeading}
+          textSizeClass={textSizes.bodyText}
         />
         
-        {/* Images Section - Left Column */}
-        {hasImages && (
+        {/* Images Section - Left Column only if content is light */}
+        {hasImages && !shouldMoveImagesToSeparateColumn && (
           <div className="flex-grow">
             <ImagesDisplay 
               images={posterData.images}
@@ -78,7 +224,7 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
               style={{ borderColor: designSettings.keyPointsTextColor || designSettings.sectionTitleColor }}
             >
               <h2 
-                className={`text-lg md:text-xl font-semibold`}
+                className={`${textSizes.sectionHeading} font-semibold`}
                 style={{ 
                   color: designSettings.keyPointsTextColor || designSettings.sectionTitleColor,
                   fontFamily: `var(--font-${designSettings.titleFont})`
@@ -100,6 +246,8 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
                 title={point}
                 description={keyDescriptions[index] || ""}
                 designSettings={designSettings}
+                titleSizeClass={textSizes.bodyText}
+                textSizeClass={textSizes.caption}
               />
             ))}
           </div>
@@ -109,12 +257,16 @@ const ClassicLayout: React.FC<ClassicLayoutProps> = ({
           title={sectionTitles[3] || "Conclusions"}
           content={posterData?.conclusions || ""}
           designSettings={designSettings}
+          titleSizeClass={textSizes.sectionHeading}
+          textSizeClass={textSizes.bodyText}
         />
         
         <PosterSection 
           title={sectionTitles[4] || "References"}
           content={posterData?.references || ""}
           designSettings={designSettings}
+          titleSizeClass={textSizes.sectionHeading}
+          textSizeClass={textSizes.caption}
           isPreLine={true}
         />
       </div>
