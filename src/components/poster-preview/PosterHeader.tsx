@@ -67,7 +67,7 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
                   className="text-xs text-center mb-2 px-1 leading-tight max-w-24"
                   style={{ 
                     color: designSettings.headerTextColor,
-                    fontFamily: `var(--font-${designSettings.contentFont})`
+                    fontFamily: `var(--font-${designSettings.titleFont})`
                   }}
                 >
                   {qrCodeCaption}
@@ -78,7 +78,7 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
                   className="text-xs text-center px-1 leading-tight max-w-24"
                   style={{ 
                     color: designSettings.headerTextColor,
-                    fontFamily: `var(--font-${designSettings.contentFont})`
+                    fontFamily: `var(--font-${designSettings.titleFont})`
                   }}
                 >
                   Scan for more info
