@@ -2,8 +2,8 @@
 import { toast } from "sonner";
 import html2pdf from 'html2pdf.js';
 import { compressImages } from './imageCompression';
-import { scaleElementForPdf, calculateScaleFactor } from './elementScaling';
-import { createPdfConfig, PREVIEW_WIDTH, PREVIEW_HEIGHT } from './pdfConfig';
+import { prepareElementForPdf } from './elementScaling';
+import { createPdfConfig } from './pdfConfig';
 
 /**
  * Creates a temporary container for the cloned element
@@ -27,7 +27,7 @@ const cleanupTempContainer = (tempDiv: HTMLElement) => {
 };
 
 /**
- * Exports a DOM element as a compressed A0-sized PDF
+ * Exports a DOM element as a high-quality A0-sized PDF
  * @param elementId The ID of the DOM element to export
  */
 export const exportToPDF = (elementId: string) => {
@@ -46,23 +46,20 @@ export const exportToPDF = (elementId: string) => {
     return;
   }
   
-  // Create a completely new poster for PDF export by cloning the original
+  // Create a clean copy of the poster for PDF export
   const clonedElement = posterContent.cloneNode(true) as HTMLElement;
   const tempDiv = createTempContainer(clonedElement);
   
   // Compress images before processing
   compressImages(clonedElement);
   
-  // Scale the element for PDF export
-  const scaleFactor = scaleElementForPdf(clonedElement);
+  // Prepare the element for PDF export (no manual scaling)
+  prepareElementForPdf(clonedElement);
   
-  toast.info("Preparing PDF export for A0 size (841 x 1189 mm)...");
+  toast.info("Preparing high-quality A0 PDF export...");
   
   // Create PDF configuration
-  const pdfConfig = createPdfConfig(
-    PREVIEW_WIDTH * scaleFactor,
-    PREVIEW_HEIGHT * scaleFactor
-  );
+  const pdfConfig = createPdfConfig();
   
   setTimeout(() => {
     html2pdf().from(clonedElement).set(pdfConfig).outputPdf('blob').then((pdfBlob: Blob) => {
@@ -87,5 +84,5 @@ export const exportToPDF = (elementId: string) => {
       // Clean up
       cleanupTempContainer(tempDiv);
     });
-  }, 1000);
+  }, 500);
 };

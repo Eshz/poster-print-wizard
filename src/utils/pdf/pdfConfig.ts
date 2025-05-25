@@ -10,20 +10,20 @@ export const PREVIEW_HEIGHT = 1131;
 /**
  * Creates optimized PDF export configuration
  */
-export const createPdfConfig = (width: number, height: number) => ({
+export const createPdfConfig = () => ({
   margin: 0,
   filename: 'conference-poster-A0.pdf',
   image: { 
     type: 'jpeg', 
-    quality: 0.9
+    quality: 0.95
   },
   html2canvas: { 
-    scale: 1, // Use scale 1 since we're manually scaling the content
+    scale: 2, // Higher scale for better quality
     useCORS: true,
     letterRendering: true,
     logging: false,
-    width: width,
-    height: height,
+    width: PREVIEW_WIDTH,
+    height: PREVIEW_HEIGHT,
     allowTaint: true,
     imageTimeout: 0,
     removeContainer: true,
