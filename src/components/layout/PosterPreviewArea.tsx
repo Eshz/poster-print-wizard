@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import PosterPreview from '@/components/PosterPreview';
 import ZoomControls from '@/components/ZoomControls';
-import { A0_WIDTH_PX, A0_HEIGHT_PX } from '@/utils/posterConstants';
 
 interface PosterPreviewAreaProps {
   posterData: any;
@@ -33,13 +32,7 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = ({
         
         <div 
           id="poster-preview" 
-          className="flex items-center justify-center"
-          style={{
-            width: `${A0_WIDTH_PX}px`,
-            height: `${A0_HEIGHT_PX}px`,
-            minWidth: `${A0_WIDTH_PX}px`,
-            minHeight: `${A0_HEIGHT_PX}px`
-          }}
+          className="w-full h-full flex items-center justify-center overflow-auto"
         >
           <PosterPreview 
             posterData={{
