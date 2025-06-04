@@ -43,9 +43,9 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
     );
   }
 
-  // Full form layout with each field in its own row
+  // Original full form layout
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="space-y-2">
         <Label htmlFor="title" className="text-sm font-medium text-gray-900">
           Title
@@ -60,32 +60,33 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
         />
       </div>
       
-      <div className="space-y-2">
-        <Label htmlFor="authors" className="text-sm font-medium text-gray-900">
-          Authors
-        </Label>
-        <Input
-          id="authors"
-          name="authors"
-          value={posterData.authors || ''}
-          onChange={handleChange}
-          placeholder="Enter author names"
-          className="border-gray-300 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg"
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="school" className="text-sm font-medium text-gray-900">
-          School/Institution
-        </Label>
-        <Input
-          id="school"
-          name="school"
-          value={posterData.school || ''}
-          onChange={handleChange}
-          placeholder="Enter institution name"
-          className="border-gray-300 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="authors" className="text-sm font-medium text-gray-900">
+            Authors
+          </Label>
+          <Input
+            id="authors"
+            name="authors"
+            value={posterData.authors || ''}
+            onChange={handleChange}
+            placeholder="Enter author names"
+            className="border-gray-300 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="school" className="text-sm font-medium text-gray-900">
+            School/Institution
+          </Label>
+          <Input
+            id="school"
+            name="school"
+            value={posterData.school || ''}
+            onChange={handleChange}
+            placeholder="Enter institution name"
+            className="border-gray-300 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg"
+          />
+        </div>
       </div>
       
       <div className="space-y-2">

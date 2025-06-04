@@ -94,31 +94,32 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
   };
 
   return (
-    <div className="border-b border-gray-200 pb-6">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
-          <FileText className="h-4 w-4 text-blue-600" />
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+      <div className="p-6 border-b border-gray-100">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+            <FileText className="h-4 w-4 text-blue-600" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900">Sections</h3>
         </div>
-        <h3 className="text-lg font-semibold text-gray-900">Sections</h3>
       </div>
       
-      <div className="space-y-3">
+      <div className="p-6 space-y-3">
         {sections.map((section, index) => (
           <div key={section.id} className="border border-gray-200 rounded-lg overflow-hidden">
-            <div className="flex items-center justify-between p-4 bg-gray-50">
-              <span className="text-sm font-medium text-gray-900">{section.label}</span>
-              
-              {!openSections[section.id] && (
-                <button 
-                  onClick={() => toggleSection(section.id)}
-                  className="p-1 hover:bg-gray-100 rounded transition-colors"
-                >
-                  <Edit className="h-4 w-4 text-gray-400" />
-                </button>
-              )}
-              
-              {openSections[section.id] && (
-                <div className="flex items-center gap-2">
+            {!openSections[section.id] && (
+              <div 
+                className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+                onClick={() => toggleSection(section.id)}
+              >
+                <span className="text-sm font-medium text-gray-900">{section.label}</span>
+                <Edit className="h-4 w-4 text-gray-400" />
+              </div>
+            )}
+            
+            {openSections[section.id] && (
+              <div className="p-4 bg-white">
+                <div className="flex items-center justify-end mb-4 gap-2">
                   <button 
                     onClick={() => handleAccept(section, index)}
                     className="p-1 hover:bg-gray-100 rounded transition-colors"
@@ -132,11 +133,6 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
                     <X className="h-4 w-4 text-gray-600" />
                   </button>
                 </div>
-              )}
-            </div>
-            
-            {openSections[section.id] && (
-              <div className="p-4 bg-white border-t border-gray-200">
                 <ContentSection 
                   posterData={{
                     ...posterData,
