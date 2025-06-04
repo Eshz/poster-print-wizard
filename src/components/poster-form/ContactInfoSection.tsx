@@ -20,49 +20,37 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
 }) => {
   const [tempValues, setTempValues] = useState<{[key: string]: string}>({});
 
-  const contactFields = [
-    { id: 'title', label: 'Title', field: 'title' },
-    { id: 'authors', label: 'Authors', field: 'authors' },
-    { id: 'school', label: 'School/Institution', field: 'school' },
-    { id: 'contact', label: 'Contact Info', field: 'contact' },
-  ];
-
   useEffect(() => {
-    // Initialize temp values when sections open
-    contactFields.forEach(field => {
-      if (openSections[field.id] && !tempValues[field.field]) {
-        setTempValues(prev => ({
-          ...prev,
-          [field.field]: posterData[field.field] || ''
-        }));
-      }
-    });
+    // Initialize temp values when section opens
+    if (openSections['general-info'] && Object.keys(tempValues).length === 0) {
+      setTempValues({
+        title: posterData.title || '',
+        authors: posterData.authors || '',
+        school: posterData.school || '',
+        contact: posterData.contact || ''
+      });
+    }
   }, [openSections, posterData]);
 
-  const handleAccept = (field: any) => {
-    const tempValue = tempValues[field.field] || '';
-    handleChange({ target: { name: field.field, value: tempValue } } as React.ChangeEvent<HTMLInputElement>);
-    toggleSection(field.id);
-    setTempValues(prev => {
-      const newValues = { ...prev };
-      delete newValues[field.field];
-      return newValues;
+  const handleAccept = () => {
+    // Save all temp values to poster data
+    Object.keys(tempValues).forEach(field => {
+      handleChange({ target: { name: field, value: tempValues[field] } } as React.ChangeEvent<HTMLInputElement>);
     });
+    toggleSection('general-info');
+    setTempValues({});
   };
 
-  const handleCancel = (field: any) => {
-    toggleSection(field.id);
-    setTempValues(prev => {
-      const newValues = { ...prev };
-      delete newValues[field.field];
-      return newValues;
-    });
+  const handleCancel = () => {
+    toggleSection('general-info');
+    setTempValues({});
   };
 
-  const handleTempChange = (field: string, value: string) => {
+  const handleTempChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
     setTempValues(prev => ({
       ...prev,
-      [field]: value
+      [name]: value
     }));
   };
 
@@ -73,52 +61,44 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
           <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
             <User className="h-4 w-4 text-blue-600" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900">Contact Info</h3>
+          <h3 className="text-lg font-semibold text-gray-900">General info</h3>
         </div>
       </div>
       
-      <div className="p-6 space-y-3">
-        {contactFields.map((field) => (
-          <div key={field.id} className="border border-gray-200 rounded-lg overflow-hidden">
-            {!openSections[field.id] && (
-              <div 
-                className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
-                onClick={() => toggleSection(field.id)}
-              >
-                <span className="text-sm font-medium text-gray-900">{field.label}</span>
-                <Edit className="h-4 w-4 text-gray-400" />
-              </div>
-            )}
-            
-            {openSections[field.id] && (
-              <div className="p-4 bg-white">
-                <div className="flex items-center justify-end mb-4 gap-2">
-                  <button 
-                    onClick={() => handleAccept(field)}
-                    className="p-1 hover:bg-gray-100 rounded transition-colors"
-                  >
-                    <Check className="h-4 w-4 text-gray-600" />
-                  </button>
-                  <button 
-                    onClick={() => handleCancel(field)}
-                    className="p-1 hover:bg-gray-100 rounded transition-colors"
-                  >
-                    <X className="h-4 w-4 text-gray-600" />
-                  </button>
-                </div>
-                <BasicInfoSection 
-                  posterData={{
-                    ...posterData,
-                    [field.field]: tempValues[field.field] !== undefined ? tempValues[field.field] : posterData[field.field]
-                  }}
-                  handleChange={(e) => handleTempChange(field.field, e.target.value)}
-                  singleField={field.field}
-                />
-              </div>
-            )}
+      {!openSections['general-info'] && (
+        <div 
+          className="p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer border-b border-gray-200"
+          onClick={() => toggleSection('general-info')}
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-900">Edit General info</span>
+            <Edit className="h-4 w-4 text-gray-400" />
           </div>
-        ))}
-      </div>
+        </div>
+      )}
+      
+      {openSections['general-info'] && (
+        <div className="p-6">
+          <div className="flex items-center justify-end mb-4 gap-2">
+            <button 
+              onClick={handleAccept}
+              className="p-1 hover:bg-gray-100 rounded transition-colors"
+            >
+              <Check className="h-4 w-4 text-gray-600" />
+            </button>
+            <button 
+              onClick={handleCancel}
+              className="p-1 hover:bg-gray-100 rounded transition-colors"
+            >
+              <X className="h-4 w-4 text-gray-600" />
+            </button>
+          </div>
+          <BasicInfoSection 
+            posterData={tempValues}
+            handleChange={handleTempChange}
+          />
+        </div>
+      )}
     </div>
   );
 };
