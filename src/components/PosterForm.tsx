@@ -7,7 +7,7 @@ import QrCodeSection from './poster-form/QrCodeSection';
 import ImagesSection from './poster-form/ImagesSection';
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Edit, FileText, Target, QrCode, Image } from "lucide-react";
+import { Edit, FileText, Target, QrCode, Image, User } from "lucide-react";
 
 interface PosterFormProps {
   posterData: any;
@@ -86,18 +86,36 @@ const PosterForm: React.FC<PosterFormProps> = ({
   
   return (
     <div className="h-full flex flex-col bg-gray-50">
-      <div className="p-6 border-b bg-white">
-        <h2 className="text-xl font-semibold text-gray-900 mb-1">Content</h2>
-        <p className="text-sm text-gray-600">Build your academic poster content</p>
-      </div>
-      
       <div className="flex-1 overflow-y-auto p-6 space-y-6">
-        {/* Basic Information */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <BasicInfoSection 
-            posterData={posterData} 
-            handleChange={handleChange} 
-          />
+        {/* Contact Info */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+          <div className="p-6 border-b border-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                <User className="h-4 w-4 text-blue-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">Contact Info</h3>
+            </div>
+          </div>
+          
+          <div 
+            className="p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer border-b border-gray-200"
+            onClick={() => toggleSection('contact')}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-900">Edit Contact Information</span>
+              <Edit className="h-4 w-4 text-gray-400" />
+            </div>
+          </div>
+          
+          {openSections['contact'] && (
+            <div className="p-6">
+              <BasicInfoSection 
+                posterData={posterData} 
+                handleChange={handleChange} 
+              />
+            </div>
+          )}
         </div>
         
         {/* Sections */}
