@@ -1,6 +1,5 @@
 
-import React from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React, { useState } from 'react';
 import BasicInfoSection from './poster-form/BasicInfoSection';
 import ContentSection from './poster-form/ContentSection';
 import KeyPointsSection from './poster-form/KeyPointsSection';
@@ -8,7 +7,7 @@ import QrCodeSection from './poster-form/QrCodeSection';
 import ImagesSection from './poster-form/ImagesSection';
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Edit } from "lucide-react";
+import { Edit, FileText, Target, QrCode, Image } from "lucide-react";
 
 interface PosterFormProps {
   posterData: any;
@@ -19,6 +18,15 @@ const PosterForm: React.FC<PosterFormProps> = ({
   posterData, 
   setPosterData
 }) => {
+  const [openSections, setOpenSections] = useState<{[key: string]: boolean}>({});
+
+  const toggleSection = (sectionId: string) => {
+    setOpenSections(prev => ({
+      ...prev,
+      [sectionId]: !prev[sectionId]
+    }));
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setPosterData(prev => ({ ...prev, [name]: value }));
@@ -69,143 +77,166 @@ const PosterForm: React.FC<PosterFormProps> = ({
   };
 
   const sections = [
-    { id: 'introduction', label: 'Introduction', icon: Edit },
-    { id: 'methods', label: 'Methods', icon: Edit },
-    { id: 'results', label: 'Results', icon: Edit },
-    { id: 'conclusion', label: 'Conclusion', icon: Edit },
-    { id: 'references', label: 'References', icon: Edit },
+    { id: 'introduction', label: 'Introduction', field: 'introduction' },
+    { id: 'methods', label: 'Methods', field: 'methods' },
+    { id: 'findings', label: 'Findings', field: 'findings' },
+    { id: 'conclusions', label: 'Conclusions', field: 'conclusions' },
+    { id: 'references', label: 'References', field: 'references' },
   ];
   
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col bg-gray-50">
       <div className="p-6 border-b bg-white">
         <h2 className="text-xl font-semibold text-gray-900 mb-1">Content</h2>
         <p className="text-sm text-gray-600">Build your academic poster content</p>
       </div>
       
-      <div className="flex-1 overflow-y-auto">
-        <div className="p-6 space-y-8">
+      <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        {/* Basic Information */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <BasicInfoSection 
             posterData={posterData} 
             handleChange={handleChange} 
           />
-          
-          <div className="space-y-6">
-            <div className="space-y-3">
-              <h3 className="text-lg font-medium text-gray-900">Sections</h3>
-              <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-                + Add a section
-              </button>
+        </div>
+        
+        {/* Sections */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+          <div className="p-6 border-b border-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                <FileText className="h-4 w-4 text-blue-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">Sections</h3>
             </div>
-            
-            <div className="space-y-4">
-              {sections.map((section) => (
-                <div key={section.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                  <span className="text-sm font-medium text-gray-900 capitalize">{section.label}</span>
+          </div>
+          
+          <div className="p-6 space-y-3">
+            {sections.map((section, index) => (
+              <div key={section.id} className="border border-gray-200 rounded-lg overflow-hidden">
+                <div 
+                  className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+                  onClick={() => toggleSection(section.id)}
+                >
+                  <span className="text-sm font-medium text-gray-900">{section.label}</span>
                   <Edit className="h-4 w-4 text-gray-400" />
                 </div>
-              ))}
-            </div>
-          </div>
-          
-          <div className="space-y-6">
-            <h3 className="text-lg font-medium text-gray-900">Images</h3>
-            <div className="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center hover:border-gray-300 transition-colors">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-900">Drag and drop images here</p>
-                <p className="text-xs text-gray-500">Or click to browse</p>
-                <button className="mt-3 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                  Upload
-                </button>
+                
+                {openSections[section.id] && (
+                  <div className="p-4 bg-white border-t border-gray-200">
+                    <ContentSection 
+                      posterData={posterData}
+                      handleChange={handleChange}
+                      handleSectionTitleChange={handleSectionTitleChange}
+                      sectionIndex={index}
+                      sectionField={section.field}
+                    />
+                  </div>
+                )}
               </div>
-            </div>
+            ))}
           </div>
-          
-          <Tabs defaultValue="content" className="w-full">
-            <TabsList className="grid grid-cols-4 mb-6 bg-gray-100 p-1 rounded-lg">
-              <TabsTrigger value="content" className="data-[state=active]:bg-white data-[state=active]:shadow-sm text-sm">
-                Main Content
-              </TabsTrigger>
-              <TabsTrigger value="keypoints" className="data-[state=active]:bg-white data-[state=active]:shadow-sm text-sm">
-                Key Takeaways
-              </TabsTrigger>
-              <TabsTrigger value="images" className="data-[state=active]:bg-white data-[state=active]:shadow-sm text-sm">
-                Images
-              </TabsTrigger>
-              <TabsTrigger value="qrcode" className="data-[state=active]:bg-white data-[state=active]:shadow-sm text-sm">
-                QR Code
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="content" className="space-y-4">
-              <ContentSection 
-                posterData={posterData}
-                handleChange={handleChange}
-                handleSectionTitleChange={handleSectionTitleChange}
-              />
-            </TabsContent>
-            
-            <TabsContent value="keypoints">
-              <div className="mb-6 flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <div>
-                  <Label htmlFor="show-keypoints" className="font-medium text-gray-900">
-                    Show Key Takeaways
-                  </Label>
-                  <p className="text-sm text-gray-600 mt-1">Display key points on your poster</p>
-                </div>
-                <Switch 
-                  id="show-keypoints" 
-                  checked={posterData.showKeypoints !== false} 
-                  onCheckedChange={handleToggleChange('showKeypoints')}
-                />
-              </div>
-              
-              {posterData.showKeypoints !== false && (
-                <KeyPointsSection 
-                  keypoints={posterData.keypoints}
-                  keyDescriptions={posterData.keyDescriptions}
-                  keyVisibility={posterData.keyVisibility || [true, true, true, true]}
-                  handleKeyPointChange={handleKeyPointChange}
-                  handleKeyDescriptionChange={handleKeyDescriptionChange}
-                  handleKeyVisibilityChange={handleKeyVisibilityChange}
-                />
-              )}
-            </TabsContent>
-            
-            <TabsContent value="images">
-              <ImagesSection 
-                images={posterData.images || []}
-                onImagesChange={handleImagesChange}
-              />
-            </TabsContent>
+        </div>
 
-            <TabsContent value="qrcode">
-              <div className="mb-6 flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <div>
-                  <Label htmlFor="show-qrcode" className="font-medium text-gray-900">
-                    Show QR Code
-                  </Label>
-                  <p className="text-sm text-gray-600 mt-1">Add a QR code to your poster</p>
+        {/* Key Takeaways */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+          <div className="p-6 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center">
+                  <Target className="h-4 w-4 text-green-600" />
                 </div>
-                <Switch 
-                  id="show-qrcode" 
-                  checked={posterData.showQrCode !== false} 
-                  onCheckedChange={handleToggleChange('showQrCode')}
-                />
+                <h3 className="text-lg font-semibold text-gray-900">Key Takeaways</h3>
               </div>
-              
-              {posterData.showQrCode !== false && (
-                <QrCodeSection 
-                  qrCodeUrl={posterData.qrCodeUrl}
-                  qrCodeColor={posterData.qrCodeColor}
-                  qrCodeCaption={posterData.qrCodeCaption || ''}
-                  handleQrUrlChange={handleQrUrlChange}
-                  handleQrColorChange={handleQrColorChange}
-                  handleQrCaptionChange={handleQrCaptionChange}
-                />
-              )}
-            </TabsContent>
-          </Tabs>
+              <Switch 
+                checked={posterData.showKeypoints !== false} 
+                onCheckedChange={handleToggleChange('showKeypoints')}
+              />
+            </div>
+          </div>
+          
+          <div 
+            className="p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer border-b border-gray-200"
+            onClick={() => toggleSection('keypoints')}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-900">Edit Key Takeaways</span>
+              <Edit className="h-4 w-4 text-gray-400" />
+            </div>
+          </div>
+          
+          {openSections['keypoints'] && posterData.showKeypoints !== false && (
+            <div className="p-6">
+              <KeyPointsSection 
+                keypoints={posterData.keypoints}
+                keyDescriptions={posterData.keyDescriptions}
+                keyVisibility={posterData.keyVisibility || [true, true, true, true]}
+                handleKeyPointChange={handleKeyPointChange}
+                handleKeyDescriptionChange={handleKeyDescriptionChange}
+                handleKeyVisibilityChange={handleKeyVisibilityChange}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Images */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+          <div className="p-6 border-b border-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center">
+                <Image className="h-4 w-4 text-purple-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">Images</h3>
+            </div>
+          </div>
+          
+          <div className="p-6">
+            <ImagesSection 
+              images={posterData.images || []}
+              onImagesChange={handleImagesChange}
+            />
+          </div>
+        </div>
+
+        {/* QR Code */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+          <div className="p-6 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-orange-50 rounded-lg flex items-center justify-center">
+                  <QrCode className="h-4 w-4 text-orange-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">QR Code</h3>
+              </div>
+              <Switch 
+                checked={posterData.showQrCode !== false} 
+                onCheckedChange={handleToggleChange('showQrCode')}
+              />
+            </div>
+          </div>
+          
+          <div 
+            className="p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer border-b border-gray-200"
+            onClick={() => toggleSection('qrcode')}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-900">Edit QR Code</span>
+              <Edit className="h-4 w-4 text-gray-400" />
+            </div>
+          </div>
+          
+          {openSections['qrcode'] && posterData.showQrCode !== false && (
+            <div className="p-6">
+              <QrCodeSection 
+                qrCodeUrl={posterData.qrCodeUrl}
+                qrCodeColor={posterData.qrCodeColor}
+                qrCodeCaption={posterData.qrCodeCaption || ''}
+                handleQrUrlChange={handleQrUrlChange}
+                handleQrColorChange={handleQrColorChange}
+                handleQrCaptionChange={handleQrCaptionChange}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

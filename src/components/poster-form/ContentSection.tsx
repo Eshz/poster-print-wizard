@@ -8,26 +8,20 @@ interface ContentSectionProps {
   posterData: any;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleSectionTitleChange: (index: number, value: string) => void;
+  sectionIndex: number;
+  sectionField: string;
 }
 
 const ContentSection: React.FC<ContentSectionProps> = ({ 
   posterData, 
   handleChange,
-  handleSectionTitleChange
+  handleSectionTitleChange,
+  sectionIndex,
+  sectionField
 }) => {
-  // Sections data structure - maps the section index to the corresponding field name
-  const sections = [
-    { index: 0, field: "introduction", title: "Section 1 Title" },
-    { index: 1, field: "methods", title: "Section 2 Title" },
-    { index: 2, field: "findings", title: "Section 3 Title" },
-    { index: 3, field: "conclusions", title: "Section 4 Title" },
-    { index: 4, field: "references", title: "Section 5 Title" }
-  ];
-
-  // Make sure sectionTitles exists in posterData and has default values if needed
   const sectionTitles = posterData?.sectionTitles || [
     "1. Introduction",
-    "2. Methods",
+    "2. Methods", 
     "3. Findings",
     "4. Conclusions",
     "5. References"
@@ -35,30 +29,33 @@ const ContentSection: React.FC<ContentSectionProps> = ({
 
   return (
     <div className="space-y-4">
-      {sections.map((section) => (
-        <div 
-          key={section.index}
-          className="border border-gray-200 p-3 rounded-md"
-        >
-          <div className="flex items-center gap-2 mb-1">
-            <Label htmlFor={`sectionTitle-${section.index}`}>{section.title}</Label>
-            <Input 
-              id={`sectionTitle-${section.index}`}
-              value={sectionTitles[section.index] || `Section ${section.index + 1}`}
-              onChange={(e) => handleSectionTitleChange(section.index, e.target.value)}
-              className="max-w-[250px]"
-            />
-          </div>
-          <Textarea
-            id={section.field}
-            name={section.field}
-            value={posterData?.[section.field] || ""}
-            onChange={handleChange}
-            rows={3}
-            className="mb-2"
-          />
-        </div>
-      ))}
+      <div className="space-y-2">
+        <Label htmlFor={`sectionTitle-${sectionIndex}`} className="text-sm font-medium text-gray-900">
+          Section Title
+        </Label>
+        <Input 
+          id={`sectionTitle-${sectionIndex}`}
+          value={sectionTitles[sectionIndex] || `Section ${sectionIndex + 1}`}
+          onChange={(e) => handleSectionTitleChange(sectionIndex, e.target.value)}
+          className="border-gray-300 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg"
+          placeholder="Enter section title"
+        />
+      </div>
+      
+      <div className="space-y-2">
+        <Label htmlFor={sectionField} className="text-sm font-medium text-gray-900">
+          Content
+        </Label>
+        <Textarea
+          id={sectionField}
+          name={sectionField}
+          value={posterData?.[sectionField] || ""}
+          onChange={handleChange}
+          rows={6}
+          className="border-gray-300 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg"
+          placeholder="Enter section content"
+        />
+      </div>
     </div>
   );
 };
