@@ -6,7 +6,6 @@ import DesktopSidebar from '@/components/layout/DesktopSidebar';
 import PosterPreviewArea from '@/components/layout/PosterPreviewArea';
 import MobileFloatingButton from '@/components/layout/MobileFloatingButton';
 import { useProjects } from '@/contexts/ProjectContext';
-import ProjectSwitcher from '@/components/ProjectSwitcher';
 
 const Index = () => {
   const { 
@@ -43,7 +42,6 @@ const Index = () => {
   
   // Auto-save when poster data or design settings change
   useEffect(() => {
-    // Use a debounce to avoid too many saves
     const timeout = setTimeout(() => {
       if (currentProject) {
         saveCurrentProject();
@@ -54,11 +52,11 @@ const Index = () => {
   }, [posterData, designSettings, qrColor]);
   
   const handleExportPDF = () => {
-    exportToPDF('poster-preview');
+    exportToPDF('poster-content');
   };
   
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="flex lg:flex-row min-h-[calc(100vh-73px)] bg-gray-50">
       {/* Mobile view tabs */}
       <MobileTabs 
         posterData={posterData}
