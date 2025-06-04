@@ -17,13 +17,20 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = ({
   const [manualZoom, setManualZoom] = useState<number>(1);
   const [containerScale, setContainerScale] = useState<number>(1);
 
+  // Default to fit-to-window when container scale is calculated
+  useEffect(() => {
+    if (containerScale > 0 && containerScale < 1) {
+      setManualZoom(containerScale);
+    }
+  }, [containerScale]);
+
   const handleZoomChange = (zoom: number) => {
     setManualZoom(zoom);
   };
 
   return (
-    <div className="flex-1 p-6 bg-gray-100 overflow-hidden relative">
-      <div className="bg-white rounded-xl shadow-lg border border-gray-200 h-full flex items-center justify-center relative overflow-auto">
+    <div className="flex-1 bg-gray-100 overflow-hidden relative">
+      <div className="bg-white rounded-xl shadow-lg border border-gray-200 h-full flex items-center justify-center relative overflow-auto mx-4 my-4">
         <ZoomControls 
           currentZoom={manualZoom}
           onZoomChange={handleZoomChange}
@@ -32,7 +39,7 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = ({
         
         <div 
           id="poster-preview" 
-          className="w-full h-full flex items-center justify-center overflow-auto p-8"
+          className="w-full h-full flex items-center justify-center overflow-auto"
         >
           <PosterPreview 
             posterData={{

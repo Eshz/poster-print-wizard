@@ -15,13 +15,13 @@ export const createPdfConfig = () => ({
   filename: 'conference-poster-A0.pdf',
   image: { 
     type: 'jpeg', 
-    quality: 0.98
+    quality: 0.95
   },
   html2canvas: { 
-    scale: 2,
+    scale: 3, // Increased scale for better quality
     useCORS: true,
     letterRendering: true,
-    logging: true, // Enable logging to debug
+    logging: false,
     width: PREVIEW_WIDTH,
     height: PREVIEW_HEIGHT,
     allowTaint: true,
@@ -29,9 +29,8 @@ export const createPdfConfig = () => ({
     removeContainer: false,
     backgroundColor: '#ffffff',
     foreignObjectRendering: true,
-    onclone: (clonedDoc: Document) => {
-      console.log("html2canvas cloned document:", clonedDoc);
-    }
+    windowWidth: PREVIEW_WIDTH,
+    windowHeight: PREVIEW_HEIGHT
   },
   jsPDF: { 
     unit: 'pt', 

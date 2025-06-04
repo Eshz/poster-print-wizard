@@ -34,20 +34,22 @@ export const usePosterScaling = ({
       const uiToA0Scale = a0WidthPx / posterUIWidth;
       
       // At 100% zoom, we want to show actual A0 size
-      // So we need to scale up our UI representation by the uiToA0Scale factor
       const actualA0Scale = manualZoom * uiToA0Scale;
       
       // Apply the zoom scale
       posterRef.current.style.transform = `scale(${actualA0Scale})`;
 
-      // Calculate what scale would fit the ACTUAL POSTER SIZE (at 100% zoom) in the container
+      // Calculate fit-to-window scale with better padding consideration
+      const availableWidth = containerRect.width - 40; // Account for minimal padding
+      const availableHeight = containerRect.height - 40;
+      
       const posterAtFullSize = {
         width: posterUIWidth * uiToA0Scale,
         height: posterUIHeight * uiToA0Scale
       };
       
-      const scaleX = (containerRect.width - 32) / posterAtFullSize.width; // 32px padding
-      const scaleY = (containerRect.height - 32) / posterAtFullSize.height; // 32px padding
+      const scaleX = availableWidth / posterAtFullSize.width;
+      const scaleY = availableHeight / posterAtFullSize.height;
       const fitToWindowScale = Math.min(scaleX, scaleY, 1);
 
       // Notify parent of fit-to-window scale
@@ -56,10 +58,14 @@ export const usePosterScaling = ({
       }
     };
 
+    // Initial calculation with a small delay to ensure DOM is ready
+    const timer = setTimeout(calculateScale, 100);
+    
     calculateScale();
     window.addEventListener('resize', calculateScale);
     
     return () => {
+      clearTimeout(timer);
       window.removeEventListener('resize', calculateScale);
     };
   }, [manualZoom, onContainerScaleChange, posterUIWidth, posterUIHeight, a0WidthPx, a0HeightPx]);
