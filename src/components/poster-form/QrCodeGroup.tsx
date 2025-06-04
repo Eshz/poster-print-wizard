@@ -1,7 +1,6 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import QrCodeSection from './QrCodeSection';
-import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Edit, QrCode, Check, X } from "lucide-react";
 
@@ -24,12 +23,46 @@ const QrCodeGroup: React.FC<QrCodeGroupProps> = ({
   openSections,
   toggleSection
 }) => {
+  const [tempValues, setTempValues] = useState<{url: string, color: string, caption: string}>({
+    url: '',
+    color: '',
+    caption: ''
+  });
+
+  useEffect(() => {
+    // Initialize temp values when section opens
+    if (openSections['qrcode'] && !tempValues.url && !tempValues.color && !tempValues.caption) {
+      setTempValues({
+        url: posterData.qrCodeUrl || '',
+        color: posterData.qrCodeColor || '',
+        caption: posterData.qrCodeCaption || ''
+      });
+    }
+  }, [openSections, posterData]);
+
   const handleAccept = () => {
+    handleQrUrlChange(tempValues.url);
+    handleQrColorChange(tempValues.color);
+    handleQrCaptionChange(tempValues.caption);
     toggleSection('qrcode');
+    setTempValues({ url: '', color: '', caption: '' });
   };
 
   const handleCancel = () => {
     toggleSection('qrcode');
+    setTempValues({ url: '', color: '', caption: '' });
+  };
+
+  const handleTempUrlChange = (url: string) => {
+    setTempValues(prev => ({ ...prev, url }));
+  };
+
+  const handleTempColorChange = (color: string) => {
+    setTempValues(prev => ({ ...prev, color }));
+  };
+
+  const handleTempCaptionChange = (caption: string) => {
+    setTempValues(prev => ({ ...prev, caption }));
   };
 
   return (
@@ -63,31 +96,27 @@ const QrCodeGroup: React.FC<QrCodeGroupProps> = ({
       
       {openSections['qrcode'] && posterData.showQrCode !== false && (
         <div className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex gap-2">
-              <Button 
-                size="sm" 
-                onClick={handleAccept}
-                className="bg-green-600 hover:bg-green-700"
-              >
-                <Check className="h-4 w-4" />
-              </Button>
-              <Button 
-                size="sm" 
-                variant="outline" 
-                onClick={handleCancel}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
+          <div className="flex items-center justify-end mb-4 gap-2">
+            <button 
+              onClick={handleAccept}
+              className="p-1 hover:bg-gray-100 rounded transition-colors"
+            >
+              <Check className="h-4 w-4 text-gray-600" />
+            </button>
+            <button 
+              onClick={handleCancel}
+              className="p-1 hover:bg-gray-100 rounded transition-colors"
+            >
+              <X className="h-4 w-4 text-gray-600" />
+            </button>
           </div>
           <QrCodeSection 
-            qrCodeUrl={posterData.qrCodeUrl}
-            qrCodeColor={posterData.qrCodeColor}
-            qrCodeCaption={posterData.qrCodeCaption || ''}
-            handleQrUrlChange={handleQrUrlChange}
-            handleQrColorChange={handleQrColorChange}
-            handleQrCaptionChange={handleQrCaptionChange}
+            qrCodeUrl={tempValues.url}
+            qrCodeColor={tempValues.color}
+            qrCodeCaption={tempValues.caption}
+            handleQrUrlChange={handleTempUrlChange}
+            handleQrColorChange={handleTempColorChange}
+            handleQrCaptionChange={handleTempCaptionChange}
           />
         </div>
       )}

@@ -1,7 +1,6 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ContentSection from './ContentSection';
-import { Button } from "@/components/ui/button";
 import { Edit, FileText, Check, X } from "lucide-react";
 
 interface SectionsGroupProps {
@@ -19,6 +18,8 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
   openSections,
   toggleSection
 }) => {
+  const [tempValues, setTempValues] = useState<{[key: string]: {content: string, title: string}}>({});
+
   const sections = [
     { id: 'introduction', label: 'Introduction', field: 'introduction' },
     { id: 'methods', label: 'Methods', field: 'methods' },
@@ -27,12 +28,69 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
     { id: 'references', label: 'References', field: 'references' },
   ];
 
-  const handleAccept = (sectionId: string) => {
-    toggleSection(sectionId);
+  useEffect(() => {
+    // Initialize temp values when sections open
+    sections.forEach((section, index) => {
+      if (openSections[section.id] && !tempValues[section.id]) {
+        const sectionTitles = posterData?.sectionTitles || [
+          "1. Introduction",
+          "2. Methods", 
+          "3. Findings",
+          "4. Conclusions",
+          "5. References"
+        ];
+        setTempValues(prev => ({
+          ...prev,
+          [section.id]: {
+            content: posterData[section.field] || '',
+            title: sectionTitles[index] || section.label
+          }
+        }));
+      }
+    });
+  }, [openSections, posterData]);
+
+  const handleAccept = (section: any, index: number) => {
+    const tempValue = tempValues[section.id];
+    if (tempValue) {
+      handleChange({ target: { name: section.field, value: tempValue.content } } as React.ChangeEvent<HTMLTextAreaElement>);
+      handleSectionTitleChange(index, tempValue.title);
+    }
+    toggleSection(section.id);
+    setTempValues(prev => {
+      const newValues = { ...prev };
+      delete newValues[section.id];
+      return newValues;
+    });
   };
 
   const handleCancel = (sectionId: string) => {
     toggleSection(sectionId);
+    setTempValues(prev => {
+      const newValues = { ...prev };
+      delete newValues[sectionId];
+      return newValues;
+    });
+  };
+
+  const handleTempContentChange = (sectionId: string, value: string) => {
+    setTempValues(prev => ({
+      ...prev,
+      [sectionId]: {
+        ...prev[sectionId],
+        content: value
+      }
+    }));
+  };
+
+  const handleTempTitleChange = (sectionId: string, value: string) => {
+    setTempValues(prev => ({
+      ...prev,
+      [sectionId]: {
+        ...prev[sectionId],
+        title: value
+      }
+    }));
   };
 
   return (
@@ -61,28 +119,30 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
             
             {openSections[section.id] && (
               <div className="p-4 bg-white">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex gap-2">
-                    <Button 
-                      size="sm" 
-                      onClick={() => handleAccept(section.id)}
-                      className="bg-green-600 hover:bg-green-700"
-                    >
-                      <Check className="h-4 w-4" />
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      onClick={() => handleCancel(section.id)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
+                <div className="flex items-center justify-end mb-4 gap-2">
+                  <button 
+                    onClick={() => handleAccept(section, index)}
+                    className="p-1 hover:bg-gray-100 rounded transition-colors"
+                  >
+                    <Check className="h-4 w-4 text-gray-600" />
+                  </button>
+                  <button 
+                    onClick={() => handleCancel(section.id)}
+                    className="p-1 hover:bg-gray-100 rounded transition-colors"
+                  >
+                    <X className="h-4 w-4 text-gray-600" />
+                  </button>
                 </div>
                 <ContentSection 
-                  posterData={posterData}
-                  handleChange={handleChange}
-                  handleSectionTitleChange={handleSectionTitleChange}
+                  posterData={{
+                    ...posterData,
+                    [section.field]: tempValues[section.id]?.content !== undefined ? tempValues[section.id].content : posterData[section.field],
+                    sectionTitles: tempValues[section.id]?.title !== undefined ? 
+                      [...(posterData.sectionTitles || []), tempValues[section.id].title].slice(0, posterData.sectionTitles?.length || 5) :
+                      posterData.sectionTitles
+                  }}
+                  handleChange={(e) => handleTempContentChange(section.id, e.target.value)}
+                  handleSectionTitleChange={(idx, value) => handleTempTitleChange(section.id, value)}
                   sectionIndex={index}
                   sectionField={section.field}
                 />

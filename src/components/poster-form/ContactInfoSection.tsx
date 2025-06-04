@@ -1,7 +1,6 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import BasicInfoSection from './BasicInfoSection';
-import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Edit, User, Check, X } from "lucide-react";
@@ -19,6 +18,8 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
   openSections,
   toggleSection
 }) => {
+  const [tempValues, setTempValues] = useState<{[key: string]: string}>({});
+
   const contactFields = [
     { id: 'title', label: 'Title', field: 'title' },
     { id: 'authors', label: 'Authors', field: 'authors' },
@@ -26,12 +27,43 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
     { id: 'contact', label: 'Contact Info', field: 'contact' },
   ];
 
-  const handleAccept = (fieldId: string) => {
-    toggleSection(fieldId);
+  useEffect(() => {
+    // Initialize temp values when sections open
+    contactFields.forEach(field => {
+      if (openSections[field.id] && !tempValues[field.field]) {
+        setTempValues(prev => ({
+          ...prev,
+          [field.field]: posterData[field.field] || ''
+        }));
+      }
+    });
+  }, [openSections, posterData]);
+
+  const handleAccept = (field: any) => {
+    const tempValue = tempValues[field.field] || '';
+    handleChange({ target: { name: field.field, value: tempValue } } as React.ChangeEvent<HTMLInputElement>);
+    toggleSection(field.id);
+    setTempValues(prev => {
+      const newValues = { ...prev };
+      delete newValues[field.field];
+      return newValues;
+    });
   };
 
-  const handleCancel = (fieldId: string) => {
-    toggleSection(fieldId);
+  const handleCancel = (field: any) => {
+    toggleSection(field.id);
+    setTempValues(prev => {
+      const newValues = { ...prev };
+      delete newValues[field.field];
+      return newValues;
+    });
+  };
+
+  const handleTempChange = (field: string, value: string) => {
+    setTempValues(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
   return (
@@ -60,27 +92,26 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
             
             {openSections[field.id] && (
               <div className="p-4 bg-white">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex gap-2">
-                    <Button 
-                      size="sm" 
-                      onClick={() => handleAccept(field.id)}
-                      className="bg-green-600 hover:bg-green-700"
-                    >
-                      <Check className="h-4 w-4" />
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      onClick={() => handleCancel(field.id)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
+                <div className="flex items-center justify-end mb-4 gap-2">
+                  <button 
+                    onClick={() => handleAccept(field)}
+                    className="p-1 hover:bg-gray-100 rounded transition-colors"
+                  >
+                    <Check className="h-4 w-4 text-gray-600" />
+                  </button>
+                  <button 
+                    onClick={() => handleCancel(field)}
+                    className="p-1 hover:bg-gray-100 rounded transition-colors"
+                  >
+                    <X className="h-4 w-4 text-gray-600" />
+                  </button>
                 </div>
                 <BasicInfoSection 
-                  posterData={posterData} 
-                  handleChange={handleChange}
+                  posterData={{
+                    ...posterData,
+                    [field.field]: tempValues[field.field] !== undefined ? tempValues[field.field] : posterData[field.field]
+                  }}
+                  handleChange={(e) => handleTempChange(field.field, e.target.value)}
                   singleField={field.field}
                 />
               </div>
