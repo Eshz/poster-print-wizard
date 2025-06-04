@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BasicInfoSection from './poster-form/BasicInfoSection';
@@ -67,18 +68,31 @@ const PosterForm: React.FC<PosterFormProps> = ({
   };
   
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-2">Content</h2>
+        <p className="text-sm text-gray-600">Add and edit your poster content</p>
+      </div>
+      
       <BasicInfoSection 
         posterData={posterData} 
         handleChange={handleChange} 
       />
       
       <Tabs defaultValue="content" className="w-full">
-        <TabsList className="grid grid-cols-4 mb-4">
-          <TabsTrigger value="content">Main Content</TabsTrigger>
-          <TabsTrigger value="keypoints">Key Takeaways</TabsTrigger>
-          <TabsTrigger value="images">Images</TabsTrigger>
-          <TabsTrigger value="qrcode">QR Code</TabsTrigger>
+        <TabsList className="grid grid-cols-4 mb-6 bg-gray-100 p-1 rounded-lg">
+          <TabsTrigger value="content" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+            Main Content
+          </TabsTrigger>
+          <TabsTrigger value="keypoints" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+            Key Takeaways
+          </TabsTrigger>
+          <TabsTrigger value="images" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+            Images
+          </TabsTrigger>
+          <TabsTrigger value="qrcode" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+            QR Code
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="content" className="space-y-4">
@@ -90,8 +104,13 @@ const PosterForm: React.FC<PosterFormProps> = ({
         </TabsContent>
         
         <TabsContent value="keypoints">
-          <div className="mb-4 flex items-center justify-between">
-            <Label htmlFor="show-keypoints" className="font-medium">Show Key Takeaways</Label>
+          <div className="mb-6 flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div>
+              <Label htmlFor="show-keypoints" className="font-medium text-gray-900">
+                Show Key Takeaways
+              </Label>
+              <p className="text-sm text-gray-600 mt-1">Display key points on your poster</p>
+            </div>
             <Switch 
               id="show-keypoints" 
               checked={posterData.showKeypoints !== false} 
@@ -119,8 +138,13 @@ const PosterForm: React.FC<PosterFormProps> = ({
         </TabsContent>
 
         <TabsContent value="qrcode">
-          <div className="mb-4 flex items-center justify-between">
-            <Label htmlFor="show-qrcode" className="font-medium">Show QR Code</Label>
+          <div className="mb-6 flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div>
+              <Label htmlFor="show-qrcode" className="font-medium text-gray-900">
+                Show QR Code
+              </Label>
+              <p className="text-sm text-gray-600 mt-1">Add a QR code to your poster</p>
+            </div>
             <Switch 
               id="show-qrcode" 
               checked={posterData.showQrCode !== false} 

@@ -14,48 +14,62 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
   handleChange 
 }) => {
   return (
-    <Card>
-      <CardContent className="pt-4">
-        <Label htmlFor="title">Poster Title</Label>
-        <Input
-          id="title"
-          name="title"
-          value={posterData.title}
-          onChange={handleChange}
-          className="mb-2"
-        />
+    <Card className="border-0 shadow-sm bg-white">
+      <CardContent className="pt-6 space-y-6">
+        <div className="space-y-2">
+          <Label htmlFor="title" className="text-sm font-medium text-gray-700">
+            Poster Title
+          </Label>
+          <Input
+            id="title"
+            name="title"
+            value={posterData.title || ''}
+            onChange={handleChange}
+            placeholder="Enter your poster title"
+            className="border-gray-200 focus:border-blue-500 focus:ring-blue-500/20"
+          />
+        </div>
         
-        <div className="grid grid-cols-2 gap-2">
-          <div>
-            <Label htmlFor="authors">Authors</Label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="authors" className="text-sm font-medium text-gray-700">
+              Authors
+            </Label>
             <Input
               id="authors"
               name="authors"
-              value={posterData.authors}
+              value={posterData.authors || ''}
               onChange={handleChange}
-              className="mb-2"
+              placeholder="Enter author names"
+              className="border-gray-200 focus:border-blue-500 focus:ring-blue-500/20"
             />
           </div>
-          <div>
-            <Label htmlFor="school">School/Institution</Label>
+          <div className="space-y-2">
+            <Label htmlFor="school" className="text-sm font-medium text-gray-700">
+              School/Institution
+            </Label>
             <Input
               id="school"
               name="school"
-              value={posterData.school}
+              value={posterData.school || ''}
               onChange={handleChange}
-              className="mb-2"
+              placeholder="Enter institution name"
+              className="border-gray-200 focus:border-blue-500 focus:ring-blue-500/20"
             />
           </div>
         </div>
         
-        <div>
-          <Label htmlFor="contact">Contact Info</Label>
+        <div className="space-y-2">
+          <Label htmlFor="contact" className="text-sm font-medium text-gray-700">
+            Contact Info
+          </Label>
           <Input
             id="contact"
             name="contact"
-            value={posterData.contact}
+            value={posterData.contact || ''}
             onChange={handleChange}
-            className="mb-2"
+            placeholder="Enter contact information"
+            className="border-gray-200 focus:border-blue-500 focus:ring-blue-500/20"
           />
         </div>
       </CardContent>

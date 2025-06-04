@@ -23,8 +23,8 @@ const QrCodeSection: React.FC<QrCodeSectionProps> = ({
   handleQrCaptionChange
 }) => {
   return (
-    <Card>
-      <CardContent className="pt-4 space-y-4">
+    <Card className="border-0 shadow-sm bg-white">
+      <CardContent className="pt-6 space-y-6">
         <QrCode 
           url={qrCodeUrl} 
           setUrl={handleQrUrlChange}
@@ -33,12 +33,15 @@ const QrCodeSection: React.FC<QrCodeSectionProps> = ({
         />
         
         <div className="space-y-2">
-          <Label htmlFor="qr-caption">QR Code Caption</Label>
+          <Label htmlFor="qr-caption" className="text-sm font-medium text-gray-700">
+            QR Code Caption
+          </Label>
           <Input
             id="qr-caption"
             value={qrCodeCaption}
             placeholder="Scan for more info"
             onChange={(e) => handleQrCaptionChange(e.target.value)}
+            className="border-gray-200 focus:border-blue-500 focus:ring-blue-500/20"
           />
         </div>
       </CardContent>

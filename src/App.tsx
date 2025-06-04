@@ -15,10 +15,15 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <ProjectProvider>
-        <div className="flex flex-col min-h-screen">
-          <header className="border-b bg-white p-2 shadow-sm">
-            <div className="container mx-auto flex justify-between items-center">
-              <h1 className="text-xl font-bold">Poster Generator</h1>
+        <div className="flex flex-col min-h-screen bg-white">
+          <header className="border-b bg-white shadow-sm">
+            <div className="container mx-auto flex justify-between items-center px-6 py-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">P</span>
+                </div>
+                <h1 className="text-xl font-semibold text-gray-900">PosterMaker</h1>
+              </div>
               <ProjectSwitcher />
             </div>
           </header>

@@ -58,7 +58,7 @@ const Index = () => {
   };
   
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Mobile view tabs */}
       <MobileTabs 
         posterData={posterData}
