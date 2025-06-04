@@ -90,6 +90,13 @@ const PosterForm: React.FC<PosterFormProps> = ({
     { id: 'school', label: 'School/Institution', field: 'school' },
     { id: 'contact', label: 'Contact Info', field: 'contact' },
   ];
+
+  const keyTakeawayItems = [
+    { id: 'keypoint-0', label: 'Key Takeaway 1', index: 0 },
+    { id: 'keypoint-1', label: 'Key Takeaway 2', index: 1 },
+    { id: 'keypoint-2', label: 'Key Takeaway 3', index: 2 },
+    { id: 'keypoint-3', label: 'Key Takeaway 4', index: 3 },
+  ];
   
   return (
     <div className="h-full flex flex-col bg-gray-50">
@@ -185,26 +192,33 @@ const PosterForm: React.FC<PosterFormProps> = ({
             </div>
           </div>
           
-          <div 
-            className="p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer border-b border-gray-200"
-            onClick={() => toggleSection('keypoints')}
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-900">Edit Key Takeaways</span>
-              <Edit className="h-4 w-4 text-gray-400" />
-            </div>
-          </div>
-          
-          {openSections['keypoints'] && posterData.showKeypoints !== false && (
-            <div className="p-6">
-              <KeyPointsSection 
-                keypoints={posterData.keypoints}
-                keyDescriptions={posterData.keyDescriptions}
-                keyVisibility={posterData.keyVisibility || [true, true, true, true]}
-                handleKeyPointChange={handleKeyPointChange}
-                handleKeyDescriptionChange={handleKeyDescriptionChange}
-                handleKeyVisibilityChange={handleKeyVisibilityChange}
-              />
+          {posterData.showKeypoints !== false && (
+            <div className="p-6 space-y-3">
+              {keyTakeawayItems.map((item) => (
+                <div key={item.id} className="border border-gray-200 rounded-lg overflow-hidden">
+                  <div 
+                    className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+                    onClick={() => toggleSection(item.id)}
+                  >
+                    <span className="text-sm font-medium text-gray-900">{item.label}</span>
+                    <Edit className="h-4 w-4 text-gray-400" />
+                  </div>
+                  
+                  {openSections[item.id] && (
+                    <div className="p-4 bg-white border-t border-gray-200">
+                      <KeyPointsSection 
+                        keypoints={posterData.keypoints}
+                        keyDescriptions={posterData.keyDescriptions}
+                        keyVisibility={posterData.keyVisibility || [true, true, true, true]}
+                        handleKeyPointChange={handleKeyPointChange}
+                        handleKeyDescriptionChange={handleKeyDescriptionChange}
+                        handleKeyVisibilityChange={handleKeyVisibilityChange}
+                        singleIndex={item.index}
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -245,15 +259,17 @@ const PosterForm: React.FC<PosterFormProps> = ({
             </div>
           </div>
           
-          <div 
-            className="p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer border-b border-gray-200"
-            onClick={() => toggleSection('qrcode')}
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-900">Edit QR Code</span>
-              <Edit className="h-4 w-4 text-gray-400" />
+          {posterData.showQrCode !== false && (
+            <div 
+              className="p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer border-b border-gray-200"
+              onClick={() => toggleSection('qrcode')}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-900">Edit QR Code</span>
+                <Edit className="h-4 w-4 text-gray-400" />
+              </div>
             </div>
-          </div>
+          )}
           
           {openSections['qrcode'] && posterData.showQrCode !== false && (
             <div className="p-6">
