@@ -1,8 +1,9 @@
 
 import React from 'react';
 import QrCodeSection from './QrCodeSection';
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Edit, QrCode } from "lucide-react";
+import { Edit, QrCode, Check, X } from "lucide-react";
 
 interface QrCodeGroupProps {
   posterData: any;
@@ -23,6 +24,14 @@ const QrCodeGroup: React.FC<QrCodeGroupProps> = ({
   openSections,
   toggleSection
 }) => {
+  const handleAccept = () => {
+    toggleSection('qrcode');
+  };
+
+  const handleCancel = () => {
+    toggleSection('qrcode');
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200">
       <div className="p-6 border-b border-gray-100">
@@ -40,7 +49,7 @@ const QrCodeGroup: React.FC<QrCodeGroupProps> = ({
         </div>
       </div>
       
-      {posterData.showQrCode !== false && (
+      {posterData.showQrCode !== false && !openSections['qrcode'] && (
         <div 
           className="p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer border-b border-gray-200"
           onClick={() => toggleSection('qrcode')}
@@ -54,6 +63,24 @@ const QrCodeGroup: React.FC<QrCodeGroupProps> = ({
       
       {openSections['qrcode'] && posterData.showQrCode !== false && (
         <div className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex gap-2">
+              <Button 
+                size="sm" 
+                onClick={handleAccept}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                <Check className="h-4 w-4" />
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={handleCancel}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
           <QrCodeSection 
             qrCodeUrl={posterData.qrCodeUrl}
             qrCodeColor={posterData.qrCodeColor}

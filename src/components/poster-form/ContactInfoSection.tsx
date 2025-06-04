@@ -1,9 +1,10 @@
 
 import React from 'react';
 import BasicInfoSection from './BasicInfoSection';
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Edit, User } from "lucide-react";
+import { Edit, User, Check, X } from "lucide-react";
 
 interface ContactInfoSectionProps {
   posterData: any;
@@ -24,6 +25,14 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
     { id: 'school', label: 'School/Institution', field: 'school' },
     { id: 'contact', label: 'Contact Info', field: 'contact' },
   ];
+
+  const handleAccept = (fieldId: string) => {
+    toggleSection(fieldId);
+  };
+
+  const handleCancel = (fieldId: string) => {
+    toggleSection(fieldId);
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200">
@@ -51,6 +60,24 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
             
             {openSections[field.id] && (
               <div className="p-4 bg-white">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex gap-2">
+                    <Button 
+                      size="sm" 
+                      onClick={() => handleAccept(field.id)}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      <Check className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      onClick={() => handleCancel(field.id)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
                 <BasicInfoSection 
                   posterData={posterData} 
                   handleChange={handleChange}

@@ -1,7 +1,8 @@
 
 import React from 'react';
 import ContentSection from './ContentSection';
-import { Edit, FileText } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Edit, FileText, Check, X } from "lucide-react";
 
 interface SectionsGroupProps {
   posterData: any;
@@ -25,6 +26,14 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
     { id: 'conclusions', label: 'Conclusions', field: 'conclusions' },
     { id: 'references', label: 'References', field: 'references' },
   ];
+
+  const handleAccept = (sectionId: string) => {
+    toggleSection(sectionId);
+  };
+
+  const handleCancel = (sectionId: string) => {
+    toggleSection(sectionId);
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200">
@@ -52,6 +61,24 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
             
             {openSections[section.id] && (
               <div className="p-4 bg-white">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex gap-2">
+                    <Button 
+                      size="sm" 
+                      onClick={() => handleAccept(section.id)}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      <Check className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      onClick={() => handleCancel(section.id)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
                 <ContentSection 
                   posterData={posterData}
                   handleChange={handleChange}

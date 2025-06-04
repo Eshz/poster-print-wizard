@@ -1,8 +1,9 @@
 
 import React from 'react';
 import KeyPointsSection from './KeyPointsSection';
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Edit, Target } from "lucide-react";
+import { Edit, Target, Check, X } from "lucide-react";
 
 interface KeyTakeawaysGroupProps {
   posterData: any;
@@ -29,6 +30,14 @@ const KeyTakeawaysGroup: React.FC<KeyTakeawaysGroupProps> = ({
     { id: 'keypoint-2', label: 'Key Takeaway 3', index: 2 },
     { id: 'keypoint-3', label: 'Key Takeaway 4', index: 3 },
   ];
+
+  const handleAccept = (itemId: string) => {
+    toggleSection(itemId);
+  };
+
+  const handleCancel = (itemId: string) => {
+    toggleSection(itemId);
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200">
@@ -63,6 +72,24 @@ const KeyTakeawaysGroup: React.FC<KeyTakeawaysGroupProps> = ({
               
               {openSections[item.id] && (
                 <div className="p-4 bg-white">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex gap-2">
+                      <Button 
+                        size="sm" 
+                        onClick={() => handleAccept(item.id)}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        onClick={() => handleCancel(item.id)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
                   <KeyPointsSection 
                     keypoints={posterData.keypoints}
                     keyDescriptions={posterData.keyDescriptions}
