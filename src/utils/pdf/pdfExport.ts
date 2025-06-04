@@ -16,6 +16,7 @@ const createTempContainer = (clonedElement: HTMLElement) => {
   tempDiv.style.zIndex = '-1000';
   tempDiv.style.width = '800px';
   tempDiv.style.height = '1131px';
+  tempDiv.style.overflow = 'visible';
   document.body.appendChild(tempDiv);
   tempDiv.appendChild(clonedElement);
   return tempDiv;
@@ -29,7 +30,29 @@ const cleanupTempContainer = (tempDiv: HTMLElement) => {
 };
 
 /**
+ * Ensures proper styling for PDF export
+ */
+const preparePosterForExport = (clonedElement: HTMLElement) => {
+  // Ensure the poster takes up the full container space
+  clonedElement.style.width = '800px';
+  clonedElement.style.height = '1131px';
+  clonedElement.style.position = 'relative';
+  clonedElement.style.overflow = 'visible';
+  clonedElement.style.display = 'flex';
+  clonedElement.style.flexDirection = 'column';
+  
+  // Force visibility on all elements
+  const allElements = clonedElement.querySelectorAll('*');
+  allElements.forEach((el) => {
+    const htmlElement = el as HTMLElement;
+    htmlElement.style.visibility = 'visible';
+    htmlElement.style.opacity = '1';
+  });
+};
+
+/**
  * Exports a DOM element as a high-quality A0-sized PDF
+ * Updated to work with the new zoom-independent scaling system
  * @param elementId The ID of the DOM element to export
  */
 export const exportToPDF = (elementId: string) => {
@@ -46,18 +69,15 @@ export const exportToPDF = (elementId: string) => {
   // Create a clean copy of the poster for PDF export
   const clonedElement = element.cloneNode(true) as HTMLElement;
   
-  // Ensure the cloned element has the right dimensions
-  clonedElement.style.width = '800px';
-  clonedElement.style.height = '1131px';
-  clonedElement.style.position = 'relative';
-  clonedElement.style.overflow = 'visible';
+  // Prepare the element for export
+  preparePosterForExport(clonedElement);
   
   const tempDiv = createTempContainer(clonedElement);
   
   // Compress images before processing
   compressImages(clonedElement);
   
-  // Scale the element for PDF export
+  // Scale the element for PDF export with the new system
   scaleElementForPdf(clonedElement);
   
   toast.info("Preparing high-quality A0 PDF export...");

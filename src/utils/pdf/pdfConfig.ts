@@ -9,16 +9,17 @@ export const PREVIEW_HEIGHT = 1131;
 
 /**
  * Creates optimized PDF export configuration for A0 posters
+ * Updated to work with the new zoom-independent scaling system
  */
 export const createPdfConfig = () => ({
   margin: 0,
   filename: 'conference-poster-A0.pdf',
   image: { 
     type: 'jpeg', 
-    quality: 0.95
+    quality: 0.9 // Slightly reduced for better balance
   },
   html2canvas: { 
-    scale: 3, // Increased scale for better quality
+    scale: 2.5, // Reduced from 3 to better match preview
     useCORS: true,
     letterRendering: true,
     logging: false,
@@ -30,7 +31,9 @@ export const createPdfConfig = () => ({
     backgroundColor: '#ffffff',
     foreignObjectRendering: true,
     windowWidth: PREVIEW_WIDTH,
-    windowHeight: PREVIEW_HEIGHT
+    windowHeight: PREVIEW_HEIGHT,
+    scrollX: 0,
+    scrollY: 0
   },
   jsPDF: { 
     unit: 'pt', 
