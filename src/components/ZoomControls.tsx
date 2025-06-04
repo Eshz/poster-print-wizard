@@ -16,8 +16,9 @@ const ZoomControls: React.FC<ZoomControlsProps> = ({
   onZoomChange, 
   containerScale = 1,
   minZoom = 0.1, 
-  maxZoom = 2 
+  maxZoom = 3 
 }) => {
+  // Now zoom percentage represents actual A0 size percentage
   const zoomPercentage = Math.round(currentZoom * 100);
 
   const handleZoomIn = () => {
@@ -31,10 +32,12 @@ const ZoomControls: React.FC<ZoomControlsProps> = ({
   };
 
   const handleZoomReset = () => {
+    // Reset to 100% (actual A0 size)
     onZoomChange(1);
   };
 
   const handleFitToWindow = () => {
+    // Set zoom to fit the window
     onZoomChange(containerScale);
   };
 
@@ -53,7 +56,7 @@ const ZoomControls: React.FC<ZoomControlsProps> = ({
       <button
         onClick={handleZoomReset}
         className="px-3 py-1 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded transition-colors"
-        title="Reset to 100%"
+        title="Reset to 100% (A0 size)"
       >
         {zoomPercentage}%
       </button>

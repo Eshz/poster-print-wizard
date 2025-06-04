@@ -14,12 +14,13 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = ({
   qrColor, 
   designSettings 
 }) => {
-  const [manualZoom, setManualZoom] = useState<number>(1);
+  const [manualZoom, setManualZoom] = useState<number>(1); // Start at 100% (A0 size)
   const [containerScale, setContainerScale] = useState<number>(1);
 
-  // Default to fit-to-window when container scale is calculated
+  // Default to fit-to-window when container scale is calculated (but don't auto-change zoom)
   useEffect(() => {
-    if (containerScale > 0 && containerScale < 1) {
+    // Only set initial zoom to fit-to-window if it's significantly smaller than 100%
+    if (containerScale > 0 && containerScale < 0.5 && manualZoom === 1) {
       setManualZoom(containerScale);
     }
   }, [containerScale]);
