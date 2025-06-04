@@ -6,6 +6,7 @@ import PosterLayoutRenderer from './poster-preview/PosterLayoutRenderer';
 import { checkContentVisibility } from '@/utils/contentVisibilityChecker';
 import { usePosterScaling } from '@/hooks/usePosterScaling';
 import { A0_WIDTH_PX, A0_HEIGHT_PX, POSTER_UI_WIDTH, POSTER_UI_HEIGHT } from '@/utils/posterConstants';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 interface PosterPreviewProps {
   posterData: {
@@ -67,47 +68,52 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
   // Check content visibility
   const visibilityCheck = checkContentVisibility(posterData, designSettings);
 
+  // A0 aspect ratio (width:height = 841:1189 ≈ 1:1.414)
+  const aspectRatio = POSTER_UI_HEIGHT / POSTER_UI_WIDTH; // 1.414
+
   return (
-    <div ref={containerRef} className="flex flex-col items-center justify-center">
+    <div ref={containerRef} className="flex flex-col items-center justify-center w-full">
       {/* Content Visibility Warning */}
       <ContentVisibilityWarning 
         isVisible={visibilityCheck.isContentVisible}
         warnings={visibilityCheck.warnings}
       />
 
-      <div
-        id="poster-content"
-        ref={posterRef}
-        className="bg-white border border-gray-200 relative overflow-hidden flex flex-col shadow-lg"
-        style={{ 
-          width: `${POSTER_UI_WIDTH}px`,
-          height: `${POSTER_UI_HEIGHT}px`,
-          transformOrigin: 'center'
-        }}
-      >
-        {/* Header Section */}
-        <PosterHeader
-          title={posterData.title}
-          authors={posterData.authors}
-          school={posterData.school}
-          contact={posterData.contact}
-          designSettings={designSettings}
-          qrCodeUrl={qrCodeUrl}
-          showQrCode={posterData.showQrCode !== false}
-          qrCodeCaption={posterData.qrCodeCaption}
-        />
+      <div className="w-full max-w-4xl">
+        <AspectRatio ratio={1/aspectRatio}>
+          <div
+            id="poster-content"
+            ref={posterRef}
+            className="bg-white border border-gray-200 relative overflow-hidden flex flex-col shadow-lg w-full h-full"
+            style={{ 
+              transformOrigin: 'center'
+            }}
+          >
+            {/* Header Section */}
+            <PosterHeader
+              title={posterData.title}
+              authors={posterData.authors}
+              school={posterData.school}
+              contact={posterData.contact}
+              designSettings={designSettings}
+              qrCodeUrl={qrCodeUrl}
+              showQrCode={posterData.showQrCode !== false}
+              qrCodeCaption={posterData.qrCodeCaption}
+            />
 
-        {/* Dynamic Content Layout - adding overflow control */}
-        <div className="flex-grow overflow-hidden p-2">
-          <PosterLayoutRenderer
-            layout={designSettings.layout}
-            posterData={posterData}
-            designSettings={designSettings}
-            qrCodeUrl={qrCodeUrl}
-            showKeypoints={posterData.showKeypoints !== false}
-            showQrCode={posterData.showQrCode !== false}
-          />
-        </div>
+            {/* Dynamic Content Layout - adding overflow control */}
+            <div className="flex-grow overflow-hidden p-2">
+              <PosterLayoutRenderer
+                layout={designSettings.layout}
+                posterData={posterData}
+                designSettings={designSettings}
+                qrCodeUrl={qrCodeUrl}
+                showKeypoints={posterData.showKeypoints !== false}
+                showQrCode={posterData.showQrCode !== false}
+              />
+            </div>
+          </div>
+        </AspectRatio>
       </div>
     </div>
   );
