@@ -30,7 +30,7 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = ({
 
   return (
     <div className="flex-1 bg-gray-100 overflow-hidden relative">
-      <div className="bg-white rounded-xl shadow-lg border border-gray-200 flex items-center justify-center relative overflow-auto mx-4 my-4 h-[calc(100vh-120px)] w-[calc(100%-2rem)]">
+      <div className="flex items-center justify-center relative overflow-auto mx-4 my-4 h-[calc(100vh-120px)] w-[calc(100%-2rem)]">
         <ZoomControls 
           currentZoom={manualZoom}
           onZoomChange={handleZoomChange}
