@@ -71,10 +71,6 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
   // A0 aspect ratio (width:height = 841:1189 ≈ 1:1.414)
   const aspectRatio = POSTER_UI_HEIGHT / POSTER_UI_WIDTH; // 1.414
 
-  // Calculate container width based on zoom level
-  const uiToA0Scale = A0_WIDTH_PX / POSTER_UI_WIDTH;
-  const actualDisplayWidth = POSTER_UI_WIDTH * manualZoom * uiToA0Scale;
-
   return (
     <div ref={containerRef} className="flex flex-col items-center justify-center w-full">
       {/* Content Visibility Warning */}
@@ -83,7 +79,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
         warnings={visibilityCheck.warnings}
       />
 
-      <div style={{ width: `${actualDisplayWidth}px` }}>
+      <div style={{ width: `${POSTER_UI_WIDTH}px` }}>
         <AspectRatio ratio={1/aspectRatio}>
           <div
             id="poster-content"
