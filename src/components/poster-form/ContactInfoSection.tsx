@@ -55,31 +55,26 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-      <div className="p-6 border-b border-gray-100">
+    <div className="border-b border-gray-200 pb-6">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
             <User className="h-4 w-4 text-blue-600" />
           </div>
           <h3 className="text-lg font-semibold text-gray-900">General info</h3>
         </div>
-      </div>
-      
-      {!openSections['general-info'] && (
-        <div 
-          className="p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer border-b border-gray-200"
-          onClick={() => toggleSection('general-info')}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-900">Edit General info</span>
+        
+        {!openSections['general-info'] && (
+          <button 
+            onClick={() => toggleSection('general-info')}
+            className="p-1 hover:bg-gray-100 rounded transition-colors"
+          >
             <Edit className="h-4 w-4 text-gray-400" />
-          </div>
-        </div>
-      )}
-      
-      {openSections['general-info'] && (
-        <div className="p-6">
-          <div className="flex items-center justify-end mb-4 gap-2">
+          </button>
+        )}
+        
+        {openSections['general-info'] && (
+          <div className="flex items-center gap-2">
             <button 
               onClick={handleAccept}
               className="p-1 hover:bg-gray-100 rounded transition-colors"
@@ -93,6 +88,11 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
               <X className="h-4 w-4 text-gray-600" />
             </button>
           </div>
+        )}
+      </div>
+      
+      {openSections['general-info'] && (
+        <div className="mt-4">
           <BasicInfoSection 
             posterData={tempValues}
             handleChange={handleTempChange}
