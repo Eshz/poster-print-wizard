@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import PosterPreview from '@/components/PosterPreview';
 import ZoomControls from '@/components/ZoomControls';
-import { A0_WIDTH_PX, POSTER_UI_WIDTH, POSTER_UI_HEIGHT } from '@/utils/posterConstants';
 
 interface PosterPreviewAreaProps {
   posterData: any;
@@ -29,27 +28,9 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = ({
     setManualZoom(zoom);
   };
 
-  // Calculate the actual display dimensions based on zoom
-  const uiToA0Scale = A0_WIDTH_PX / POSTER_UI_WIDTH;
-  const actualDisplayWidth = POSTER_UI_WIDTH * manualZoom * uiToA0Scale;
-  const actualDisplayHeight = POSTER_UI_HEIGHT * manualZoom * uiToA0Scale;
-
-  // Add minimal padding around the poster
-  const containerPadding = 20;
-  const containerWidth = actualDisplayWidth + (containerPadding * 2);
-  const containerHeight = actualDisplayHeight + (containerPadding * 2);
-
   return (
     <div className="flex-1 bg-gray-100 overflow-hidden relative">
-      <div 
-        className="bg-white rounded-xl shadow-lg border border-gray-200 flex items-center justify-center relative overflow-auto mx-4 my-4"
-        style={{
-          width: `calc(100% - 2rem)`,
-          height: `calc(100% - 2rem)`,
-          minWidth: `${containerWidth}px`,
-          minHeight: `${containerHeight}px`
-        }}
-      >
+      <div className="bg-white rounded-xl shadow-lg border border-gray-200 flex items-center justify-center relative overflow-auto mx-4 my-4 h-[calc(100vh-120px)] w-[calc(100%-2rem)]">
         <ZoomControls 
           currentZoom={manualZoom}
           onZoomChange={handleZoomChange}
@@ -58,12 +39,7 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = ({
         
         <div 
           id="poster-preview" 
-          className="flex items-center justify-center overflow-auto"
-          style={{
-            width: `${containerWidth}px`,
-            height: `${containerHeight}px`,
-            padding: `${containerPadding}px`
-          }}
+          className="w-full h-full flex items-center justify-center overflow-auto p-5"
         >
           <PosterPreview 
             posterData={{
