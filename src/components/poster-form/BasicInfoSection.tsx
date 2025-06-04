@@ -6,12 +6,44 @@ import { Label } from "@/components/ui/label";
 interface BasicInfoSectionProps {
   posterData: any;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  singleField?: string;
 }
 
 const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ 
   posterData, 
-  handleChange 
+  handleChange,
+  singleField
 }) => {
+  // If singleField is provided, only show that field
+  if (singleField) {
+    const fieldConfig = {
+      title: { label: 'Title', placeholder: 'Enter your poster title' },
+      authors: { label: 'Authors', placeholder: 'Enter author names' },
+      school: { label: 'School/Institution', placeholder: 'Enter institution name' },
+      contact: { label: 'Contact Info', placeholder: 'Enter contact information' }
+    };
+
+    const config = fieldConfig[singleField as keyof typeof fieldConfig];
+    if (!config) return null;
+
+    return (
+      <div className="space-y-2">
+        <Label htmlFor={singleField} className="text-sm font-medium text-gray-900">
+          {config.label}
+        </Label>
+        <Input
+          id={singleField}
+          name={singleField}
+          value={posterData[singleField] || ''}
+          onChange={handleChange}
+          placeholder={config.placeholder}
+          className="border-gray-300 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg"
+        />
+      </div>
+    );
+  }
+
+  // Original full form layout
   return (
     <div className="space-y-6">
       <div className="space-y-2">

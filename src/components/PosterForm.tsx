@@ -83,6 +83,13 @@ const PosterForm: React.FC<PosterFormProps> = ({
     { id: 'conclusions', label: 'Conclusions', field: 'conclusions' },
     { id: 'references', label: 'References', field: 'references' },
   ];
+
+  const contactFields = [
+    { id: 'title', label: 'Title', field: 'title' },
+    { id: 'authors', label: 'Authors', field: 'authors' },
+    { id: 'school', label: 'School/Institution', field: 'school' },
+    { id: 'contact', label: 'Contact Info', field: 'contact' },
+  ];
   
   return (
     <div className="h-full flex flex-col bg-gray-50">
@@ -98,24 +105,29 @@ const PosterForm: React.FC<PosterFormProps> = ({
             </div>
           </div>
           
-          <div 
-            className="p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer border-b border-gray-200"
-            onClick={() => toggleSection('contact')}
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-900">Edit Contact Information</span>
-              <Edit className="h-4 w-4 text-gray-400" />
-            </div>
+          <div className="p-6 space-y-3">
+            {contactFields.map((field) => (
+              <div key={field.id} className="border border-gray-200 rounded-lg overflow-hidden">
+                <div 
+                  className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+                  onClick={() => toggleSection(field.id)}
+                >
+                  <span className="text-sm font-medium text-gray-900">{field.label}</span>
+                  <Edit className="h-4 w-4 text-gray-400" />
+                </div>
+                
+                {openSections[field.id] && (
+                  <div className="p-4 bg-white border-t border-gray-200">
+                    <BasicInfoSection 
+                      posterData={posterData} 
+                      handleChange={handleChange}
+                      singleField={field.field}
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
-          
-          {openSections['contact'] && (
-            <div className="p-6">
-              <BasicInfoSection 
-                posterData={posterData} 
-                handleChange={handleChange} 
-              />
-            </div>
-          )}
         </div>
         
         {/* Sections */}
