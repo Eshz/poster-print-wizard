@@ -38,9 +38,15 @@ export const usePosterScaling = ({
       const scaleY = availableHeight / posterUIHeight;
       const fitToWindowScale = Math.min(scaleX, scaleY, 1);
 
+      // Calculate what scale represents actual A0 size
+      // A0 is 84.1cm x 118.8cm. At 96 DPI, that's 3179 x 4494 pixels
+      // Our UI is 800 x 1131 pixels
+      // So to show actual A0 size, we need to scale up by the ratio
+      const a0ScaleFactor = a0WidthPx / posterUIWidth; // 3179 / 800 = ~3.97
+      
       // Now 100% zoom (manualZoom = 1) represents actual A0 size
-      // The actual scale applied is manualZoom (where 1 = 100% = A0 size)
-      const actualScale = manualZoom;
+      // The actual scale applied is manualZoom * a0ScaleFactor
+      const actualScale = manualZoom * a0ScaleFactor;
       
       posterRef.current.style.transform = `scale(${actualScale})`;
 
