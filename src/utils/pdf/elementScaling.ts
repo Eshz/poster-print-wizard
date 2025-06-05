@@ -33,7 +33,7 @@ export const scaleElementForPdf = (clonedElement: HTMLElement) => {
   clonedElement.style.backgroundColor = '#ffffff';
   clonedElement.style.boxSizing = 'border-box';
   
-  // Apply consistent scaling that matches the A0 dimensions
+  // Apply more conservative scaling that produces appropriate A0 font sizes
   scaleTextElements(clonedElement, scaleFactor);
   scaleSpacing(clonedElement, scaleFactor);
   scaleImages(clonedElement, scaleFactor);
@@ -43,28 +43,28 @@ export const scaleElementForPdf = (clonedElement: HTMLElement) => {
 };
 
 /**
- * Scales text elements to proper A0 size based on their original preview size
+ * Scales text elements with more conservative font sizing for A0 format
  */
 const scaleTextElements = (element: HTMLElement, scaleFactor: number) => {
   const textElements = element.querySelectorAll('*');
   textElements.forEach((el) => {
     const htmlElement = el as HTMLElement;
+    const computedStyle = window.getComputedStyle(htmlElement);
     
-    // Get the computed style from the original element in the preview
-    const originalElement = document.getElementById('poster-content')?.querySelector(`[data-element-id="${(el as any).dataset?.elementId}"]`) || el;
-    const computedStyle = window.getComputedStyle(originalElement as Element);
-    
-    // Get the base font size from the preview (not the scaled version)
-    const baseFontSize = parseFloat(computedStyle.fontSize);
-    if (baseFontSize > 0) {
-      // Apply the scale factor to get the correct A0 font size
-      htmlElement.style.fontSize = `${baseFontSize * scaleFactor}px`;
+    // Get the current font size from the preview
+    const currentFontSize = parseFloat(computedStyle.fontSize);
+    if (currentFontSize > 0) {
+      // Use a much more conservative scaling factor for fonts
+      // Instead of the full scale factor (~3x), use a reduced factor
+      const fontScaleFactor = Math.min(scaleFactor * 0.6, 2.5); // Cap at 2.5x and reduce by 40%
+      htmlElement.style.fontSize = `${currentFontSize * fontScaleFactor}px`;
     }
     
-    // Scale line height proportionally
+    // Scale line height proportionally but conservatively
     const baseLineHeight = parseFloat(computedStyle.lineHeight);
     if (baseLineHeight > 0 && !isNaN(baseLineHeight)) {
-      htmlElement.style.lineHeight = `${baseLineHeight * scaleFactor}px`;
+      const lineHeightScaleFactor = Math.min(scaleFactor * 0.6, 2.5);
+      htmlElement.style.lineHeight = `${baseLineHeight * lineHeightScaleFactor}px`;
     }
     
     // Handle relative line heights (unitless values)
