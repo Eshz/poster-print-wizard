@@ -2,12 +2,15 @@
 import { A0_WIDTH_POINTS, A0_HEIGHT_POINTS, PREVIEW_WIDTH, PREVIEW_HEIGHT } from './pdfConfig';
 
 /**
- * Calculates the scale factor for A0 export
- * Updated to better match the preview layout
+ * Calculates the scale factor for A0 export based on the ratio between A0 and preview dimensions
  */
 export const calculateScaleFactor = () => {
-  // More conservative scaling to match the preview exactly
-  return 1.8; // Increased slightly to ensure good quality
+  // Calculate the scale factor needed to go from preview size to A0 size
+  const widthRatio = A0_WIDTH_POINTS / PREVIEW_WIDTH; // 2384 / 800 = ~2.98
+  const heightRatio = A0_HEIGHT_POINTS / PREVIEW_HEIGHT; // 3370 / 1131 = ~2.98
+  
+  // Use the smaller ratio to maintain aspect ratio
+  return Math.min(widthRatio, heightRatio);
 };
 
 /**
@@ -30,7 +33,7 @@ export const scaleElementForPdf = (clonedElement: HTMLElement) => {
   clonedElement.style.backgroundColor = '#ffffff';
   clonedElement.style.boxSizing = 'border-box';
   
-  // Apply consistent scaling that matches the preview system
+  // Apply consistent scaling that matches the A0 dimensions
   scaleTextElements(clonedElement, scaleFactor);
   scaleSpacing(clonedElement, scaleFactor);
   scaleImages(clonedElement, scaleFactor);
@@ -40,30 +43,39 @@ export const scaleElementForPdf = (clonedElement: HTMLElement) => {
 };
 
 /**
- * Scales text elements to match preview exactly
+ * Scales text elements to proper A0 size based on their original preview size
  */
 const scaleTextElements = (element: HTMLElement, scaleFactor: number) => {
   const textElements = element.querySelectorAll('*');
   textElements.forEach((el) => {
     const htmlElement = el as HTMLElement;
-    const computedStyle = window.getComputedStyle(htmlElement);
     
-    // Scale font size to match preview
-    const fontSize = parseFloat(computedStyle.fontSize);
-    if (fontSize > 0) {
-      htmlElement.style.fontSize = `${fontSize * scaleFactor}px`;
+    // Get the computed style from the original element in the preview
+    const originalElement = document.getElementById('poster-content')?.querySelector(`[data-element-id="${(el as any).dataset?.elementId}"]`) || el;
+    const computedStyle = window.getComputedStyle(originalElement as Element);
+    
+    // Get the base font size from the preview (not the scaled version)
+    const baseFontSize = parseFloat(computedStyle.fontSize);
+    if (baseFontSize > 0) {
+      // Apply the scale factor to get the correct A0 font size
+      htmlElement.style.fontSize = `${baseFontSize * scaleFactor}px`;
     }
     
     // Scale line height proportionally
-    const lineHeight = parseFloat(computedStyle.lineHeight);
-    if (lineHeight > 0 && !isNaN(lineHeight)) {
-      htmlElement.style.lineHeight = `${lineHeight * scaleFactor}px`;
+    const baseLineHeight = parseFloat(computedStyle.lineHeight);
+    if (baseLineHeight > 0 && !isNaN(baseLineHeight)) {
+      htmlElement.style.lineHeight = `${baseLineHeight * scaleFactor}px`;
+    }
+    
+    // Handle relative line heights (unitless values)
+    if (computedStyle.lineHeight && computedStyle.lineHeight !== 'normal' && !computedStyle.lineHeight.includes('px')) {
+      htmlElement.style.lineHeight = computedStyle.lineHeight;
     }
   });
 };
 
 /**
- * Scales spacing elements proportionally
+ * Scales spacing elements proportionally to A0 size
  */
 const scaleSpacing = (element: HTMLElement, scaleFactor: number) => {
   const allElements = element.querySelectorAll('*');
@@ -71,7 +83,7 @@ const scaleSpacing = (element: HTMLElement, scaleFactor: number) => {
     const htmlElement = el as HTMLElement;
     const computedStyle = window.getComputedStyle(htmlElement);
     
-    // Scale padding and margins with full factor to maintain proportions
+    // Scale padding and margins with the A0 scale factor
     ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
      'marginTop', 'marginRight', 'marginBottom', 'marginLeft'].forEach(prop => {
       const value = parseFloat(computedStyle[prop as any]);
@@ -92,13 +104,19 @@ const scaleSpacing = (element: HTMLElement, scaleFactor: number) => {
       htmlElement.style.gap = `${gap * scaleFactor}px`;
     }
     
+    // Scale border width
+    const borderWidth = parseFloat(computedStyle.borderWidth);
+    if (borderWidth > 0) {
+      htmlElement.style.borderWidth = `${borderWidth * scaleFactor}px`;
+    }
+    
     // Ensure no overflow that could cause scrollbars
     htmlElement.style.overflow = 'hidden';
   });
 };
 
 /**
- * Scales images proportionally
+ * Scales images proportionally to A0 size
  */
 const scaleImages = (element: HTMLElement, scaleFactor: number) => {
   const images = element.querySelectorAll('img');
@@ -122,7 +140,7 @@ const scaleImages = (element: HTMLElement, scaleFactor: number) => {
 };
 
 /**
- * Scales number circles in key takeaways
+ * Scales number circles in key takeaways to A0 size
  */
 const scaleNumberCircles = (element: HTMLElement, scaleFactor: number) => {
   const numberCircles = element.querySelectorAll('[data-circle-number]');
