@@ -3,12 +3,11 @@ import { A0_WIDTH_POINTS, A0_HEIGHT_POINTS, PREVIEW_WIDTH, PREVIEW_HEIGHT } from
 
 /**
  * Calculates the scale factor for A0 export
- * Now works with the new zoom-independent scaling system
+ * Updated to better match the preview layout
  */
 export const calculateScaleFactor = () => {
-  // Since the preview now maintains consistent font sizes regardless of zoom,
-  // we need a more conservative scaling approach for PDF export
-  return 1.5; // Reduced from 2.0 to better match the preview
+  // More conservative scaling to match the preview exactly
+  return 1.8; // Increased slightly to ensure good quality
 };
 
 /**
@@ -21,17 +20,17 @@ export const scaleElementForPdf = (clonedElement: HTMLElement) => {
   
   const scaleFactor = calculateScaleFactor();
   
-  // Set dimensions for A0 PDF export - maintain aspect ratio
+  // Set dimensions for A0 PDF export - maintain exact aspect ratio
   clonedElement.style.width = `${PREVIEW_WIDTH}px`;
   clonedElement.style.height = `${PREVIEW_HEIGHT}px`;
   clonedElement.style.margin = '0';
   clonedElement.style.padding = '0';
-  clonedElement.style.overflow = 'visible';
+  clonedElement.style.overflow = 'hidden';
   clonedElement.style.position = 'relative';
   clonedElement.style.backgroundColor = '#ffffff';
   clonedElement.style.boxSizing = 'border-box';
   
-  // Apply consistent scaling that matches the new preview system
+  // Apply consistent scaling that matches the preview system
   scaleTextElements(clonedElement, scaleFactor);
   scaleSpacing(clonedElement, scaleFactor);
   scaleImages(clonedElement, scaleFactor);
@@ -41,7 +40,7 @@ export const scaleElementForPdf = (clonedElement: HTMLElement) => {
 };
 
 /**
- * Scales text elements with more conservative scaling for better PDF output
+ * Scales text elements to match preview exactly
  */
 const scaleTextElements = (element: HTMLElement, scaleFactor: number) => {
   const textElements = element.querySelectorAll('*');
@@ -49,14 +48,13 @@ const scaleTextElements = (element: HTMLElement, scaleFactor: number) => {
     const htmlElement = el as HTMLElement;
     const computedStyle = window.getComputedStyle(htmlElement);
     
-    // Scale font size more conservatively to match preview
+    // Scale font size to match preview
     const fontSize = parseFloat(computedStyle.fontSize);
     if (fontSize > 0) {
-      // Use a more conservative scaling to prevent oversized fonts
       htmlElement.style.fontSize = `${fontSize * scaleFactor}px`;
     }
     
-    // Scale line height proportionally but more conservatively
+    // Scale line height proportionally
     const lineHeight = parseFloat(computedStyle.lineHeight);
     if (lineHeight > 0 && !isNaN(lineHeight)) {
       htmlElement.style.lineHeight = `${lineHeight * scaleFactor}px`;
@@ -65,7 +63,7 @@ const scaleTextElements = (element: HTMLElement, scaleFactor: number) => {
 };
 
 /**
- * Scales spacing elements proportionally with reduced scaling
+ * Scales spacing elements proportionally
  */
 const scaleSpacing = (element: HTMLElement, scaleFactor: number) => {
   const allElements = element.querySelectorAll('*');
@@ -73,17 +71,16 @@ const scaleSpacing = (element: HTMLElement, scaleFactor: number) => {
     const htmlElement = el as HTMLElement;
     const computedStyle = window.getComputedStyle(htmlElement);
     
-    // Scale padding and margins with reduced factor to maintain layout
+    // Scale padding and margins with full factor to maintain proportions
     ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
      'marginTop', 'marginRight', 'marginBottom', 'marginLeft'].forEach(prop => {
       const value = parseFloat(computedStyle[prop as any]);
       if (value > 0) {
-        // Use a slightly reduced scaling for spacing to prevent layout breaks
-        (htmlElement.style as any)[prop] = `${value * (scaleFactor * 0.8)}px`;
+        (htmlElement.style as any)[prop] = `${value * scaleFactor}px`;
       }
     });
     
-    // Scale border radius conservatively
+    // Scale border radius
     const borderRadius = parseFloat(computedStyle.borderRadius);
     if (borderRadius > 0) {
       htmlElement.style.borderRadius = `${borderRadius * scaleFactor}px`;
@@ -92,8 +89,11 @@ const scaleSpacing = (element: HTMLElement, scaleFactor: number) => {
     // Scale gaps for grid and flex layouts
     const gap = parseFloat(computedStyle.gap);
     if (gap > 0) {
-      htmlElement.style.gap = `${gap * (scaleFactor * 0.8)}px`;
+      htmlElement.style.gap = `${gap * scaleFactor}px`;
     }
+    
+    // Ensure no overflow that could cause scrollbars
+    htmlElement.style.overflow = 'hidden';
   });
 };
 
@@ -113,6 +113,11 @@ const scaleImages = (element: HTMLElement, scaleFactor: number) => {
     if (currentHeight > 0) {
       imgElement.style.height = `${currentHeight * scaleFactor}px`;
     }
+    
+    // Ensure images don't cause overflow
+    imgElement.style.maxWidth = '100%';
+    imgElement.style.maxHeight = '100%';
+    imgElement.style.objectFit = 'contain';
   });
 };
 
@@ -132,5 +137,6 @@ const scaleNumberCircles = (element: HTMLElement, scaleFactor: number) => {
     circleElement.style.display = 'flex';
     circleElement.style.justifyContent = 'center';
     circleElement.style.alignItems = 'center';
+    circleElement.style.flexShrink = '0';
   });
 };

@@ -6,17 +6,20 @@ import { scaleElementForPdf } from './elementScaling';
 import { createPdfConfig } from './pdfConfig';
 
 /**
- * Creates a temporary container for the cloned element
+ * Creates a temporary container for the cloned element with proper isolation
  */
 const createTempContainer = (clonedElement: HTMLElement) => {
   const tempDiv = document.createElement('div');
-  tempDiv.style.position = 'absolute';
+  tempDiv.style.position = 'fixed';
   tempDiv.style.left = '-9999px';
   tempDiv.style.top = '-9999px';
   tempDiv.style.zIndex = '-1000';
   tempDiv.style.width = '800px';
   tempDiv.style.height = '1131px';
-  tempDiv.style.overflow = 'visible';
+  tempDiv.style.overflow = 'hidden'; // Prevent scrollbars
+  tempDiv.style.backgroundColor = '#ffffff';
+  tempDiv.style.margin = '0';
+  tempDiv.style.padding = '0';
   document.body.appendChild(tempDiv);
   tempDiv.appendChild(clonedElement);
   return tempDiv;
@@ -26,33 +29,58 @@ const createTempContainer = (clonedElement: HTMLElement) => {
  * Cleans up the temporary container
  */
 const cleanupTempContainer = (tempDiv: HTMLElement) => {
-  document.body.removeChild(tempDiv);
+  if (tempDiv && tempDiv.parentNode) {
+    document.body.removeChild(tempDiv);
+  }
 };
 
 /**
- * Ensures proper styling for PDF export
+ * Ensures proper styling for PDF export and removes scrollbars
  */
 const preparePosterForExport = (clonedElement: HTMLElement) => {
-  // Ensure the poster takes up the full container space
+  // Set exact dimensions to match preview
   clonedElement.style.width = '800px';
   clonedElement.style.height = '1131px';
   clonedElement.style.position = 'relative';
-  clonedElement.style.overflow = 'visible';
+  clonedElement.style.overflow = 'hidden'; // Critical: prevent scrollbars
   clonedElement.style.display = 'flex';
   clonedElement.style.flexDirection = 'column';
+  clonedElement.style.margin = '0';
+  clonedElement.style.padding = '0';
+  clonedElement.style.boxSizing = 'border-box';
+  clonedElement.style.backgroundColor = '#ffffff';
   
-  // Force visibility on all elements
+  // Remove any transforms that might be applied from zoom
+  clonedElement.style.transform = 'none';
+  clonedElement.style.transformOrigin = 'initial';
+  
+  // Force visibility and remove scrollbars on all child elements
   const allElements = clonedElement.querySelectorAll('*');
   allElements.forEach((el) => {
     const htmlElement = el as HTMLElement;
     htmlElement.style.visibility = 'visible';
     htmlElement.style.opacity = '1';
+    htmlElement.style.overflow = 'hidden'; // Prevent any child scrollbars
+    
+    // Remove any scroll-related styles
+    htmlElement.style.overflowX = 'hidden';
+    htmlElement.style.overflowY = 'hidden';
+    htmlElement.style.scrollBehavior = 'auto';
   });
+  
+  // Ensure the main container has proper flex layout
+  const mainContainer = clonedElement.querySelector('.p-4.h-full.flex.flex-col');
+  if (mainContainer) {
+    const container = mainContainer as HTMLElement;
+    container.style.height = '100%';
+    container.style.overflow = 'hidden';
+    container.style.padding = '16px';
+  }
 };
 
 /**
  * Exports a DOM element as a high-quality A0-sized PDF
- * Updated to work with the new zoom-independent scaling system
+ * Updated to properly handle layout and eliminate scrollbars
  * @param elementId The ID of the DOM element to export
  */
 export const exportToPDF = (elementId: string) => {
@@ -77,13 +105,34 @@ export const exportToPDF = (elementId: string) => {
   // Compress images before processing
   compressImages(clonedElement);
   
-  // Scale the element for PDF export with the new system
+  // Scale the element for PDF export
   scaleElementForPdf(clonedElement);
   
   toast.info("Preparing high-quality A0 PDF export...");
   
-  // Create PDF configuration
-  const pdfConfig = createPdfConfig();
+  // Create PDF configuration with updated settings
+  const pdfConfig = {
+    ...createPdfConfig(),
+    html2canvas: { 
+      ...createPdfConfig().html2canvas,
+      scrollX: 0,
+      scrollY: 0,
+      width: 800,
+      height: 1131,
+      windowWidth: 800,
+      windowHeight: 1131,
+      x: 0,
+      y: 0,
+      allowTaint: true,
+      useCORS: true,
+      scale: 2.5,
+      backgroundColor: '#ffffff',
+      removeContainer: false,
+      foreignObjectRendering: true,
+      imageTimeout: 0,
+      logging: false
+    }
+  };
   
   setTimeout(() => {
     html2pdf().from(clonedElement).set(pdfConfig).outputPdf('blob').then((pdfBlob: Blob) => {
