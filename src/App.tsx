@@ -11,6 +11,7 @@ import ProjectSwitcher from "./components/ProjectSwitcher";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { exportToPDF } from '@/utils/pdfExport';
+import ImportExportButtons from "./components/ImportExportButtons";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => {
                   <div className="hidden md:block">
                     <ProjectSwitcher />
                   </div>
+                  <ImportExportButtons />
                   <Button 
                     onClick={handleExportPDF}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium"

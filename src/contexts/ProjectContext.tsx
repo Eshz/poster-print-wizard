@@ -14,6 +14,8 @@ interface ProjectContextType {
   updatePosterData: (posterData: any) => void;
   updateDesignSettings: (designSettings: any) => void;
   updateQrColor: (qrColor: string) => void;
+  exportProject: () => void;
+  importProject: (file: File) => void;
 }
 
 const ProjectContext = createContext<ProjectContextType>({} as ProjectContextType);
@@ -111,7 +113,6 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
 
   const saveCurrentProject = () => {
     if (currentProject) {
-      // Since saveProject now expects a full ProjectData object, we can pass the current project directly
       const updated = saveProject({
         ...currentProject
       });
@@ -195,6 +196,65 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
     }
   };
 
+  const exportProject = () => {
+    if (!currentProject) {
+      toast.error("No project to export");
+      return;
+    }
+
+    const exportData = {
+      version: "1.0",
+      project: currentProject,
+      exportedAt: Date.now()
+    };
+
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = `${currentProject.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_poster_project.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+    
+    toast.success(`Exported project: ${currentProject.name}`);
+  };
+
+  const importProject = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const importData = JSON.parse(event.target?.result as string);
+        
+        if (!importData.project) {
+          toast.error("Invalid project file format");
+          return;
+        }
+
+        const importedProject = importData.project;
+        
+        // Generate new ID and update timestamps
+        const newProject: ProjectData = {
+          ...importedProject,
+          id: generateProjectId(),
+          updatedAt: Date.now(),
+          name: `${importedProject.name} (Imported)`
+        };
+
+        const saved = saveProject(newProject);
+        setCurrentProject(saved);
+        setProjects(prev => [...prev, saved]);
+        
+        toast.success(`Imported project: ${newProject.name}`);
+      } catch (error) {
+        console.error("Import error:", error);
+        toast.error("Failed to import project. Invalid file format.");
+      }
+    };
+    reader.readAsText(file);
+  };
+
   return (
     <ProjectContext.Provider
       value={{
@@ -207,7 +267,9 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
         deleteCurrentProject,
         updatePosterData,
         updateDesignSettings,
-        updateQrColor
+        updateQrColor,
+        exportProject,
+        importProject
       }}
     >
       {children}

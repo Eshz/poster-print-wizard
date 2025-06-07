@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { exportToPDF } from '@/utils/pdfExport';
 import MobileTabs from '@/components/layout/MobileTabs';
 import DesktopSidebar from '@/components/layout/DesktopSidebar';
@@ -12,8 +12,7 @@ const Index = () => {
     currentProject, 
     updatePosterData, 
     updateDesignSettings, 
-    updateQrColor, 
-    saveCurrentProject 
+    updateQrColor
   } = useProjects();
   
   const [activePanel, setActivePanel] = React.useState<'content' | 'design'>('content');
@@ -39,17 +38,6 @@ const Index = () => {
   const setQrColor = (newColor: string) => {
     updateQrColor(newColor);
   };
-  
-  // Auto-save when poster data or design settings change
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (currentProject) {
-        saveCurrentProject();
-      }
-    }, 2000);
-    
-    return () => clearTimeout(timeout);
-  }, [posterData, designSettings, qrColor]);
   
   const handleExportPDF = () => {
     exportToPDF('poster-content');
