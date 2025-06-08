@@ -1,4 +1,6 @@
 
+import { FONT_FAMILIES } from '@/constants/fonts';
+
 export const getFontClass = (fontType: 'title' | 'content', titleFont: string, contentFont: string): string => {
   const font = fontType === 'title' ? titleFont : contentFont;
   
@@ -12,4 +14,8 @@ export const getFontClass = (fontType: 'title' | 'content', titleFont: string, c
     case 'raleway': return 'font-raleway';
     default: return 'font-roboto';
   }
+};
+
+export const getFontFamily = (fontKey: string): string => {
+  return FONT_FAMILIES[fontKey as keyof typeof FONT_FAMILIES] || FONT_FAMILIES.roboto;
 };
