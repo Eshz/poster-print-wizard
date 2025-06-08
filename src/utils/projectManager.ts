@@ -54,8 +54,8 @@ export const saveProject = (project: ProjectData): ProjectData => {
       id: validatedProject.id,
       name: validatedProject.name,
       createdAt: validatedProject.createdAt,
-      posterData: validatedProject.posterData,
-      designSettings: validatedProject.designSettings,
+      posterData: validatedProject.posterData as ProjectData['posterData'],
+      designSettings: validatedProject.designSettings as ProjectData['designSettings'],
       qrColor: validatedProject.qrColor,
       updatedAt: now
     };
