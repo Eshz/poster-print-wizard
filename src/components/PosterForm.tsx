@@ -5,7 +5,8 @@ import SectionsGroup from './poster-form/SectionsGroup';
 import KeyTakeawaysGroup from './poster-form/KeyTakeawaysGroup';
 import ImagesGroup from './poster-form/ImagesGroup';
 import QrCodeGroup from './poster-form/QrCodeGroup';
-import { PosterData, PosterImage } from '@/types/project';
+import { PosterData } from '@/types/project';
+import { PosterImage } from '@/types/poster';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 
 interface PosterFormProps {

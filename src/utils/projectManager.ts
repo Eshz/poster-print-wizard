@@ -50,7 +50,7 @@ export const saveProject = (project: ProjectData): ProjectData => {
     // Check if project with this ID already exists
     const existingIndex = projects.findIndex(p => p.id === validatedProject.id);
     
-    const updatedProject = {
+    const updatedProject: ProjectData = {
       ...validatedProject,
       updatedAt: now
     };

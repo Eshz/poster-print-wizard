@@ -1,6 +1,6 @@
 
-import { PosterData, DesignSettings } from './poster';
-import { DesignSettings as DesignSettingsType } from './design';
+import { PosterData } from './poster';
+import { DesignSettings } from './design';
 
 export interface ProjectData {
   id: string;
@@ -8,7 +8,7 @@ export interface ProjectData {
   createdAt: number;
   updatedAt: number;
   posterData: PosterData;
-  designSettings: DesignSettingsType;
+  designSettings: DesignSettings;
   qrColor: string;
 }
 
@@ -21,8 +21,12 @@ export interface ProjectContextType {
   renameCurrentProject: (newName: string) => void;
   deleteCurrentProject: () => void;
   updatePosterData: (posterData: Partial<PosterData> | ((prev: PosterData) => PosterData)) => void;
-  updateDesignSettings: (designSettings: Partial<DesignSettingsType> | ((prev: DesignSettingsType) => DesignSettingsType)) => void;
+  updateDesignSettings: (designSettings: Partial<DesignSettings> | ((prev: DesignSettings) => DesignSettings)) => void;
   updateQrColor: (qrColor: string) => void;
   exportProject: () => void;
   importProject: (file: File) => void;
 }
+
+// Re-export types for convenience
+export type { PosterData, DesignSettings } from './poster';
+export type { DesignSettings as DesignSettingsType } from './design';
