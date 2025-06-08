@@ -7,7 +7,7 @@ import { A0_WIDTH_POINTS, A0_HEIGHT_POINTS, PREVIEW_WIDTH, PREVIEW_HEIGHT } from
 export const calculateScaleFactor = () => {
   // Calculate the scale factor needed to go from preview size to A0 size
   const widthRatio = A0_WIDTH_POINTS / PREVIEW_WIDTH; // 2384 / 800 = ~2.98
-  const heightRatio = A0_HEIGHT_POINTS / PREVIEW_HEIGHT; // 3370 / 1131 = ~2.98
+  const heightRatio = A0_HEIGHT_POINTS / PREVIEW_HEIGHT; // 2384 / 1131 = ~2.98
   
   // Use the smaller ratio to maintain aspect ratio
   return Math.min(widthRatio, heightRatio);
@@ -33,7 +33,7 @@ export const scaleElementForPdf = (clonedElement: HTMLElement) => {
   clonedElement.style.backgroundColor = '#ffffff';
   clonedElement.style.boxSizing = 'border-box';
   
-  // Apply more conservative scaling that produces appropriate A0 font sizes
+  // Apply more conservative scaling for better A0 proportions
   scaleTextElements(clonedElement, scaleFactor);
   scaleSpacing(clonedElement, scaleFactor);
   scaleImages(clonedElement, scaleFactor);
@@ -43,7 +43,7 @@ export const scaleElementForPdf = (clonedElement: HTMLElement) => {
 };
 
 /**
- * Scales text elements with more conservative font sizing for A0 format
+ * Scales text elements with appropriate sizing for A0 format
  */
 const scaleTextElements = (element: HTMLElement, scaleFactor: number) => {
   const textElements = element.querySelectorAll('*');
@@ -54,16 +54,16 @@ const scaleTextElements = (element: HTMLElement, scaleFactor: number) => {
     // Get the current font size from the preview
     const currentFontSize = parseFloat(computedStyle.fontSize);
     if (currentFontSize > 0) {
-      // Use a much more conservative scaling factor for fonts
-      // Instead of the full scale factor (~3x), use a reduced factor
-      const fontScaleFactor = Math.min(scaleFactor * 0.6, 2.5); // Cap at 2.5x and reduce by 40%
+      // Use much more conservative font scaling for A0
+      // Scale fonts less aggressively to maintain readability at A0 size
+      const fontScaleFactor = Math.min(scaleFactor * 0.4, 1.8); // Reduced from 0.6 to 0.4, cap at 1.8x
       htmlElement.style.fontSize = `${currentFontSize * fontScaleFactor}px`;
     }
     
     // Scale line height proportionally but conservatively
     const baseLineHeight = parseFloat(computedStyle.lineHeight);
     if (baseLineHeight > 0 && !isNaN(baseLineHeight)) {
-      const lineHeightScaleFactor = Math.min(scaleFactor * 0.6, 2.5);
+      const lineHeightScaleFactor = Math.min(scaleFactor * 0.4, 1.8);
       htmlElement.style.lineHeight = `${baseLineHeight * lineHeightScaleFactor}px`;
     }
     
@@ -83,31 +83,33 @@ const scaleSpacing = (element: HTMLElement, scaleFactor: number) => {
     const htmlElement = el as HTMLElement;
     const computedStyle = window.getComputedStyle(htmlElement);
     
-    // Scale padding and margins with the A0 scale factor
+    // Scale padding and margins with a more conservative factor
+    const spacingScaleFactor = Math.min(scaleFactor * 0.7, 2.2); // Slightly less aggressive spacing
+    
     ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
      'marginTop', 'marginRight', 'marginBottom', 'marginLeft'].forEach(prop => {
       const value = parseFloat(computedStyle[prop as any]);
       if (value > 0) {
-        (htmlElement.style as any)[prop] = `${value * scaleFactor}px`;
+        (htmlElement.style as any)[prop] = `${value * spacingScaleFactor}px`;
       }
     });
     
     // Scale border radius
     const borderRadius = parseFloat(computedStyle.borderRadius);
     if (borderRadius > 0) {
-      htmlElement.style.borderRadius = `${borderRadius * scaleFactor}px`;
+      htmlElement.style.borderRadius = `${borderRadius * spacingScaleFactor}px`;
     }
     
     // Scale gaps for grid and flex layouts
     const gap = parseFloat(computedStyle.gap);
     if (gap > 0) {
-      htmlElement.style.gap = `${gap * scaleFactor}px`;
+      htmlElement.style.gap = `${gap * spacingScaleFactor}px`;
     }
     
     // Scale border width
     const borderWidth = parseFloat(computedStyle.borderWidth);
     if (borderWidth > 0) {
-      htmlElement.style.borderWidth = `${borderWidth * scaleFactor}px`;
+      htmlElement.style.borderWidth = `${borderWidth * spacingScaleFactor}px`;
     }
     
     // Ensure no overflow that could cause scrollbars
@@ -125,11 +127,14 @@ const scaleImages = (element: HTMLElement, scaleFactor: number) => {
     const currentWidth = parseFloat(window.getComputedStyle(imgElement).width);
     const currentHeight = parseFloat(window.getComputedStyle(imgElement).height);
     
+    // Use more conservative image scaling
+    const imageScaleFactor = Math.min(scaleFactor * 0.8, 2.5);
+    
     if (currentWidth > 0) {
-      imgElement.style.width = `${currentWidth * scaleFactor}px`;
+      imgElement.style.width = `${currentWidth * imageScaleFactor}px`;
     }
     if (currentHeight > 0) {
-      imgElement.style.height = `${currentHeight * scaleFactor}px`;
+      imgElement.style.height = `${currentHeight * imageScaleFactor}px`;
     }
     
     // Ensure images don't cause overflow
@@ -149,9 +154,12 @@ const scaleNumberCircles = (element: HTMLElement, scaleFactor: number) => {
     const currentWidth = parseFloat(window.getComputedStyle(circleElement).width) || 32;
     const currentHeight = parseFloat(window.getComputedStyle(circleElement).height) || 32;
     
-    circleElement.style.width = `${currentWidth * scaleFactor}px`;
-    circleElement.style.height = `${currentHeight * scaleFactor}px`;
-    circleElement.style.minWidth = `${currentWidth * scaleFactor}px`;
+    // Use conservative scaling for circles
+    const circleScaleFactor = Math.min(scaleFactor * 0.6, 2.0);
+    
+    circleElement.style.width = `${currentWidth * circleScaleFactor}px`;
+    circleElement.style.height = `${currentHeight * circleScaleFactor}px`;
+    circleElement.style.minWidth = `${currentWidth * circleScaleFactor}px`;
     circleElement.style.display = 'flex';
     circleElement.style.justifyContent = 'center';
     circleElement.style.alignItems = 'center';

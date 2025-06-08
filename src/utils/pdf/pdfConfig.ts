@@ -9,17 +9,17 @@ export const PREVIEW_HEIGHT = 1131;
 
 /**
  * Creates optimized PDF export configuration for A0 posters
- * Updated to eliminate scrollbars and improve layout matching
+ * Updated to produce better font scaling and layout matching
  */
 export const createPdfConfig = () => ({
   margin: 0,
   filename: 'conference-poster-A0.pdf',
   image: { 
     type: 'jpeg', 
-    quality: 0.95 // Higher quality for better text rendering
+    quality: 0.98 // Slightly higher quality for better text rendering
   },
   html2canvas: { 
-    scale: 2.5,
+    scale: 2.0, // Reduced from 2.5 to 2.0 for better performance and sizing
     useCORS: true,
     letterRendering: true,
     logging: false,
@@ -36,9 +36,8 @@ export const createPdfConfig = () => ({
     scrollY: 0,
     x: 0,
     y: 0,
-    // Additional settings to prevent scrollbars
+    // Additional settings to prevent scrollbars and improve text rendering
     ignoreElements: (element: Element) => {
-      // Ignore any scrollbar elements
       const el = element as HTMLElement;
       return el.style.overflow === 'scroll' || 
              el.style.overflowX === 'scroll' || 
