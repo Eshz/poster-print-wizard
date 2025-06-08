@@ -1,15 +1,16 @@
 
 import React, { useState, useEffect } from 'react';
+import { PosterData, DesignSettings } from '@/types/project';
 import PosterPreview from '@/components/PosterPreview';
 import ZoomControls from '@/components/ZoomControls';
 
 interface PosterPreviewAreaProps {
-  posterData: any;
+  posterData: PosterData;
   qrColor: string;
-  designSettings: any;
+  designSettings: DesignSettings;
 }
 
-const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = ({ 
+const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = React.memo(({ 
   posterData, 
   qrColor, 
   designSettings 
@@ -56,6 +57,8 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = ({
       </div>
     </div>
   );
-};
+});
+
+PosterPreviewArea.displayName = 'PosterPreviewArea';
 
 export default PosterPreviewArea;

@@ -1,5 +1,6 @@
 
-import React from 'react';
+import React, { useMemo } from 'react';
+import { PosterData, DesignSettings } from '@/types/project';
 import PosterHeader from './poster-preview/PosterHeader';
 import ContentVisibilityWarning from './poster-preview/ContentVisibilityWarning';
 import PosterLayoutRenderer from './poster-preview/PosterLayoutRenderer';
@@ -9,43 +10,13 @@ import { A0_WIDTH_PX, A0_HEIGHT_PX, POSTER_UI_WIDTH, POSTER_UI_HEIGHT } from '@/
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 interface PosterPreviewProps {
-  posterData: {
-    title: string;
-    authors: string;
-    school: string;
-    contact: string;
-    introduction: string;
-    methods: string;
-    findings: string;
-    conclusions: string;
-    references: string;
-    keypoints: string[];
-    keyDescriptions: string[];
-    sectionTitles: string[];
-    qrCodeUrl: string;
-    qrCodeColor?: string;
-    qrCodeCaption?: string;
-    showKeypoints?: boolean;
-    showQrCode?: boolean;
-    images?: { url: string; visible: boolean; caption: string }[];
-  };
-  designSettings: {
-    layout: string;
-    titleFont: string;
-    contentFont: string;
-    headerBgColor: string;
-    headerTextColor: string;
-    sectionBgColor: string;
-    sectionTitleColor: string;
-    sectionTextColor: string;
-    keyPointsBgColor: string;
-    keyPointsTextColor: string;
-  };
+  posterData: PosterData;
+  designSettings: DesignSettings;
   manualZoom?: number;
   onContainerScaleChange?: (scale: number) => void;
 }
 
-const PosterPreview: React.FC<PosterPreviewProps> = ({ 
+const PosterPreview: React.FC<PosterPreviewProps> = React.memo(({ 
   posterData, 
   designSettings, 
   manualZoom = 1,
@@ -60,16 +31,21 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
     a0HeightPx: A0_HEIGHT_PX
   });
 
-  // QR Code generation
-  const qrCodeUrl = posterData.qrCodeUrl && posterData.showQrCode !== false ? 
-    `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(posterData.qrCodeUrl)}&color=${(posterData.qrCodeColor || '#000000').replace('#', '')}` : 
-    '';
+  // QR Code generation - memoized for performance
+  const qrCodeUrl = useMemo(() => {
+    if (!posterData.qrCodeUrl || posterData.showQrCode === false) return '';
+    
+    return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(posterData.qrCodeUrl)}&color=${(posterData.qrCodeColor || '#000000').replace('#', '')}`;
+  }, [posterData.qrCodeUrl, posterData.showQrCode, posterData.qrCodeColor]);
 
-  // Check content visibility
-  const visibilityCheck = checkContentVisibility(posterData, designSettings);
+  // Check content visibility - memoized for performance
+  const visibilityCheck = useMemo(() => 
+    checkContentVisibility(posterData, designSettings),
+    [posterData, designSettings]
+  );
 
-  // A0 aspect ratio (width:height = 841:1189 ≈ 1:1.414)
-  const aspectRatio = POSTER_UI_HEIGHT / POSTER_UI_WIDTH; // 1.414
+  // A0 aspect ratio calculation - memoized
+  const aspectRatio = useMemo(() => POSTER_UI_HEIGHT / POSTER_UI_WIDTH, []);
 
   return (
     <div ref={containerRef} className="flex flex-col items-center justify-center w-full">
@@ -117,6 +93,8 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
       </div>
     </div>
   );
-};
+});
+
+PosterPreview.displayName = 'PosterPreview';
 
 export default PosterPreview;

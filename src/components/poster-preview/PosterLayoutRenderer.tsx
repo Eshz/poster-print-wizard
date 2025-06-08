@@ -1,19 +1,26 @@
 
 import React from 'react';
+import { PosterData, DesignSettings } from '@/types/project';
+import { getFontClass } from '@/utils/fontUtils';
 import ClassicLayout from './ClassicLayout';
 import ModernLayout from './ModernLayout';
 import FocusLayout from './FocusLayout';
 
+interface EnhancedDesignSettings extends DesignSettings {
+  titleFontClass: string;
+  contentFontClass: string;
+}
+
 interface PosterLayoutRendererProps {
   layout: string;
-  posterData: any;
-  designSettings: any;
+  posterData: PosterData;
+  designSettings: DesignSettings;
   qrCodeUrl: string;
   showKeypoints: boolean;
   showQrCode: boolean;
 }
 
-const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = ({
+const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = React.memo(({
   layout,
   posterData,
   designSettings,
@@ -21,28 +28,12 @@ const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = ({
   showKeypoints,
   showQrCode
 }) => {
-  // Apply font family classes to the container based on design settings
-  const getFontClass = (fontType: 'title' | 'content') => {
-    const font = fontType === 'title' ? designSettings.titleFont : designSettings.contentFont;
-    
-    switch(font) {
-      case 'playfair': return 'font-playfair';
-      case 'roboto': return 'font-roboto';
-      case 'merriweather': return 'font-merriweather';
-      case 'montserrat': return 'font-montserrat';
-      case 'opensans': return 'font-opensans';
-      case 'lora': return 'font-lora';
-      case 'raleway': return 'font-raleway';
-      default: return 'font-roboto';
-    }
-  };
+  const containerClasses = `${getFontClass('content', designSettings.titleFont, designSettings.contentFont)} w-full h-full`;
 
-  const containerClasses = `${getFontClass('content')} w-full h-full`;
-
-  const enhancedDesignSettings = {
+  const enhancedDesignSettings: EnhancedDesignSettings = {
     ...designSettings,
-    titleFontClass: getFontClass('title'),
-    contentFontClass: getFontClass('content')
+    titleFontClass: getFontClass('title', designSettings.titleFont, designSettings.contentFont),
+    contentFontClass: getFontClass('content', designSettings.titleFont, designSettings.contentFont)
   };
 
   switch(layout) {
@@ -84,6 +75,8 @@ const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = ({
         </div>
       );
   }
-};
+});
+
+PosterLayoutRenderer.displayName = 'PosterLayoutRenderer';
 
 export default PosterLayoutRenderer;
