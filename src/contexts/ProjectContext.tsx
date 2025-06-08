@@ -1,22 +1,10 @@
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { generateProjectId, getProject, getProjects, ProjectData, saveProject } from '@/utils/projectManager';
+import React, { createContext, useContext, useEffect } from 'react';
+import { generateProjectId, getProject, getProjects, saveProject } from '@/utils/projectManager';
 import { toast } from "sonner";
-
-interface ProjectContextType {
-  currentProject: ProjectData | null;
-  projects: ProjectData[];
-  loadProject: (id: string) => void;
-  createNewProject: (name: string) => void;
-  saveCurrentProject: () => void;
-  renameCurrentProject: (newName: string) => void;
-  deleteCurrentProject: () => void;
-  updatePosterData: (posterData: any) => void;
-  updateDesignSettings: (designSettings: any) => void;
-  updateQrColor: (qrColor: string) => void;
-  exportProject: () => void;
-  importProject: (file: File) => void;
-}
+import { useProjectState } from '@/hooks/useProjectState';
+import { ProjectContextType, ProjectData, PosterData, DesignSettings } from '@/types/project';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 
 const ProjectContext = createContext<ProjectContextType>({} as ProjectContextType);
 
@@ -27,8 +15,17 @@ interface ProjectProviderProps {
 }
 
 export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) => {
-  const [projects, setProjects] = useState<ProjectData[]>([]);
-  const [currentProject, setCurrentProject] = useState<ProjectData | null>(null);
+  const {
+    state,
+    setProjects,
+    setCurrentProject,
+    addProject,
+    updateProject,
+    deleteProject,
+    updatePosterData,
+    updateDesignSettings,
+    updateQrColor,
+  } = useProjectState();
 
   // Load projects on initial render
   useEffect(() => {
@@ -43,7 +40,7 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
       // If no projects exist, create a default one
       createNewProject("Untitled Project");
     }
-  }, []);
+  }, [setProjects, setCurrentProject]);
 
   const loadProject = (id: string) => {
     const project = getProject(id);
@@ -56,7 +53,7 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
   };
 
   const createNewProject = (name: string) => {
-    const defaultPosterData = {
+    const defaultPosterData: PosterData = {
       title: "Your Conference Poster Title",
       authors: "Author Name(s)",
       school: "Institution Name",
@@ -82,7 +79,7 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
       images: []
     };
     
-    const defaultDesignSettings = {
+    const defaultDesignSettings: DesignSettings = {
       layout: 'classic',
       titleFont: 'playfair',
       contentFont: 'roboto',
@@ -105,53 +102,36 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
       qrColor: "#000000"
     };
 
-    const saved = saveProject(newProject);
-    setCurrentProject(saved);
-    setProjects(prev => [...prev, saved]);
+    const saved = addProject(newProject);
     toast.success(`Created new project: ${name}`);
   };
 
   const saveCurrentProject = () => {
-    if (currentProject) {
-      const updated = saveProject({
-        ...currentProject
-      });
-      setCurrentProject(updated);
-      setProjects(prev => {
-        const existingIndex = prev.findIndex(p => p.id === updated.id);
-        if (existingIndex >= 0) {
-          const newProjects = [...prev];
-          newProjects[existingIndex] = updated;
-          return newProjects;
-        }
-        return [...prev, updated];
-      });
+    if (state.currentProject) {
+      const updated = updateProject(state.currentProject);
       toast.success(`Saved project: ${updated.name}`);
     }
   };
 
   const renameCurrentProject = (newName: string) => {
-    if (currentProject) {
+    if (state.currentProject) {
       const updated = {
-        ...currentProject,
-        name: newName
+        ...state.currentProject,
+        name: newName,
+        updatedAt: Date.now(),
       };
-      const savedProject = saveProject(updated);
-      setCurrentProject(savedProject);
-      setProjects(prev => {
-        return prev.map(p => p.id === currentProject.id ? savedProject : p);
-      });
+      updateProject(updated);
       toast.success(`Renamed project to: ${newName}`);
     }
   };
 
   const deleteCurrentProject = () => {
-    if (currentProject) {
-      const projectId = currentProject.id;
-      const projectName = currentProject.name;
+    if (state.currentProject) {
+      const projectId = state.currentProject.id;
+      const projectName = state.currentProject.name;
       
       // Filter out the current project
-      const updatedProjects = projects.filter(p => p.id !== projectId);
+      const updatedProjects = state.projects.filter(p => p.id !== projectId);
       
       // Update localStorage
       localStorage.setItem("poster_projects", JSON.stringify(updatedProjects));
@@ -164,61 +144,34 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
         createNewProject("Untitled Project");
       }
       
-      setProjects(updatedProjects);
+      deleteProject(projectId);
       toast.success(`Deleted project: ${projectName}`);
     }
   };
 
-  const updatePosterData = (posterData: any) => {
-    if (currentProject) {
-      setCurrentProject(prev => {
-        if (!prev) return null;
-        return { ...prev, posterData, updatedAt: Date.now() };
-      });
-    }
-  };
-
-  const updateDesignSettings = (designSettings: any) => {
-    if (currentProject) {
-      setCurrentProject(prev => {
-        if (!prev) return null;
-        return { ...prev, designSettings, updatedAt: Date.now() };
-      });
-    }
-  };
-
-  const updateQrColor = (qrColor: string) => {
-    if (currentProject) {
-      setCurrentProject(prev => {
-        if (!prev) return null;
-        return { ...prev, qrColor, updatedAt: Date.now() };
-      });
-    }
-  };
-
   const exportProject = () => {
-    if (!currentProject) {
+    if (!state.currentProject) {
       toast.error("No project to export");
       return;
     }
 
     const exportData = {
       version: "1.0",
-      project: currentProject,
+      project: state.currentProject,
       exportedAt: Date.now()
     };
 
     const dataStr = JSON.stringify(exportData, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
     
-    const exportFileDefaultName = `${currentProject.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_poster_project.json`;
+    const exportFileDefaultName = `${state.currentProject.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_poster_project.json`;
     
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
     linkElement.click();
     
-    toast.success(`Exported project: ${currentProject.name}`);
+    toast.success(`Exported project: ${state.currentProject.name}`);
   };
 
   const importProject = (file: File) => {
@@ -242,10 +195,7 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
           name: `${importedProject.name} (Imported)`
         };
 
-        const saved = saveProject(newProject);
-        setCurrentProject(saved);
-        setProjects(prev => [...prev, saved]);
-        
+        const saved = addProject(newProject);
         toast.success(`Imported project: ${newProject.name}`);
       } catch (error) {
         console.error("Import error:", error);
@@ -256,23 +206,25 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
   };
 
   return (
-    <ProjectContext.Provider
-      value={{
-        currentProject,
-        projects,
-        loadProject,
-        createNewProject,
-        saveCurrentProject,
-        renameCurrentProject,
-        deleteCurrentProject,
-        updatePosterData,
-        updateDesignSettings,
-        updateQrColor,
-        exportProject,
-        importProject
-      }}
-    >
-      {children}
-    </ProjectContext.Provider>
+    <ErrorBoundary>
+      <ProjectContext.Provider
+        value={{
+          currentProject: state.currentProject,
+          projects: state.projects,
+          loadProject,
+          createNewProject,
+          saveCurrentProject,
+          renameCurrentProject,
+          deleteCurrentProject,
+          updatePosterData,
+          updateDesignSettings,
+          updateQrColor,
+          exportProject,
+          importProject
+        }}
+      >
+        {children}
+      </ProjectContext.Provider>
+    </ErrorBoundary>
   );
 };

@@ -1,27 +1,33 @@
 
-// Project management utilities
 import { toast } from "sonner";
-
-export interface ProjectData {
-  id: string;
-  name: string;
-  createdAt: number;
-  updatedAt: number;
-  posterData: any;
-  designSettings: any;
-  qrColor: string;
-}
+import { ProjectData } from '@/types/project';
+import { projectDataSchema } from '@/utils/validation/schemas';
 
 const STORAGE_KEY = "poster_projects";
 
-// Get all saved projects
+// Get all saved projects with validation
 export const getProjects = (): ProjectData[] => {
   try {
     const projectsString = localStorage.getItem(STORAGE_KEY);
     if (!projectsString) return [];
-    return JSON.parse(projectsString);
+    
+    const projects = JSON.parse(projectsString);
+    
+    // Validate each project
+    const validatedProjects = projects.filter((project: unknown) => {
+      try {
+        projectDataSchema.parse(project);
+        return true;
+      } catch (error) {
+        console.warn("Invalid project data found:", error);
+        return false;
+      }
+    });
+    
+    return validatedProjects;
   } catch (error) {
     console.error("Failed to load projects:", error);
+    toast.error("Failed to load projects from storage");
     return [];
   }
 };
@@ -34,40 +40,55 @@ export const getProject = (id: string): ProjectData | null => {
 
 // Save a new project or update an existing one
 export const saveProject = (project: ProjectData): ProjectData => {
-  const projects = getProjects();
-  const now = Date.now();
-  
-  // Check if project with this ID already exists
-  const existingIndex = projects.findIndex(p => p.id === project.id);
-  
-  const updatedProject = {
-    ...project,
-    updatedAt: now
-  };
-  
-  if (existingIndex >= 0) {
-    // Update existing project
-    projects[existingIndex] = updatedProject;
-  } else {
-    // Add new project
-    projects.push(updatedProject);
+  try {
+    // Validate project data
+    const validatedProject = projectDataSchema.parse(project);
+    
+    const projects = getProjects();
+    const now = Date.now();
+    
+    // Check if project with this ID already exists
+    const existingIndex = projects.findIndex(p => p.id === validatedProject.id);
+    
+    const updatedProject = {
+      ...validatedProject,
+      updatedAt: now
+    };
+    
+    if (existingIndex >= 0) {
+      // Update existing project
+      projects[existingIndex] = updatedProject;
+    } else {
+      // Add new project
+      projects.push(updatedProject);
+    }
+    
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+    return updatedProject;
+  } catch (error) {
+    console.error("Failed to save project:", error);
+    toast.error("Failed to save project");
+    throw error;
   }
-  
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
-  return updatedProject;
 };
 
 // Delete a project
 export const deleteProject = (id: string): boolean => {
-  const projects = getProjects();
-  const filteredProjects = projects.filter(project => project.id !== id);
-  
-  if (filteredProjects.length === projects.length) {
-    return false; // Project not found
+  try {
+    const projects = getProjects();
+    const filteredProjects = projects.filter(project => project.id !== id);
+    
+    if (filteredProjects.length === projects.length) {
+      return false; // Project not found
+    }
+    
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredProjects));
+    return true;
+  } catch (error) {
+    console.error("Failed to delete project:", error);
+    toast.error("Failed to delete project");
+    return false;
   }
-  
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredProjects));
-  return true;
 };
 
 // Generate a unique ID for new projects

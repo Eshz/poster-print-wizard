@@ -5,10 +5,12 @@ import SectionsGroup from './poster-form/SectionsGroup';
 import KeyTakeawaysGroup from './poster-form/KeyTakeawaysGroup';
 import ImagesGroup from './poster-form/ImagesGroup';
 import QrCodeGroup from './poster-form/QrCodeGroup';
+import { PosterData, PosterImage } from '@/types/project';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 
 interface PosterFormProps {
-  posterData: any;
-  setPosterData: React.Dispatch<React.SetStateAction<any>>;
+  posterData: PosterData;
+  setPosterData: (posterData: Partial<PosterData> | ((prev: PosterData) => PosterData)) => void;
 }
 
 const PosterForm: React.FC<PosterFormProps> = ({ 
@@ -30,27 +32,35 @@ const PosterForm: React.FC<PosterFormProps> = ({
   };
   
   const handleKeyPointChange = (index: number, value: string) => {
-    const updatedKeypoints = [...posterData.keypoints];
-    updatedKeypoints[index] = value;
-    setPosterData(prev => ({ ...prev, keypoints: updatedKeypoints }));
+    setPosterData(prev => {
+      const updatedKeypoints = [...prev.keypoints];
+      updatedKeypoints[index] = value;
+      return { ...prev, keypoints: updatedKeypoints };
+    });
   };
   
   const handleKeyDescriptionChange = (index: number, value: string) => {
-    const updatedDescriptions = [...posterData.keyDescriptions];
-    updatedDescriptions[index] = value;
-    setPosterData(prev => ({ ...prev, keyDescriptions: updatedDescriptions }));
+    setPosterData(prev => {
+      const updatedDescriptions = [...prev.keyDescriptions];
+      updatedDescriptions[index] = value;
+      return { ...prev, keyDescriptions: updatedDescriptions };
+    });
   };
 
   const handleKeyVisibilityChange = (index: number, visible: boolean) => {
-    const updatedVisibility = [...(posterData.keyVisibility || [true, true, true, true])];
-    updatedVisibility[index] = visible;
-    setPosterData(prev => ({ ...prev, keyVisibility: updatedVisibility }));
+    setPosterData(prev => {
+      const updatedVisibility = [...(prev.keyVisibility || [true, true, true, true])];
+      updatedVisibility[index] = visible;
+      return { ...prev, keyVisibility: updatedVisibility };
+    });
   };
 
   const handleSectionTitleChange = (index: number, value: string) => {
-    const updatedSectionTitles = [...posterData.sectionTitles];
-    updatedSectionTitles[index] = value;
-    setPosterData(prev => ({ ...prev, sectionTitles: updatedSectionTitles }));
+    setPosterData(prev => {
+      const updatedSectionTitles = [...prev.sectionTitles];
+      updatedSectionTitles[index] = value;
+      return { ...prev, sectionTitles: updatedSectionTitles };
+    });
   };
 
   const handleQrUrlChange = (url: string) => {
@@ -61,11 +71,11 @@ const PosterForm: React.FC<PosterFormProps> = ({
     setPosterData(prev => ({ ...prev, qrCodeColor: color }));
   };
   
-  const handleImagesChange = (images: { url: string; visible: boolean; caption: string }[]) => {
+  const handleImagesChange = (images: PosterImage[]) => {
     setPosterData(prev => ({ ...prev, images }));
   };
   
-  const handleToggleChange = (field: string) => (checked: boolean) => {
+  const handleToggleChange = (field: keyof PosterData) => (checked: boolean) => {
     setPosterData(prev => ({ ...prev, [field]: checked }));
   };
   
@@ -74,49 +84,51 @@ const PosterForm: React.FC<PosterFormProps> = ({
   };
   
   return (
-    <div className="h-full flex flex-col bg-gray-50">
-      <div className="flex-1 overflow-y-auto p-6 space-y-6">
-        <ContactInfoSection 
-          posterData={posterData}
-          handleChange={handleChange}
-          openSections={openSections}
-          toggleSection={toggleSection}
-        />
-        
-        <SectionsGroup 
-          posterData={posterData}
-          handleChange={handleChange}
-          handleSectionTitleChange={handleSectionTitleChange}
-          openSections={openSections}
-          toggleSection={toggleSection}
-        />
+    <ErrorBoundary>
+      <div className="h-full flex flex-col bg-gray-50">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          <ContactInfoSection 
+            posterData={posterData}
+            handleChange={handleChange}
+            openSections={openSections}
+            toggleSection={toggleSection}
+          />
+          
+          <SectionsGroup 
+            posterData={posterData}
+            handleChange={handleChange}
+            handleSectionTitleChange={handleSectionTitleChange}
+            openSections={openSections}
+            toggleSection={toggleSection}
+          />
 
-        <KeyTakeawaysGroup 
-          posterData={posterData}
-          handleKeyPointChange={handleKeyPointChange}
-          handleKeyDescriptionChange={handleKeyDescriptionChange}
-          handleKeyVisibilityChange={handleKeyVisibilityChange}
-          handleToggleChange={handleToggleChange}
-          openSections={openSections}
-          toggleSection={toggleSection}
-        />
+          <KeyTakeawaysGroup 
+            posterData={posterData}
+            handleKeyPointChange={handleKeyPointChange}
+            handleKeyDescriptionChange={handleKeyDescriptionChange}
+            handleKeyVisibilityChange={handleKeyVisibilityChange}
+            handleToggleChange={handleToggleChange}
+            openSections={openSections}
+            toggleSection={toggleSection}
+          />
 
-        <ImagesGroup 
-          posterData={posterData}
-          handleImagesChange={handleImagesChange}
-        />
+          <ImagesGroup 
+            posterData={posterData}
+            handleImagesChange={handleImagesChange}
+          />
 
-        <QrCodeGroup 
-          posterData={posterData}
-          handleQrUrlChange={handleQrUrlChange}
-          handleQrColorChange={handleQrColorChange}
-          handleQrCaptionChange={handleQrCaptionChange}
-          handleToggleChange={handleToggleChange}
-          openSections={openSections}
-          toggleSection={toggleSection}
-        />
+          <QrCodeGroup 
+            posterData={posterData}
+            handleQrUrlChange={handleQrUrlChange}
+            handleQrColorChange={handleQrColorChange}
+            handleQrCaptionChange={handleQrCaptionChange}
+            handleToggleChange={handleToggleChange}
+            openSections={openSections}
+            toggleSection={toggleSection}
+          />
+        </div>
       </div>
-    </div>
+    </ErrorBoundary>
   );
 };
 
