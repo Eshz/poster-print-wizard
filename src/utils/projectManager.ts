@@ -51,7 +51,12 @@ export const saveProject = (project: ProjectData): ProjectData => {
     const existingIndex = projects.findIndex(p => p.id === validatedProject.id);
     
     const updatedProject: ProjectData = {
-      ...validatedProject,
+      id: validatedProject.id,
+      name: validatedProject.name,
+      createdAt: validatedProject.createdAt,
+      posterData: validatedProject.posterData,
+      designSettings: validatedProject.designSettings,
+      qrColor: validatedProject.qrColor,
       updatedAt: now
     };
     

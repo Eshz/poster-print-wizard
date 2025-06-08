@@ -28,5 +28,5 @@ export interface ProjectContextType {
 }
 
 // Re-export types for convenience
-export type { PosterData, DesignSettings } from './poster';
-export type { DesignSettings as DesignSettingsType } from './design';
+export type { PosterData } from './poster';
+export type { DesignSettings } from './design';
