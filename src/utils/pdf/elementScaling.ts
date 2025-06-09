@@ -26,7 +26,7 @@ export const scaleElementForPdf = (clonedElement: HTMLElement) => {
   clonedElement.style.height = `${PREVIEW_HEIGHT}px`;
   clonedElement.style.margin = '0';
   clonedElement.style.padding = '0';
-  clonedElement.style.overflow = 'hidden';
+  clonedElement.style.overflow = 'visible';
   clonedElement.style.position = 'relative';
   clonedElement.style.backgroundColor = '#ffffff';
   clonedElement.style.boxSizing = 'border-box';
@@ -52,19 +52,36 @@ const prepareImagesForPdf = (element: HTMLElement) => {
     imgElement.style.display = 'block';
     imgElement.style.visibility = 'visible';
     imgElement.style.opacity = '1';
+    imgElement.style.position = 'relative';
+    imgElement.style.zIndex = '1';
+    
+    // Remove any transforms or filters that might hide the image
+    imgElement.style.transform = 'none';
+    imgElement.style.filter = 'none';
     
     // Force load images that might not be loaded yet
     if (!imgElement.complete) {
       imgElement.loading = 'eager';
     }
     
-    // For QR codes and external images, ensure proper crossOrigin handling
-    if (imgElement.src.includes('qrserver.com') || imgElement.src.startsWith('http')) {
-      imgElement.crossOrigin = 'anonymous';
-      // Force reload to ensure image is available
-      const originalSrc = imgElement.src;
-      imgElement.src = '';
-      imgElement.src = originalSrc;
+    // For QR codes, convert to data URL to avoid CORS issues
+    if (imgElement.src.includes('qrserver.com')) {
+      // Create a canvas to convert the QR image to base64
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      if (ctx && imgElement.complete) {
+        canvas.width = imgElement.naturalWidth || 150;
+        canvas.height = imgElement.naturalHeight || 150;
+        
+        try {
+          ctx.drawImage(imgElement, 0, 0);
+          const dataUrl = canvas.toDataURL('image/png');
+          imgElement.src = dataUrl;
+        } catch (error) {
+          console.log('Could not convert QR image, keeping original:', error);
+        }
+      }
     }
     
     // Ensure images maintain their aspect ratio
@@ -83,9 +100,9 @@ const removeScrollbars = (element: HTMLElement) => {
     const htmlElement = el as HTMLElement;
     htmlElement.style.visibility = 'visible';
     htmlElement.style.opacity = '1';
-    htmlElement.style.overflow = 'hidden';
-    htmlElement.style.overflowX = 'hidden';
-    htmlElement.style.overflowY = 'hidden';
+    htmlElement.style.overflow = 'visible';
+    htmlElement.style.overflowX = 'visible';
+    htmlElement.style.overflowY = 'visible';
     htmlElement.style.scrollBehavior = 'auto';
   });
 };

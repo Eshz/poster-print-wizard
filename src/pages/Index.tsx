@@ -65,7 +65,7 @@ const Index = () => {
   };
   
   return (
-    <div className="flex lg:flex-row min-h-[calc(100vh-73px)] bg-gray-50">
+    <div className="flex lg:flex-row min-h-[calc(100vh-73px)] bg-gray-50 relative">
       {/* Mobile view tabs */}
       <MobileTabs 
         posterData={posterData}
@@ -79,20 +79,22 @@ const Index = () => {
         handleExportPDF={handleExportPDF}
       />
       
-      {/* Desktop sidebar */}
-      <DesktopSidebar 
-        posterData={posterData}
-        setPosterData={updatePosterData}
-        designSettings={designSettings}
-        setDesignSettings={updateDesignSettings}
-        qrColor={qrColor}
-        setQrColor={updateQrColor}
-        activePanel={activePanel}
-        setActivePanel={setActivePanel}
-        handleExportPDF={handleExportPDF}
-      />
+      {/* Desktop sidebar - scrollable */}
+      <div className="hidden lg:block lg:w-1/3 overflow-y-auto">
+        <DesktopSidebar 
+          posterData={posterData}
+          setPosterData={updatePosterData}
+          designSettings={designSettings}
+          setDesignSettings={updateDesignSettings}
+          qrColor={qrColor}
+          setQrColor={updateQrColor}
+          activePanel={activePanel}
+          setActivePanel={setActivePanel}
+          handleExportPDF={handleExportPDF}
+        />
+      </div>
       
-      {/* Preview Area */}
+      {/* Preview Area - fixed position */}
       <PosterPreviewArea 
         posterData={posterData}
         qrColor={qrColor}

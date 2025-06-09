@@ -36,8 +36,8 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = React.memo(({
   };
 
   return (
-    <div className="flex-1 bg-gray-100 relative">
-      <div className="flex items-center justify-center relative h-screen w-full">
+    <div className="flex-1 bg-gray-100 relative fixed right-0 top-0 bottom-0 lg:static">
+      <div className="flex items-center justify-center relative h-screen w-full overflow-hidden">
         <ZoomControls 
           currentZoom={manualZoom}
           onZoomChange={handleZoomChange}
@@ -46,7 +46,7 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = React.memo(({
         
         <div 
           id="poster-preview" 
-          className="w-full h-full flex items-center justify-center p-5"
+          className="w-full h-full flex items-center justify-center p-5 overflow-hidden"
         >
           <PosterPreview 
             posterData={{
