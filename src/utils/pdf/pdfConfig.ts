@@ -9,7 +9,7 @@ export const PREVIEW_HEIGHT = 1131;
 
 /**
  * Creates optimized PDF export configuration for A0 posters at 300 DPI
- * Updated for high-quality print output
+ * Maintains preview appearance while achieving print quality
  */
 export const createPdfConfig = () => ({
   margin: 0,
@@ -19,7 +19,7 @@ export const createPdfConfig = () => ({
     quality: 0.98
   },
   html2canvas: { 
-    scale: 4.0, // Increased scale for 300 DPI output
+    scale: 12.4, // High scale for 300 DPI (A0_WIDTH_POINTS / PREVIEW_WIDTH)
     useCORS: true,
     letterRendering: true,
     logging: false,
