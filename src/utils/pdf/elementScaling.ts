@@ -6,8 +6,8 @@ import { A0_WIDTH_POINTS, A0_HEIGHT_POINTS, PREVIEW_WIDTH, PREVIEW_HEIGHT } from
  */
 export const calculateScaleFactor = () => {
   // Calculate the scale factor needed to go from preview size to A0 300 DPI size
-  const widthRatio = A0_WIDTH_POINTS / PREVIEW_WIDTH; // 9921 / 800 = ~12.4
-  const heightRatio = A0_HEIGHT_POINTS / PREVIEW_HEIGHT; // 14043 / 1131 = ~12.4
+  const widthRatio = A0_WIDTH_POINTS / PREVIEW_WIDTH; // 2384 / 800 = ~2.98
+  const heightRatio = A0_HEIGHT_POINTS / PREVIEW_HEIGHT; // 3370 / 1131 = ~2.98
   
   // Use the smaller ratio to maintain aspect ratio
   return Math.min(widthRatio, heightRatio);
@@ -31,10 +31,36 @@ export const scaleElementForPdf = (clonedElement: HTMLElement) => {
   clonedElement.style.backgroundColor = '#ffffff';
   clonedElement.style.boxSizing = 'border-box';
   
+  // Ensure QR images and other images are properly handled
+  prepareImagesForPdf(clonedElement);
+  
   // Only apply minimal cleanup without aggressive scaling
   removeScrollbars(clonedElement);
   
   return 1; // Return scale factor of 1 to maintain original sizing
+};
+
+/**
+ * Prepares images for PDF export, ensuring QR codes and other images are properly handled
+ */
+const prepareImagesForPdf = (element: HTMLElement) => {
+  const images = element.querySelectorAll('img');
+  images.forEach((img) => {
+    const imgElement = img as HTMLImageElement;
+    
+    // Ensure images are displayed and not hidden
+    imgElement.style.display = 'block';
+    imgElement.style.visibility = 'visible';
+    imgElement.style.opacity = '1';
+    
+    // For QR codes and external images, ensure proper crossOrigin handling
+    if (imgElement.src.includes('qrserver.com') || imgElement.src.startsWith('http')) {
+      imgElement.crossOrigin = 'anonymous';
+    }
+    
+    // Ensure images maintain their aspect ratio
+    imgElement.style.objectFit = 'contain';
+  });
 };
 
 /**

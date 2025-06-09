@@ -1,10 +1,9 @@
 
 import React from 'react';
-import { Text, Palette, Download } from "lucide-react";
+import { Text, Palette } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PosterForm from '@/components/PosterForm';
 import DesignPanel from '@/components/DesignPanel';
-import { Button } from "@/components/ui/button";
 
 interface DesktopSidebarProps {
   posterData: any;
@@ -26,8 +25,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
   qrColor,
   setQrColor,
   activePanel,
-  setActivePanel,
-  handleExportPDF
+  setActivePanel
 }) => {
   return (
     <div className="hidden lg:block lg:w-1/3 p-4">
@@ -60,14 +58,6 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
             />
           </TabsContent>
         </Tabs>
-        
-        <Button 
-          onClick={handleExportPDF} 
-          className="w-full mt-4"
-          variant="outline"
-        >
-          <Download className="mr-2 h-4 w-4" /> Export as PDF
-        </Button>
       </div>
     </div>
   );
