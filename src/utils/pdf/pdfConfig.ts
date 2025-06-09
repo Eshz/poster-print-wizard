@@ -1,25 +1,25 @@
 
-// A0 dimensions in points (1 mm ≈ 2.83 points)
-export const A0_WIDTH_POINTS = 2384; // 841 mm in points
-export const A0_HEIGHT_POINTS = 3370; // 1189 mm in points
+// A0 dimensions at 300 DPI (much higher resolution for printing)
+export const A0_WIDTH_POINTS = 9921; // 841 mm at 300 DPI in points
+export const A0_HEIGHT_POINTS = 14043; // 1189 mm at 300 DPI in points
 
 // Current preview dimensions
 export const PREVIEW_WIDTH = 800;
 export const PREVIEW_HEIGHT = 1131;
 
 /**
- * Creates optimized PDF export configuration for A0 posters
- * Updated to produce better font scaling and layout matching
+ * Creates optimized PDF export configuration for A0 posters at 300 DPI
+ * Updated for high-quality print output
  */
 export const createPdfConfig = () => ({
   margin: 0,
-  filename: 'conference-poster-A0.pdf',
+  filename: 'conference-poster-A0-300dpi.pdf',
   image: { 
     type: 'jpeg', 
-    quality: 0.98 // Slightly higher quality for better text rendering
+    quality: 0.98
   },
   html2canvas: { 
-    scale: 2.0, // Reduced from 2.5 to 2.0 for better performance and sizing
+    scale: 4.0, // Increased scale for 300 DPI output
     useCORS: true,
     letterRendering: true,
     logging: false,
@@ -36,7 +36,7 @@ export const createPdfConfig = () => ({
     scrollY: 0,
     x: 0,
     y: 0,
-    // Additional settings to prevent scrollbars and improve text rendering
+    dpi: 300, // Set DPI for print quality
     ignoreElements: (element: Element) => {
       const el = element as HTMLElement;
       return el.style.overflow === 'scroll' || 

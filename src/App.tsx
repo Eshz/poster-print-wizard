@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProjectProvider } from "./contexts/ProjectContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import ProjectSwitcher from "./components/ProjectSwitcher";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { exportToPDF } from '@/utils/pdfExport';
@@ -35,9 +34,6 @@ const App = () => {
                 </div>
                 
                 <div className="flex items-center space-x-4">
-                  <div className="hidden md:block">
-                    <ProjectSwitcher />
-                  </div>
                   <ImportExportButtons />
                   <Button 
                     onClick={handleExportPDF}
@@ -46,10 +42,6 @@ const App = () => {
                     <Download className="mr-2 h-4 w-4" />
                     Export to PDF
                   </Button>
-                </div>
-                
-                <div className="md:hidden">
-                  <ProjectSwitcher />
                 </div>
               </div>
             </header>
