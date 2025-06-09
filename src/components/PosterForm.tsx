@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import ContactInfoSection from './poster-form/ContactInfoSection';
 import SectionsGroup from './poster-form/SectionsGroup';
@@ -18,7 +17,10 @@ const PosterForm: React.FC<PosterFormProps> = ({
   posterData, 
   setPosterData
 }) => {
-  const [openSections, setOpenSections] = useState<{[key: string]: boolean}>({});
+  // Initialize with only general-info open by default
+  const [openSections, setOpenSections] = useState<{[key: string]: boolean}>({
+    'general-info': true
+  });
 
   const toggleSection = (sectionId: string) => {
     setOpenSections(prev => ({

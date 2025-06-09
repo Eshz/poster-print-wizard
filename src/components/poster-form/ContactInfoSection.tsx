@@ -20,6 +20,13 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
 }) => {
   const [tempValues, setTempValues] = useState<{[key: string]: string}>({});
 
+  // Set default open state for general-info section
+  useEffect(() => {
+    if (!openSections.hasOwnProperty('general-info')) {
+      toggleSection('general-info');
+    }
+  }, []);
+
   useEffect(() => {
     // Initialize temp values when section opens
     if (openSections['general-info'] && Object.keys(tempValues).length === 0) {

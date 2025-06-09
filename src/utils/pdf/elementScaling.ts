@@ -53,13 +53,24 @@ const prepareImagesForPdf = (element: HTMLElement) => {
     imgElement.style.visibility = 'visible';
     imgElement.style.opacity = '1';
     
+    // Force load images that might not be loaded yet
+    if (!imgElement.complete) {
+      imgElement.loading = 'eager';
+    }
+    
     // For QR codes and external images, ensure proper crossOrigin handling
     if (imgElement.src.includes('qrserver.com') || imgElement.src.startsWith('http')) {
       imgElement.crossOrigin = 'anonymous';
+      // Force reload to ensure image is available
+      const originalSrc = imgElement.src;
+      imgElement.src = '';
+      imgElement.src = originalSrc;
     }
     
     // Ensure images maintain their aspect ratio
     imgElement.style.objectFit = 'contain';
+    imgElement.style.maxWidth = '100%';
+    imgElement.style.height = 'auto';
   });
 };
 
