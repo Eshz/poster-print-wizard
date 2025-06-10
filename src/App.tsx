@@ -8,16 +8,49 @@ import { ProjectProvider } from "./contexts/ProjectContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, Monitor } from "lucide-react";
 import { exportToPDF } from '@/utils/pdfExport';
 import ImportExportButtons from "./components/ImportExportButtons";
+import { useIsMobile } from "./hooks/use-mobile";
 
 const queryClient = new QueryClient();
 
+const MobileRestrictionMessage = () => {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">
+      <div className="text-center max-w-md">
+        <Monitor className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">Desktop Only</h1>
+        <p className="text-gray-600 mb-6">
+          PosterMaker is designed for desktop use only. Please open this application on a desktop or laptop computer for the best experience.
+        </p>
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <p className="text-sm text-blue-800">
+            For optimal poster creation and editing, a larger screen is required.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const App = () => {
+  const isMobile = useIsMobile();
+  
   const handleExportPDF = () => {
     exportToPDF('poster-content');
   };
+
+  // Show mobile restriction message on mobile devices
+  if (isMobile) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <MobileRestrictionMessage />
+        </TooltipProvider>
+      </QueryClientProvider>
+    );
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -25,7 +58,7 @@ const App = () => {
         <ProjectProvider>
           <div className="flex flex-col min-h-screen bg-gray-50">
             <header className="border-b bg-white shadow-sm sticky top-0 z-50">
-              <div className="container mx-auto flex justify-between items-center px-6 py-3">
+              <div className="flex justify-between items-center px-6 py-3">
                 <div className="flex items-center space-x-3">
                   <div className="w-6 h-6 bg-black rounded-sm flex items-center justify-center">
                     <span className="text-white font-bold text-sm">P</span>
