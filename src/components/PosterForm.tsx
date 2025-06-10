@@ -1,9 +1,11 @@
+
 import React, { useState } from 'react';
 import ContactInfoSection from './poster-form/ContactInfoSection';
 import SectionsGroup from './poster-form/SectionsGroup';
 import KeyTakeawaysGroup from './poster-form/KeyTakeawaysGroup';
 import ImagesGroup from './poster-form/ImagesGroup';
 import QrCodeGroup from './poster-form/QrCodeGroup';
+import ReferencesSection from './poster-form/ReferencesSection';
 import { PosterData } from '@/types/project';
 import { PosterImage } from '@/types/poster';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
@@ -88,8 +90,8 @@ const PosterForm: React.FC<PosterFormProps> = ({
   
   return (
     <ErrorBoundary>
-      <div className="h-full flex flex-col bg-gray-50">
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+      <div className="h-full flex flex-col">
+        <div className="flex-1 overflow-y-auto p-6 space-y-0">
           <ContactInfoSection 
             posterData={posterData}
             handleChange={handleChange}
@@ -101,6 +103,13 @@ const PosterForm: React.FC<PosterFormProps> = ({
             posterData={posterData}
             handleChange={handleChange}
             handleSectionTitleChange={handleSectionTitleChange}
+            openSections={openSections}
+            toggleSection={toggleSection}
+          />
+
+          <ReferencesSection 
+            posterData={posterData}
+            handleChange={handleChange}
             openSections={openSections}
             toggleSection={toggleSection}
           />

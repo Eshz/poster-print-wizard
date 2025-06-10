@@ -8,7 +8,7 @@ import { ProjectProvider } from "./contexts/ProjectContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { Button } from "@/components/ui/button";
-import { Download, Monitor } from "lucide-react";
+import { Download, Monitor, Undo, Redo } from "lucide-react";
 import { exportToPDF } from '@/utils/pdfExport';
 import ImportExportButtons from "./components/ImportExportButtons";
 import { useIsMobile } from "./hooks/use-mobile";
@@ -41,6 +41,16 @@ const App = () => {
     exportToPDF('poster-content');
   };
 
+  const handleUndo = () => {
+    // Browser undo functionality
+    document.execCommand('undo');
+  };
+
+  const handleRedo = () => {
+    // Browser redo functionality  
+    document.execCommand('redo');
+  };
+
   // Show mobile restriction message on mobile devices
   if (isMobile) {
     return (
@@ -59,11 +69,32 @@ const App = () => {
           <div className="flex flex-col min-h-screen bg-gray-50">
             <header className="border-b bg-white shadow-sm sticky top-0 z-50">
               <div className="flex justify-between items-center px-6 py-3">
-                <div className="flex items-center space-x-3">
-                  <div className="w-6 h-6 bg-black rounded-sm flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">P</span>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-6 h-6 bg-black rounded-sm flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">P</span>
+                    </div>
+                    <h1 className="text-lg font-semibold text-gray-900">PosterMaker</h1>
                   </div>
-                  <h1 className="text-lg font-semibold text-gray-900">PosterMaker</h1>
+                  
+                  <div className="flex items-center space-x-2">
+                    <Button 
+                      onClick={handleUndo}
+                      variant="ghost"
+                      size="sm"
+                      className="text-gray-600 hover:text-gray-900"
+                    >
+                      <Undo className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      onClick={handleRedo}
+                      variant="ghost"
+                      size="sm"
+                      className="text-gray-600 hover:text-gray-900"
+                    >
+                      <Redo className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
                 
                 <div className="flex items-center space-x-4">

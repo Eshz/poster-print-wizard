@@ -28,7 +28,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
 
     return (
       <div className="space-y-2">
-        <Label htmlFor={singleField} className="text-sm font-medium text-gray-900">
+        <Label htmlFor={singleField} className="text-xs font-medium text-gray-700">
           {config.label}
         </Label>
         <Input
@@ -37,17 +37,17 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
           value={posterData[singleField] || ''}
           onChange={handleChange}
           placeholder={config.placeholder}
-          className="border-gray-300 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg"
+          className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
         />
       </div>
     );
   }
 
-  // Original full form layout
+  // Updated layout with each field in separate row
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="title" className="text-sm font-medium text-gray-900">
+        <Label htmlFor="title" className="text-xs font-medium text-gray-700">
           Title
         </Label>
         <Input
@@ -56,41 +56,40 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
           value={posterData.title || ''}
           onChange={handleChange}
           placeholder="Enter your poster title"
-          className="border-gray-300 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg"
+          className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
         />
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="authors" className="text-sm font-medium text-gray-900">
-            Authors
-          </Label>
-          <Input
-            id="authors"
-            name="authors"
-            value={posterData.authors || ''}
-            onChange={handleChange}
-            placeholder="Enter author names"
-            className="border-gray-300 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="school" className="text-sm font-medium text-gray-900">
-            School/Institution
-          </Label>
-          <Input
-            id="school"
-            name="school"
-            value={posterData.school || ''}
-            onChange={handleChange}
-            placeholder="Enter institution name"
-            className="border-gray-300 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg"
-          />
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="authors" className="text-xs font-medium text-gray-700">
+          Authors
+        </Label>
+        <Input
+          id="authors"
+          name="authors"
+          value={posterData.authors || ''}
+          onChange={handleChange}
+          placeholder="Enter author names"
+          className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="school" className="text-xs font-medium text-gray-700">
+          School/Institution
+        </Label>
+        <Input
+          id="school"
+          name="school"
+          value={posterData.school || ''}
+          onChange={handleChange}
+          placeholder="Enter institution name"
+          className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
+        />
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="contact" className="text-sm font-medium text-gray-900">
+        <Label htmlFor="contact" className="text-xs font-medium text-gray-700">
           Contact Info
         </Label>
         <Input
@@ -99,7 +98,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
           value={posterData.contact || ''}
           onChange={handleChange}
           placeholder="Enter contact information"
-          className="border-gray-300 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg"
+          className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
         />
       </div>
     </div>

@@ -1,0 +1,82 @@
+
+import React from 'react';
+import { Plus, X, BookOpen } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+
+interface ReferencesSectionProps {
+  posterData: any;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  openSections: {[key: string]: boolean};
+  toggleSection: (sectionId: string) => void;
+}
+
+const ReferencesSection: React.FC<ReferencesSectionProps> = ({
+  posterData,
+  handleChange,
+  openSections,
+  toggleSection
+}) => {
+  const isOpen = openSections['references'];
+
+  const handleToggleReferences = (checked: boolean) => {
+    handleChange({ target: { name: 'showReferences', value: checked } } as any);
+  };
+
+  return (
+    <div className="border-b border-gray-200 py-4">
+      <div 
+        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded-md transition-colors"
+        onClick={() => toggleSection('references')}
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-6 h-6 bg-blue-50 rounded-md flex items-center justify-center">
+            <BookOpen className="h-3 w-3 text-blue-600" />
+          </div>
+          <h3 className="text-sm font-medium text-gray-900">References</h3>
+        </div>
+        {isOpen ? (
+          <X className="h-4 w-4 text-gray-500" />
+        ) : (
+          <Plus className="h-4 w-4 text-gray-500" />
+        )}
+      </div>
+      
+      {isOpen && (
+        <div className="mt-4 pl-9 space-y-4">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="show-references"
+              checked={posterData.showReferences !== false}
+              onCheckedChange={handleToggleReferences}
+            />
+            <Label htmlFor="show-references" className="text-xs font-medium text-gray-700">
+              Show references section
+            </Label>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="references" className="text-xs font-medium text-gray-700">
+              References Content
+            </Label>
+            <Textarea
+              id="references"
+              name="references"
+              value={posterData?.references || ""}
+              onChange={handleChange}
+              rows={6}
+              className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
+              placeholder="Enter references in bullet format:&#10;• Reference 1&#10;• Reference 2&#10;• Reference 3"
+            />
+            <p className="text-xs text-gray-500">
+              Use bullet points (•) to format your references list
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ReferencesSection;

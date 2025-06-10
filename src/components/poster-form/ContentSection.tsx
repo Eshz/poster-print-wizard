@@ -30,20 +30,20 @@ const ContentSection: React.FC<ContentSectionProps> = ({
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor={`sectionTitle-${sectionIndex}`} className="text-sm font-medium text-gray-900">
+        <Label htmlFor={`sectionTitle-${sectionIndex}`} className="text-xs font-medium text-gray-700">
           Section Title
         </Label>
         <Input 
           id={`sectionTitle-${sectionIndex}`}
           value={sectionTitles[sectionIndex] || `Section ${sectionIndex + 1}`}
           onChange={(e) => handleSectionTitleChange(sectionIndex, e.target.value)}
-          className="border-gray-300 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg"
+          className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
           placeholder="Enter section title"
         />
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor={sectionField} className="text-sm font-medium text-gray-900">
+        <Label htmlFor={sectionField} className="text-xs font-medium text-gray-700">
           Content
         </Label>
         <Textarea
@@ -52,7 +52,7 @@ const ContentSection: React.FC<ContentSectionProps> = ({
           value={posterData?.[sectionField] || ""}
           onChange={handleChange}
           rows={6}
-          className="border-gray-300 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg"
+          className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
           placeholder="Enter section content"
         />
       </div>
