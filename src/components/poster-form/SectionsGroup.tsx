@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import ContentSection from './ContentSection';
 import { Plus, X, FileText, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface SectionsGroupProps {
   posterData: any;
@@ -61,6 +62,14 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
     setDraggedIndex(null);
   };
 
+  const sectionTitles = posterData?.sectionTitles || [
+    "1. Introduction",
+    "2. Methods", 
+    "3. Findings",
+    "4. Conclusions",
+    "5. References"
+  ];
+
   return (
     <div className="border-b border-gray-200 py-4">
       <div className="flex items-center justify-between mb-4">
@@ -68,7 +77,7 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
           <div className="w-6 h-6 bg-blue-50 rounded-md flex items-center justify-center">
             <FileText className="h-3 w-3 text-blue-600" />
           </div>
-          <h3 className="text-sm font-medium text-gray-900">Sections</h3>
+          <h3 className="text-lg font-semibold text-gray-900">Sections</h3>
         </div>
         <Button 
           onClick={addNewSection}
@@ -87,36 +96,54 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
           return (
             <div 
               key={section.id}
-              className="border border-gray-100 rounded-md overflow-hidden"
+              className="border-b border-gray-100 pb-2"
               draggable
               onDragStart={(e) => handleDragStart(e, index)}
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, index)}
             >
-              <div 
-                className="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 transition-colors"
-                onClick={() => toggleSection(section.id)}
-              >
-                <div className="flex items-center gap-2">
-                  <GripVertical className="h-3 w-3 text-gray-400 cursor-move" />
-                  <span className="text-xs font-medium text-gray-900">{section.label}</span>
+              {!isOpen && (
+                <div 
+                  className="flex items-center justify-between p-2 hover:bg-gray-50 transition-colors cursor-pointer rounded-md"
+                  onClick={() => toggleSection(section.id)}
+                >
+                  <div className="flex items-center gap-2">
+                    <GripVertical className="h-3 w-3 text-gray-400 cursor-move" />
+                    <span className="text-sm font-medium text-gray-900">
+                      {sectionTitles[index] || section.label}
+                    </span>
+                  </div>
+                  <Plus className="h-4 w-4 text-gray-500" />
                 </div>
-                {isOpen ? (
-                  <X className="h-3 w-3 text-gray-500" />
-                ) : (
-                  <Plus className="h-3 w-3 text-gray-500" />
-                )}
-              </div>
+              )}
               
               {isOpen && (
-                <div className="p-3 border-t border-gray-100 bg-gray-50">
-                  <ContentSection 
-                    posterData={posterData}
-                    handleChange={handleChange}
-                    handleSectionTitleChange={handleSectionTitleChange}
-                    sectionIndex={index}
-                    sectionField={section.field}
-                  />
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-2">
+                    <div className="flex items-center gap-2 flex-1">
+                      <GripVertical className="h-3 w-3 text-gray-400 cursor-move" />
+                      <Input 
+                        value={sectionTitles[index] || section.label}
+                        onChange={(e) => handleSectionTitleChange(index, e.target.value)}
+                        className="border-0 shadow-none p-0 h-auto text-sm font-medium text-gray-900 focus-visible:ring-0 bg-transparent"
+                        placeholder="Section title"
+                      />
+                    </div>
+                    <X 
+                      className="h-4 w-4 text-gray-500 cursor-pointer" 
+                      onClick={() => toggleSection(section.id)}
+                    />
+                  </div>
+                  
+                  <div className="pl-5">
+                    <ContentSection 
+                      posterData={posterData}
+                      handleChange={handleChange}
+                      handleSectionTitleChange={handleSectionTitleChange}
+                      sectionIndex={index}
+                      sectionField={section.field}
+                    />
+                  </div>
                 </div>
               )}
             </div>

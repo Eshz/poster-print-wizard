@@ -1,8 +1,8 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import QrCodeSection from './QrCodeSection';
 import { Switch } from "@/components/ui/switch";
-import { Edit, QrCode, Check, X } from "lucide-react";
+import { Plus, X, QrCode } from "lucide-react";
 
 interface QrCodeGroupProps {
   posterData: any;
@@ -23,100 +23,43 @@ const QrCodeGroup: React.FC<QrCodeGroupProps> = ({
   openSections,
   toggleSection
 }) => {
-  const [tempValues, setTempValues] = useState<{url: string, color: string, caption: string}>({
-    url: '',
-    color: '',
-    caption: ''
-  });
-
-  useEffect(() => {
-    // Initialize temp values when section opens
-    if (openSections['qrcode'] && !tempValues.url && !tempValues.color && !tempValues.caption) {
-      setTempValues({
-        url: posterData.qrCodeUrl || '',
-        color: posterData.qrCodeColor || '',
-        caption: posterData.qrCodeCaption || ''
-      });
-    }
-  }, [openSections, posterData]);
-
-  const handleAccept = () => {
-    handleQrUrlChange(tempValues.url);
-    handleQrColorChange(tempValues.color);
-    handleQrCaptionChange(tempValues.caption);
-    toggleSection('qrcode');
-    setTempValues({ url: '', color: '', caption: '' });
-  };
-
-  const handleCancel = () => {
-    toggleSection('qrcode');
-    setTempValues({ url: '', color: '', caption: '' });
-  };
-
-  const handleTempUrlChange = (url: string) => {
-    setTempValues(prev => ({ ...prev, url }));
-  };
-
-  const handleTempColorChange = (color: string) => {
-    setTempValues(prev => ({ ...prev, color }));
-  };
-
-  const handleTempCaptionChange = (caption: string) => {
-    setTempValues(prev => ({ ...prev, caption }));
-  };
+  const isOpen = openSections['qrcode'];
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-      <div className="p-6 border-b border-gray-100">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-orange-50 rounded-lg flex items-center justify-center">
-              <QrCode className="h-4 w-4 text-orange-600" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900">QR Code</h3>
+    <div className="border-b border-gray-200 py-4">
+      <div 
+        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded-md transition-colors"
+        onClick={() => toggleSection('qrcode')}
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-6 h-6 bg-blue-50 rounded-md flex items-center justify-center">
+            <QrCode className="h-3 w-3 text-blue-600" />
           </div>
+          <h3 className="text-lg font-semibold text-gray-900">QR Code</h3>
+        </div>
+        <div className="flex items-center gap-2">
           <Switch 
             checked={posterData.showQrCode !== false} 
             onCheckedChange={handleToggleChange('showQrCode')}
+            onClick={(e) => e.stopPropagation()}
           />
+          {isOpen ? (
+            <X className="h-4 w-4 text-gray-500" />
+          ) : (
+            <Plus className="h-4 w-4 text-gray-500" />
+          )}
         </div>
       </div>
       
-      {posterData.showQrCode !== false && !openSections['qrcode'] && (
-        <div 
-          className="p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer border-b border-gray-200"
-          onClick={() => toggleSection('qrcode')}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-900">Edit QR Code</span>
-            <Edit className="h-4 w-4 text-gray-400" />
-          </div>
-        </div>
-      )}
-      
-      {openSections['qrcode'] && posterData.showQrCode !== false && (
-        <div className="p-6">
-          <div className="flex items-center justify-end mb-4 gap-2">
-            <button 
-              onClick={handleAccept}
-              className="p-1 hover:bg-gray-100 rounded transition-colors"
-            >
-              <Check className="h-4 w-4 text-gray-600" />
-            </button>
-            <button 
-              onClick={handleCancel}
-              className="p-1 hover:bg-gray-100 rounded transition-colors"
-            >
-              <X className="h-4 w-4 text-gray-600" />
-            </button>
-          </div>
+      {isOpen && posterData.showQrCode !== false && (
+        <div className="mt-4 pl-9">
           <QrCodeSection 
-            qrCodeUrl={tempValues.url}
-            qrCodeColor={tempValues.color}
-            qrCodeCaption={tempValues.caption}
-            handleQrUrlChange={handleTempUrlChange}
-            handleQrColorChange={handleTempColorChange}
-            handleQrCaptionChange={handleTempCaptionChange}
+            qrCodeUrl={posterData.qrCodeUrl || ''}
+            qrCodeColor={posterData.qrCodeColor || '#000000'}
+            qrCodeCaption={posterData.qrCodeCaption || ''}
+            handleQrUrlChange={handleQrUrlChange}
+            handleQrColorChange={handleQrColorChange}
+            handleQrCaptionChange={handleQrCaptionChange}
           />
         </div>
       )}

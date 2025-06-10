@@ -24,6 +24,15 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
     handleChange({ target: { name: 'showReferences', value: checked } } as any);
   };
 
+  const handleReferencesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    let value = e.target.value;
+    
+    // Auto-format with bullets: replace * at start of lines with •
+    value = value.replace(/^\* /gm, '• ');
+    
+    handleChange({ target: { name: 'references', value } } as any);
+  };
+
   return (
     <div className="border-b border-gray-200 py-4">
       <div 
@@ -34,7 +43,7 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
           <div className="w-6 h-6 bg-blue-50 rounded-md flex items-center justify-center">
             <BookOpen className="h-3 w-3 text-blue-600" />
           </div>
-          <h3 className="text-sm font-medium text-gray-900">References</h3>
+          <h3 className="text-lg font-semibold text-gray-900">References</h3>
         </div>
         {isOpen ? (
           <X className="h-4 w-4 text-gray-500" />
@@ -64,13 +73,13 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
               id="references"
               name="references"
               value={posterData?.references || ""}
-              onChange={handleChange}
+              onChange={handleReferencesChange}
               rows={6}
               className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
-              placeholder="Enter references in bullet format:&#10;• Reference 1&#10;• Reference 2&#10;• Reference 3"
+              placeholder="Enter references in bullet format:&#10;* Reference 1&#10;* Reference 2&#10;* Reference 3"
             />
             <p className="text-xs text-gray-500">
-              Use bullet points (•) to format your references list
+              Use asterisk (*) at the start of each line to create bullet points
             </p>
           </div>
         </div>
