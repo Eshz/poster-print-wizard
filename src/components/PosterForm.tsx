@@ -34,6 +34,13 @@ const PosterForm: React.FC<PosterFormProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    
+    // Handle bulk updates for section management
+    if (name === '_bulk_update' && typeof value === 'function') {
+      setPosterData(value);
+      return;
+    }
+    
     setPosterData(prev => ({ ...prev, [name]: value }));
   };
   
@@ -108,19 +115,19 @@ const PosterForm: React.FC<PosterFormProps> = ({
             toggleSection={toggleSection}
           />
 
-          <ReferencesSection 
-            posterData={posterData}
-            handleChange={handleChange}
-            openSections={openSections}
-            toggleSection={toggleSection}
-          />
-
           <KeyTakeawaysGroup 
             posterData={posterData}
             handleKeyPointChange={handleKeyPointChange}
             handleKeyDescriptionChange={handleKeyDescriptionChange}
             handleKeyVisibilityChange={handleKeyVisibilityChange}
             handleToggleChange={handleToggleChange}
+            openSections={openSections}
+            toggleSection={toggleSection}
+          />
+
+          <ReferencesSection 
+            posterData={posterData}
+            handleChange={handleChange}
             openSections={openSections}
             toggleSection={toggleSection}
           />

@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import ContentSection from './ContentSection';
-import { ChevronDown, ChevronUp, FileText, GripVertical, Plus } from "lucide-react";
+import { ChevronDown, ChevronUp, FileText, GripVertical, Plus, Pencil, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -39,18 +39,26 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
       label: `Section ${sections.length + 1}`,
       field: `customSection${sections.length + 1}`
     };
-    setSections(prev => [...prev, newSection]);
+    
+    const updatedSections = [...sections, newSection];
+    setSections(updatedSections);
     
     // Initialize the new section content in posterData
-    handleChange({ target: { name: newSection.field, value: '' } } as any);
-    
-    // Update section titles to include the new section
-    const newSectionTitles = [...(posterData?.sectionTitles || [])];
-    newSectionTitles.push(`${sections.length + 1}. ${newSection.label}`);
-    handleChange({ target: { name: 'sectionTitles', value: newSectionTitles } } as any);
-    
-    // Update sections order to include the new section
-    handleChange({ target: { name: 'sectionsOrder', value: [...sections, newSection] } } as any);
+    setPosterData(prev => ({
+      ...prev,
+      [newSection.field]: '',
+      sectionsOrder: updatedSections,
+      sectionTitles: [
+        ...(prev.sectionTitles || []).slice(0, sections.length),
+        `${sections.length + 1}. ${newSection.label}`,
+        ...(prev.sectionTitles || []).slice(sections.length)
+      ]
+    }));
+  };
+
+  // Helper function to update posterData
+  const setPosterData = (updater: (prev: any) => any) => {
+    handleChange({ target: { name: '_bulk_update', value: updater } } as any);
   };
 
   const handleDragStart = (e: React.DragEvent, index: number) => {
@@ -78,7 +86,6 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
     newSections.splice(draggedIndex, 1);
     newSections.splice(dropIndex, 0, draggedSection);
     
-    // Update the sections state to save the new order
     setSections(newSections);
     
     // Update section titles to match new order
@@ -88,8 +95,11 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
     newSectionTitles.splice(dropIndex, 0, draggedTitle);
     
     // Save the new order in posterData
-    handleChange({ target: { name: 'sectionsOrder', value: newSections } } as any);
-    handleChange({ target: { name: 'sectionTitles', value: newSectionTitles } } as any);
+    setPosterData(prev => ({
+      ...prev,
+      sectionsOrder: newSections,
+      sectionTitles: newSectionTitles
+    }));
     
     setDraggedIndex(null);
     setDragOverIndex(null);
@@ -158,11 +168,11 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
                   >
                     <div className="flex items-center gap-2">
                       <GripVertical className="h-3 w-3 text-gray-400 cursor-move" />
-                      <span className="text-lg font-semibold text-gray-900">
+                      <span className="text-sm font-medium text-gray-900">
                         {sectionTitles[index] || section.label}
                       </span>
                     </div>
-                    <ChevronDown className="h-4 w-4 text-gray-500" />
+                    <Pencil className="h-3 w-3 text-gray-500" />
                   </div>
                 )}
                 
@@ -174,12 +184,12 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
                         <Input 
                           value={sectionTitles[index] || section.label}
                           onChange={(e) => handleSectionTitleChange(index, e.target.value)}
-                          className="border-0 border-b border-gray-300 focus:border-blue-400 rounded-none bg-transparent text-lg font-semibold text-gray-900 px-0"
+                          className="border-0 border-b border-gray-300 focus:border-blue-400 rounded-none bg-transparent text-sm font-medium text-gray-900 px-0"
                           placeholder="Section title"
                         />
                       </div>
-                      <ChevronUp 
-                        className="h-4 w-4 text-gray-500 cursor-pointer" 
+                      <Check 
+                        className="h-3 w-3 text-gray-500 cursor-pointer" 
                         onClick={() => toggleSection(section.id)}
                       />
                     </div>

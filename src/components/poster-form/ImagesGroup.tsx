@@ -2,10 +2,11 @@
 import React from 'react';
 import ImagesSection from './ImagesSection';
 import { Image } from "lucide-react";
+import { PosterImage } from '@/types/poster';
 
 interface ImagesGroupProps {
   posterData: any;
-  handleImagesChange: (images: { url: string; visible: boolean; caption: string }[]) => void;
+  handleImagesChange: (images: PosterImage[]) => void;
 }
 
 const ImagesGroup: React.FC<ImagesGroupProps> = ({
@@ -13,7 +14,7 @@ const ImagesGroup: React.FC<ImagesGroupProps> = ({
   handleImagesChange
 }) => {
   return (
-    <div className="border-b border-gray-200 py-4">
+    <div className="py-4">
       <div className="flex items-center gap-3 mb-4">
         <div className="w-6 h-6 bg-blue-50 rounded-md flex items-center justify-center">
           <Image className="h-3 w-3 text-blue-600" />
@@ -24,7 +25,7 @@ const ImagesGroup: React.FC<ImagesGroupProps> = ({
       <div className="pl-9">
         <ImagesSection 
           images={posterData.images || []}
-          onImagesChange={handleImagesChange}
+          handleImagesChange={handleImagesChange}
         />
       </div>
     </div>
