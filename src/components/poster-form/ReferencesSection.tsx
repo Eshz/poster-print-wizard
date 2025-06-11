@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Plus, X, BookOpen } from "lucide-react";
+import { Edit, Check, BookOpen } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
@@ -28,7 +28,22 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
     let value = e.target.value;
     
     // Auto-format with bullets: replace * at start of lines with •
+    // Also ensure proper spacing for all lines starting with bullet
     value = value.replace(/^\* /gm, '• ');
+    
+    // Ensure consistent spacing for bullet points - add space at start if line starts with bullet
+    const lines = value.split('\n');
+    const formattedLines = lines.map(line => {
+      if (line.startsWith('•') && !line.startsWith('• ')) {
+        return '• ' + line.substring(1);
+      }
+      if (line.startsWith('•')) {
+        // Ensure all bullet lines have consistent spacing
+        return line.replace(/^• +/, '• ');
+      }
+      return line;
+    });
+    value = formattedLines.join('\n');
     
     handleChange({ target: { name: 'references', value } } as any);
   };
@@ -46,9 +61,9 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
           <h3 className="text-lg font-semibold text-gray-900">References</h3>
         </div>
         {isOpen ? (
-          <X className="h-4 w-4 text-gray-500" />
+          <Check className="h-4 w-4 text-gray-500" />
         ) : (
-          <Plus className="h-4 w-4 text-gray-500" />
+          <Edit className="h-4 w-4 text-gray-500" />
         )}
       </div>
       
@@ -75,8 +90,9 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
               value={posterData?.references || ""}
               onChange={handleReferencesChange}
               rows={6}
-              className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
+              className="border-gray-200 focus:border-blue-400 rounded-md text-sm font-mono leading-relaxed"
               placeholder="Enter references in bullet format:&#10;* Reference 1&#10;* Reference 2&#10;* Reference 3"
+              style={{ lineHeight: '1.6' }}
             />
             <p className="text-xs text-gray-500">
               Use asterisk (*) at the start of each line to create bullet points

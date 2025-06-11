@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import ContentSection from './ContentSection';
-import { Plus, X, FileText, GripVertical } from "lucide-react";
+import { Edit, Check, FileText, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -21,6 +21,7 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
   toggleSection
 }) => {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   const [sections, setSections] = useState([
     { id: 'introduction', label: 'Introduction', field: 'introduction' },
@@ -42,11 +43,17 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
   const handleDragStart = (e: React.DragEvent, index: number) => {
     setDraggedIndex(index);
     e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', '');
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
+    setDragOverIndex(index);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverIndex(null);
   };
 
   const handleDrop = (e: React.DragEvent, dropIndex: number) => {
@@ -60,6 +67,12 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
     
     setSections(newSections);
     setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
   };
 
   const sectionTitles = posterData?.sectionTitles || [
@@ -85,7 +98,7 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
           size="sm"
           className="h-6 px-2 text-xs text-gray-600 hover:text-gray-900"
         >
-          <Plus className="h-3 w-3 mr-1" />
+          <Edit className="h-3 w-3 mr-1" />
           Add
         </Button>
       </div>
@@ -93,15 +106,26 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
       <div className="space-y-2">
         {sections.map((section, index) => {
           const isOpen = openSections[section.id];
+          const isDragging = draggedIndex === index;
+          const isDragOver = dragOverIndex === index;
+          
           return (
             <div 
               key={section.id}
-              className="border-b border-gray-100 pb-2"
+              className={`border-b border-gray-100 pb-2 transition-all duration-200 ${
+                isDragging ? 'opacity-50 scale-95' : ''
+              } ${isDragOver ? 'border-blue-300 bg-blue-50' : ''}`}
               draggable
               onDragStart={(e) => handleDragStart(e, index)}
-              onDragOver={handleDragOver}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDragLeave={handleDragLeave}
               onDrop={(e) => handleDrop(e, index)}
+              onDragEnd={handleDragEnd}
             >
+              {isDragOver && (
+                <div className="h-1 bg-blue-400 rounded-full mb-2 transition-all duration-200" />
+              )}
+              
               {!isOpen && (
                 <div 
                   className="flex items-center justify-between p-2 hover:bg-gray-50 transition-colors cursor-pointer rounded-md"
@@ -113,7 +137,7 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
                       {sectionTitles[index] || section.label}
                     </span>
                   </div>
-                  <Plus className="h-4 w-4 text-gray-500" />
+                  <Edit className="h-4 w-4 text-gray-500" />
                 </div>
               )}
               
@@ -125,11 +149,11 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
                       <Input 
                         value={sectionTitles[index] || section.label}
                         onChange={(e) => handleSectionTitleChange(index, e.target.value)}
-                        className="border-0 border-b border-gray-300 focus:border-blue-400 focus:ring-0 rounded-none bg-transparent text-lg font-semibold text-gray-900 px-0"
+                        className="border-0 border-b border-gray-300 focus:border-blue-400 rounded-none bg-transparent text-lg font-semibold text-gray-900 px-0"
                         placeholder="Section title"
                       />
                     </div>
-                    <X 
+                    <Check 
                       className="h-4 w-4 text-gray-500 cursor-pointer" 
                       onClick={() => toggleSection(section.id)}
                     />

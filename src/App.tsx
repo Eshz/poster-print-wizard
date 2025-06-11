@@ -12,6 +12,7 @@ import { Download, Monitor, Undo, Redo } from "lucide-react";
 import { exportToPDF } from '@/utils/pdfExport';
 import ImportExportButtons from "./components/ImportExportButtons";
 import { useIsMobile } from "./hooks/use-mobile";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,30 @@ const MobileRestrictionMessage = () => {
 
 const App = () => {
   const isMobile = useIsMobile();
+  
+  // Clear all data on page refresh/exit
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = 'Are you sure you want to leave? All unsaved changes will be lost.';
+      return 'Are you sure you want to leave? All unsaved changes will be lost.';
+    };
+
+    const handleUnload = () => {
+      // Clear all localStorage data
+      localStorage.clear();
+      // Clear sessionStorage as well
+      sessionStorage.clear();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('unload', handleUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('unload', handleUnload);
+    };
+  }, []);
   
   const handleExportPDF = () => {
     exportToPDF('poster-content');
@@ -82,17 +107,19 @@ const App = () => {
                       onClick={handleUndo}
                       variant="ghost"
                       size="sm"
-                      className="text-gray-600 hover:text-gray-900"
+                      className="text-gray-600 hover:text-gray-900 flex items-center gap-1"
                     >
                       <Undo className="h-4 w-4" />
+                      <span className="text-xs">Undo</span>
                     </Button>
                     <Button 
                       onClick={handleRedo}
                       variant="ghost"
                       size="sm"
-                      className="text-gray-600 hover:text-gray-900"
+                      className="text-gray-600 hover:text-gray-900 flex items-center gap-1"
                     >
                       <Redo className="h-4 w-4" />
+                      <span className="text-xs">Redo</span>
                     </Button>
                   </div>
                 </div>
