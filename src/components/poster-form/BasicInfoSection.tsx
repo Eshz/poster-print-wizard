@@ -47,7 +47,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             value={value}
             onChange={handleChange}
             placeholder={config.placeholder}
-            className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm min-h-[60px] resize-none"
+            className="border-0 border-b border-gray-300 focus:border-blue-400 focus:ring-0 rounded-none bg-transparent text-sm min-h-[60px] resize-none px-0"
             rows={Math.max(2, Math.ceil(value.length / 50))}
           />
         ) : (
@@ -57,16 +57,16 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             value={value}
             onChange={handleChange}
             placeholder={config.placeholder}
-            className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
+            className="border-0 border-b border-gray-300 focus:border-blue-400 focus:ring-0 rounded-none bg-transparent text-sm px-0"
           />
         )}
       </div>
     );
   }
 
-  // Compact layout with adaptive text areas
+  // Compact layout with adaptive text areas and underline styling
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="space-y-1">
         <Label htmlFor="title" className="text-xs font-medium text-gray-700">
           Title
@@ -78,7 +78,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             value={posterData.title || ''}
             onChange={handleChange}
             placeholder="Enter your poster title"
-            className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm min-h-[60px] resize-none"
+            className="border-0 border-b border-gray-300 focus:border-blue-400 focus:ring-0 rounded-none bg-transparent text-sm min-h-[60px] resize-none px-0"
             rows={Math.max(2, Math.ceil((posterData.title || '').length / 50))}
           />
         ) : (
@@ -88,7 +88,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             value={posterData.title || ''}
             onChange={handleChange}
             placeholder="Enter your poster title"
-            className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
+            className="border-0 border-b border-gray-300 focus:border-blue-400 focus:ring-0 rounded-none bg-transparent text-sm px-0"
           />
         )}
       </div>
@@ -104,7 +104,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             value={posterData.authors || ''}
             onChange={handleChange}
             placeholder="Enter author names"
-            className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm min-h-[60px] resize-none"
+            className="border-0 border-b border-gray-300 focus:border-blue-400 focus:ring-0 rounded-none bg-transparent text-sm min-h-[60px] resize-none px-0"
             rows={Math.max(2, Math.ceil((posterData.authors || '').length / 50))}
           />
         ) : (
@@ -114,7 +114,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             value={posterData.authors || ''}
             onChange={handleChange}
             placeholder="Enter author names"
-            className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
+            className="border-0 border-b border-gray-300 focus:border-blue-400 focus:ring-0 rounded-none bg-transparent text-sm px-0"
           />
         )}
       </div>
@@ -130,7 +130,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             value={posterData.school || ''}
             onChange={handleChange}
             placeholder="Enter institution name"
-            className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm min-h-[60px] resize-none"
+            className="border-0 border-b border-gray-300 focus:border-blue-400 focus:ring-0 rounded-none bg-transparent text-sm min-h-[60px] resize-none px-0"
             rows={Math.max(2, Math.ceil((posterData.school || '').length / 50))}
           />
         ) : (
@@ -140,7 +140,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             value={posterData.school || ''}
             onChange={handleChange}
             placeholder="Enter institution name"
-            className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
+            className="border-0 border-b border-gray-300 focus:border-blue-400 focus:ring-0 rounded-none bg-transparent text-sm px-0"
           />
         )}
       </div>
@@ -156,7 +156,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             value={posterData.contact || ''}
             onChange={handleChange}
             placeholder="Enter contact information"
-            className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm min-h-[60px] resize-none"
+            className="border-0 border-b border-gray-300 focus:border-blue-400 focus:ring-0 rounded-none bg-transparent text-sm min-h-[60px] resize-none px-0"
             rows={Math.max(2, Math.ceil((posterData.contact || '').length / 50))}
           />
         ) : (
@@ -166,7 +166,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             value={posterData.contact || ''}
             onChange={handleChange}
             placeholder="Enter contact information"
-            className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
+            className="border-0 border-b border-gray-300 focus:border-blue-400 focus:ring-0 rounded-none bg-transparent text-sm px-0"
           />
         )}
       </div>

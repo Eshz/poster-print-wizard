@@ -109,7 +109,7 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
                 >
                   <div className="flex items-center gap-2">
                     <GripVertical className="h-3 w-3 text-gray-400 cursor-move" />
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-lg font-semibold text-gray-900">
                       {sectionTitles[index] || section.label}
                     </span>
                   </div>
@@ -125,7 +125,7 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
                       <Input 
                         value={sectionTitles[index] || section.label}
                         onChange={(e) => handleSectionTitleChange(index, e.target.value)}
-                        className="border-0 shadow-none p-0 h-auto text-sm font-medium text-gray-900 focus-visible:ring-0 bg-transparent"
+                        className="border-0 border-b border-gray-300 focus:border-blue-400 focus:ring-0 rounded-none bg-transparent text-lg font-semibold text-gray-900 px-0"
                         placeholder="Section title"
                       />
                     </div>
