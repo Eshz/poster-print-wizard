@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import ContentSection from './ContentSection';
-import { Edit, Check, FileText, GripVertical } from "lucide-react";
+import { Edit, Check, FileText, GripVertical, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -38,6 +38,9 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
       field: `customSection${sections.length + 1}`
     };
     setSections(prev => [...prev, newSection]);
+    
+    // Initialize the new section content in posterData
+    handleChange({ target: { name: newSection.field, value: '' } } as any);
   };
 
   const handleDragStart = (e: React.DragEvent, index: number) => {
@@ -65,7 +68,18 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
     newSections.splice(draggedIndex, 1);
     newSections.splice(dropIndex, 0, draggedSection);
     
+    // Update the sections state to save the new order
     setSections(newSections);
+    
+    // Update section titles to match new order
+    const newSectionTitles = [...(posterData?.sectionTitles || [])];
+    const draggedTitle = newSectionTitles[draggedIndex];
+    newSectionTitles.splice(draggedIndex, 1);
+    newSectionTitles.splice(dropIndex, 0, draggedTitle);
+    
+    // Save the new order in posterData
+    handleChange({ target: { name: 'sectionsOrder', value: newSections } } as any);
+    
     setDraggedIndex(null);
     setDragOverIndex(null);
   };
@@ -92,15 +106,6 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
           </div>
           <h3 className="text-lg font-semibold text-gray-900">Sections</h3>
         </div>
-        <Button 
-          onClick={addNewSection}
-          variant="ghost" 
-          size="sm"
-          className="h-6 px-2 text-xs text-gray-600 hover:text-gray-900"
-        >
-          <Edit className="h-3 w-3 mr-1" />
-          Add
-        </Button>
       </div>
       
       <div className="space-y-2">
@@ -173,6 +178,19 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
             </div>
           );
         })}
+        
+        {/* Add Section Button at the bottom */}
+        <div className="pt-2">
+          <Button 
+            onClick={addNewSection}
+            variant="ghost" 
+            size="sm"
+            className="h-8 px-3 text-sm text-gray-600 hover:text-gray-900 border border-dashed border-gray-300 hover:border-gray-400 w-full"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Section
+          </Button>
+        </div>
       </div>
     </div>
   );

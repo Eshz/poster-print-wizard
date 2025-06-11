@@ -85,7 +85,7 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Label htmlFor="upload-images" className="font-medium">Upload Images</Label>
+        <Label htmlFor="upload-images" className="text-xs font-medium text-gray-700">Upload Images</Label>
         <div>
           <input 
             ref={fileInputRef}
@@ -100,6 +100,7 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
             onClick={() => fileInputRef.current?.click()}
             type="button"
             size="sm"
+            className="bg-black text-white hover:bg-gray-800"
           >
             <Upload className="h-4 w-4 mr-2" /> Upload Images
           </Button>
@@ -109,33 +110,33 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
       {error && <p className="text-red-500 text-sm">{error}</p>}
       
       {images.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-3">
           {images.map((image, index) => (
             <div 
               key={index} 
-              className="border rounded-md p-2 space-y-2"
+              className="border rounded-md p-3 flex gap-3 items-start"
             >
-              <div className="aspect-video relative bg-gray-100 rounded overflow-hidden">
+              <div className="w-20 h-16 bg-gray-100 rounded overflow-hidden flex-shrink-0">
                 <img 
                   src={image.url} 
                   alt={`Uploaded image ${index + 1}`}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover"
                 />
               </div>
               
-              <div className="flex flex-col space-y-2">
+              <div className="flex-1 space-y-2">
                 <Input
                   placeholder="Upper caption"
                   value={image.upperCaption || ''}
                   onChange={(e) => handleUpperCaptionChange(index, e.target.value)}
-                  className="text-sm"
+                  className="text-xs h-8"
                 />
                 
                 <Input
                   placeholder="Lower caption"
                   value={image.caption}
                   onChange={(e) => handleCaptionChange(index, e.target.value)}
-                  className="text-sm"
+                  className="text-xs h-8"
                 />
                 
                 <div className="flex justify-between items-center">
@@ -145,7 +146,7 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
                       checked={image.visible}
                       onCheckedChange={() => handleToggleVisibility(index)}
                     />
-                    <Label htmlFor={`show-image-${index}`} className="text-sm">
+                    <Label htmlFor={`show-image-${index}`} className="text-xs">
                       {image.visible ? 'Visible' : 'Hidden'}
                     </Label>
                   </div>
@@ -154,8 +155,9 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
                     variant="destructive" 
                     size="sm"
                     onClick={() => handleRemoveImage(index)}
+                    className="h-6 w-6 p-0"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-3 w-3" />
                   </Button>
                 </div>
               </div>

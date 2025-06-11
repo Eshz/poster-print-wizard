@@ -28,10 +28,9 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
     let value = e.target.value;
     
     // Auto-format with bullets: replace * at start of lines with •
-    // Also ensure proper spacing for all lines starting with bullet
     value = value.replace(/^\* /gm, '• ');
     
-    // Ensure consistent spacing for bullet points - add space at start if line starts with bullet
+    // Ensure consistent spacing for bullet points
     const lines = value.split('\n');
     const formattedLines = lines.map(line => {
       if (line.startsWith('•') && !line.startsWith('• ')) {
@@ -40,6 +39,10 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
       if (line.startsWith('•')) {
         // Ensure all bullet lines have consistent spacing
         return line.replace(/^• +/, '• ');
+      }
+      // Add consistent spacing for non-bullet lines that are part of bullet points
+      if (line.trim() && !line.startsWith('•')) {
+        return '  ' + line;
       }
       return line;
     });
@@ -60,29 +63,25 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
           </div>
           <h3 className="text-lg font-semibold text-gray-900">References</h3>
         </div>
-        {isOpen ? (
-          <Check className="h-4 w-4 text-gray-500" />
-        ) : (
-          <Edit className="h-4 w-4 text-gray-500" />
-        )}
+        <div className="flex items-center gap-2">
+          <Switch
+            checked={posterData.showReferences !== false}
+            onCheckedChange={handleToggleReferences}
+            onClick={(e) => e.stopPropagation()}
+          />
+          {isOpen ? (
+            <Check className="h-4 w-4 text-gray-500" />
+          ) : (
+            <Edit className="h-4 w-4 text-gray-500" />
+          )}
+        </div>
       </div>
       
-      {isOpen && (
+      {isOpen && posterData.showReferences !== false && (
         <div className="mt-4 pl-9 space-y-4">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="show-references"
-              checked={posterData.showReferences !== false}
-              onCheckedChange={handleToggleReferences}
-            />
-            <Label htmlFor="show-references" className="text-xs font-medium text-gray-700">
-              Show references section
-            </Label>
-          </div>
-          
           <div className="space-y-2">
             <Label htmlFor="references" className="text-xs font-medium text-gray-700">
-              References Content
+              Content
             </Label>
             <Textarea
               id="references"
@@ -92,7 +91,7 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
               rows={6}
               className="border-gray-200 focus:border-blue-400 rounded-md text-sm font-mono leading-relaxed"
               placeholder="Enter references in bullet format:&#10;* Reference 1&#10;* Reference 2&#10;* Reference 3"
-              style={{ lineHeight: '1.6' }}
+              style={{ lineHeight: '1.8' }}
             />
             <p className="text-xs text-gray-500">
               Use asterisk (*) at the start of each line to create bullet points

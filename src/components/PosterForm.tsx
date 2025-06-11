@@ -124,11 +124,6 @@ const PosterForm: React.FC<PosterFormProps> = ({
             toggleSection={toggleSection}
           />
 
-          <ImagesGroup 
-            posterData={posterData}
-            handleImagesChange={handleImagesChange}
-          />
-
           <QrCodeGroup 
             posterData={posterData}
             handleQrUrlChange={handleQrUrlChange}
@@ -137,6 +132,11 @@ const PosterForm: React.FC<PosterFormProps> = ({
             handleToggleChange={handleToggleChange}
             openSections={openSections}
             toggleSection={toggleSection}
+          />
+
+          <ImagesGroup 
+            posterData={posterData}
+            handleImagesChange={handleImagesChange}
           />
         </div>
       </div>
