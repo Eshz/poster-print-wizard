@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Edit, Check, BookOpen } from "lucide-react";
+import { ChevronDown, ChevronUp, BookOpen } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
@@ -70,9 +70,9 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
             onClick={(e) => e.stopPropagation()}
           />
           {isOpen ? (
-            <Check className="h-4 w-4 text-gray-500" />
+            <ChevronUp className="h-4 w-4 text-gray-500" />
           ) : (
-            <Edit className="h-4 w-4 text-gray-500" />
+            <ChevronDown className="h-4 w-4 text-gray-500" />
           )}
         </div>
       </div>

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import KeyPointsSection from './KeyPointsSection';
 import { Switch } from "@/components/ui/switch";
-import { Plus, X, Target } from "lucide-react";
+import { ChevronDown, ChevronUp, Target } from "lucide-react";
 
 interface KeyTakeawaysGroupProps {
   posterData: any;
@@ -44,9 +44,9 @@ const KeyTakeawaysGroup: React.FC<KeyTakeawaysGroupProps> = ({
             onClick={(e) => e.stopPropagation()}
           />
           {isOpen ? (
-            <X className="h-4 w-4 text-gray-500" />
+            <ChevronUp className="h-4 w-4 text-gray-500" />
           ) : (
-            <Plus className="h-4 w-4 text-gray-500" />
+            <ChevronDown className="h-4 w-4 text-gray-500" />
           )}
         </div>
       </div>

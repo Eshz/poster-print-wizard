@@ -21,7 +21,8 @@ const PosterForm: React.FC<PosterFormProps> = ({
 }) => {
   // Initialize with only general-info open by default
   const [openSections, setOpenSections] = useState<{[key: string]: boolean}>({
-    'general-info': true
+    'general-info': true,
+    'sections': false
   });
 
   const toggleSection = (sectionId: string) => {

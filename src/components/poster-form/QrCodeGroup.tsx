@@ -2,7 +2,7 @@
 import React from 'react';
 import QrCodeSection from './QrCodeSection';
 import { Switch } from "@/components/ui/switch";
-import { Plus, X, QrCode } from "lucide-react";
+import { ChevronDown, ChevronUp, QrCode } from "lucide-react";
 
 interface QrCodeGroupProps {
   posterData: any;
@@ -44,9 +44,9 @@ const QrCodeGroup: React.FC<QrCodeGroupProps> = ({
             onClick={(e) => e.stopPropagation()}
           />
           {isOpen ? (
-            <X className="h-4 w-4 text-gray-500" />
+            <ChevronUp className="h-4 w-4 text-gray-500" />
           ) : (
-            <Plus className="h-4 w-4 text-gray-500" />
+            <ChevronDown className="h-4 w-4 text-gray-500" />
           )}
         </div>
       </div>
