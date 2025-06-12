@@ -5,6 +5,7 @@ import { getFontClass } from '@/utils/fontUtils';
 import ClassicLayout from './ClassicLayout';
 import ModernLayout from './ModernLayout';
 import FocusLayout from './FocusLayout';
+import AcademicModernLayout from './AcademicModernLayout';
 
 interface EnhancedDesignSettings extends DesignSettings {
   titleFontClass: string;
@@ -35,6 +36,25 @@ const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = React.memo(({
     titleFontClass: getFontClass('title', designSettings.titleFont, designSettings.contentFont),
     contentFontClass: getFontClass('content', designSettings.titleFont, designSettings.contentFont)
   };
+
+  // Check if this is the Academic Modern style specifically
+  const isAcademicModern = designSettings.headerBgColor === "#FFFFFF" && 
+                          designSettings.sectionBgColor === "#3B82F6" &&
+                          designSettings.keyPointsBgColor === "#EFF6FF";
+
+  if (isAcademicModern) {
+    return (
+      <div className={containerClasses}>
+        <AcademicModernLayout 
+          posterData={posterData}
+          designSettings={enhancedDesignSettings}
+          qrCodeUrl={qrCodeUrl}
+          showKeypoints={showKeypoints}
+          showQrCode={showQrCode}
+        />
+      </div>
+    );
+  }
 
   switch(layout) {
     case 'modern':

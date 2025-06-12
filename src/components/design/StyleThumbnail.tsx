@@ -16,6 +16,8 @@ const StyleThumbnail: React.FC<StyleThumbnailProps> = React.memo(({
   isSelected, 
   onApplyStyle 
 }) => {
+  const isAcademicModern = style.id === "academic-modern";
+
   return (
     <Button
       variant="outline"
@@ -40,7 +42,8 @@ const StyleThumbnail: React.FC<StyleThumbnailProps> = React.memo(({
             fontFamily: style.titleFont === 'playfair' ? 'Playfair Display' : 
                        style.titleFont === 'merriweather' ? 'Merriweather' :
                        style.titleFont === 'montserrat' ? 'Montserrat' :
-                       style.titleFont === 'raleway' ? 'Raleway' : 'sans-serif'
+                       style.titleFont === 'raleway' ? 'Raleway' : 'sans-serif',
+            border: isAcademicModern ? '1px solid #E5E7EB' : 'none'
           }}
         >
           Title
@@ -49,23 +52,36 @@ const StyleThumbnail: React.FC<StyleThumbnailProps> = React.memo(({
         {/* Content Area */}
         <div 
           className="flex-1 p-1 flex gap-1"
-          style={{ backgroundColor: style.sectionBgColor }}
+          style={{ backgroundColor: isAcademicModern ? '#F9FAFB' : style.sectionBgColor }}
         >
-          {style.layout === 'classic' && (
+          {/* Academic Modern specific layout */}
+          {isAcademicModern ? (
             <>
-              <div className="w-1/2 h-full bg-gray-200 rounded-sm"></div>
-              <div className="w-1/2 h-full bg-gray-200 rounded-sm"></div>
+              <div className="w-2/3 h-full flex flex-col gap-1">
+                <div className="h-1/2 bg-blue-500 rounded-sm"></div>
+                <div className="h-1/2 bg-blue-500 rounded-sm"></div>
+              </div>
+              <div className="w-1/3 h-full bg-blue-100 rounded-sm"></div>
             </>
-          )}
-          {style.layout === 'modern' && (
+          ) : (
             <>
-              <div className="w-1/3 h-full bg-gray-200 rounded-sm"></div>
-              <div className="w-1/3 h-full bg-gray-200 rounded-sm"></div>
-              <div className="w-1/3 h-full bg-gray-200 rounded-sm"></div>
+              {style.layout === 'classic' && (
+                <>
+                  <div className="w-1/2 h-full bg-gray-200 rounded-sm"></div>
+                  <div className="w-1/2 h-full bg-gray-200 rounded-sm"></div>
+                </>
+              )}
+              {style.layout === 'modern' && (
+                <>
+                  <div className="w-1/3 h-full bg-gray-200 rounded-sm"></div>
+                  <div className="w-1/3 h-full bg-gray-200 rounded-sm"></div>
+                  <div className="w-1/3 h-full bg-gray-200 rounded-sm"></div>
+                </>
+              )}
+              {style.layout === 'focus' && (
+                <div className="w-2/3 h-full bg-gray-200 rounded-sm mx-auto"></div>
+              )}
             </>
-          )}
-          {style.layout === 'focus' && (
-            <div className="w-2/3 h-full bg-gray-200 rounded-sm mx-auto"></div>
           )}
         </div>
         

@@ -8,6 +8,22 @@ export interface PosterStyle extends DesignSettings {
 }
 
 export const posterStyles: PosterStyle[] = [
+  // Academic Modern Style (new)
+  {
+    id: "academic-modern",
+    name: "Academic Modern",
+    category: "Academic",
+    layout: "modern",
+    titleFont: "merriweather",
+    contentFont: "roboto",
+    headerBgColor: "#FFFFFF",
+    headerTextColor: "#1E3A8A",
+    sectionBgColor: "#3B82F6",
+    sectionTitleColor: "#FFFFFF",
+    sectionTextColor: "#FFFFFF",
+    keyPointsBgColor: "#EFF6FF",
+    keyPointsTextColor: "#1E3A8A"
+  },
   // Modern Category
   {
     id: "modern-teal",
