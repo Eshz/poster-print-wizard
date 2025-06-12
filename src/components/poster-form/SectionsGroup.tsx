@@ -42,7 +42,6 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
       {isOpen && (
         <div className="pl-9 space-y-0">
           <ContentSection
-            title="Introduction"
             content={posterData?.introduction || ""}
             name="introduction"
             placeholder="Introduce your research topic, background, and objectives..."
@@ -52,7 +51,6 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
           />
           
           <ContentSection
-            title="Methods"
             content={posterData?.methods || ""}
             name="methods"
             placeholder="Describe your methodology, approach, and procedures..."
@@ -62,7 +60,6 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
           />
           
           <ContentSection
-            title="Findings"
             content={posterData?.findings || ""}
             name="findings"
             placeholder="Present your main results and discoveries..."
@@ -72,7 +69,6 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
           />
           
           <ContentSection
-            title="Conclusions"
             content={posterData?.conclusions || ""}
             name="conclusions"
             placeholder="Summarize your conclusions and implications..."

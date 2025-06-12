@@ -88,10 +88,15 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
               rows={6}
               className="border-gray-200 focus:border-blue-400 rounded-md text-sm leading-relaxed"
               placeholder="Enter references in bullet format:&#10;* Reference 1&#10;* Reference 2&#10;* Reference 3"
-              style={{ lineHeight: '1.6', fontFamily: 'monospace' }}
+              style={{ 
+                lineHeight: '1.6', 
+                fontFamily: 'monospace',
+                textIndent: '-1.5em',
+                paddingLeft: '1.5em'
+              }}
             />
             <p className="text-xs text-gray-500">
-              Use asterisk (*) at the start of each line to create bullet points
+              Use asterisk (*) at the start of each line to create bullet points with hanging indent
             </p>
           </div>
         </div>

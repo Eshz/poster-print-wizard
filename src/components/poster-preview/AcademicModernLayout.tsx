@@ -65,10 +65,26 @@ const AcademicModernLayout: React.FC<AcademicModernLayoutProps> = ({
     { bg: "#D0D0F4", textColor: "#202B5B" }  // Light purple
   ];
 
+  // Calculate content lengths to determine which sections should stretch
+  const leftColumnContentLength = activeSections.reduce((acc, section) => acc + (section.content?.length || 0), 0) + 
+    (posterData.images?.length || 0) * 100; // Add weight for images
+
+  const rightColumnContentLength = 
+    (posterData.keypoints?.filter((point: string, index: number) => {
+      const isVisible = posterData.keyVisibility?.[index] !== false;
+      return point?.trim() && isVisible;
+    }).reduce((acc: number, point: string, index: number) => {
+      return acc + point.length + (posterData.keyDescriptions?.[index]?.length || 0);
+    }, 0) || 0) +
+    (posterData.references?.length || 0);
+
+  // Determine which column should stretch
+  const shouldLeftStretch = leftColumnContentLength >= rightColumnContentLength;
+
   return (
     <div className="flex gap-3 h-full p-3">
-      {/* Left Column - Main Sections - Changed from w-2/3 to w-1/2 */}
-      <div className="w-1/2 space-y-3 overflow-auto">
+      {/* Left Column - Main Sections */}
+      <div className={`w-1/2 space-y-3 overflow-auto ${shouldLeftStretch ? 'flex flex-col' : ''}`}>
         {activeSections.map((section, index) => (
           <div key={index} className="flex flex-col">
             {/* Section Header */}
@@ -111,7 +127,7 @@ const AcademicModernLayout: React.FC<AcademicModernLayoutProps> = ({
         {/* Images section if present */}
         {posterData.images && posterData.images.length > 0 && (
           <div 
-            className="p-4 rounded-lg"
+            className={`p-4 rounded-lg ${shouldLeftStretch ? 'flex-1' : ''}`}
             style={{ backgroundColor: "#F2F2F2" }}
           >
             <ImagesDisplay 
@@ -122,8 +138,8 @@ const AcademicModernLayout: React.FC<AcademicModernLayoutProps> = ({
         )}
       </div>
 
-      {/* Right Column - Key Takeaways and References - Changed from w-1/3 to w-1/2 */}
-      <div className="w-1/2 space-y-3 overflow-auto">
+      {/* Right Column - Key Takeaways and References */}
+      <div className={`w-1/2 space-y-3 overflow-auto ${!shouldLeftStretch ? 'flex flex-col' : ''}`}>
         {/* Key Takeaways Header */}
         {showKeypoints && posterData.keypoints && posterData.keypoints.some((point: string) => point?.trim()) && (
           <div className="space-y-3">
@@ -216,7 +232,7 @@ const AcademicModernLayout: React.FC<AcademicModernLayoutProps> = ({
 
         {/* References Section */}
         {posterData.references?.trim() && (
-          <div className="flex flex-col">
+          <div className={`flex flex-col ${!shouldLeftStretch ? 'flex-1' : ''}`}>
             {/* References Header */}
             <div 
               className="px-4 py-3 border-b-2 border-white"
@@ -236,20 +252,23 @@ const AcademicModernLayout: React.FC<AcademicModernLayoutProps> = ({
               </h2>
             </div>
             
-            {/* References Content - Updated font size to match introduction */}
+            {/* References Content with hanging indent */}
             <div 
-              className="p-4"
+              className={`p-4 ${!shouldLeftStretch ? 'flex-1' : ''}`}
               style={{ backgroundColor: "#3E3C72" }}
             >
-              <p 
+              <div 
                 className="text-sm leading-relaxed whitespace-pre-line"
                 style={{ 
                   color: "#FFFFFF",
-                  fontFamily: `var(--font-${designSettings.contentFont})`
+                  fontFamily: `var(--font-${designSettings.contentFont})`,
+                  textIndent: '-1.5em',
+                  paddingLeft: '1.5em'
                 }}
-              >
-                {posterData.references}
-              </p>
+                dangerouslySetInnerHTML={{
+                  __html: posterData.references.replace(/\n/g, '<br>')
+                }}
+              />
             </div>
           </div>
         )}
