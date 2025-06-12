@@ -1,9 +1,7 @@
 
-import React, { useState } from 'react';
+import React from 'react';
+import { ChevronDown, ChevronUp, FileText } from "lucide-react";
 import ContentSection from './ContentSection';
-import { ChevronDown, ChevronUp, FileText, GripVertical, Plus, Pencil, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 interface SectionsGroupProps {
   posterData: any;
@@ -20,108 +18,12 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
   openSections,
   toggleSection
 }) => {
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-
-  const [sections, setSections] = useState([
-    { id: 'introduction', label: 'Introduction', field: 'introduction' },
-    { id: 'methods', label: 'Methods', field: 'methods' },
-    { id: 'findings', label: 'Findings', field: 'findings' },
-    { id: 'conclusions', label: 'Conclusions', field: 'conclusions' },
-  ]);
-
-  const isSectionsOpen = openSections['sections'];
-
-  const addNewSection = () => {
-    const newId = `custom-${Date.now()}`;
-    const newSection = {
-      id: newId,
-      label: `Section ${sections.length + 1}`,
-      field: `customSection${sections.length + 1}`
-    };
-    
-    const updatedSections = [...sections, newSection];
-    setSections(updatedSections);
-    
-    // Initialize the new section content in posterData
-    setPosterData(prev => ({
-      ...prev,
-      [newSection.field]: '',
-      sectionsOrder: updatedSections,
-      sectionTitles: [
-        ...(prev.sectionTitles || []).slice(0, sections.length),
-        `${sections.length + 1}. ${newSection.label}`,
-        ...(prev.sectionTitles || []).slice(sections.length)
-      ]
-    }));
-  };
-
-  // Helper function to update posterData
-  const setPosterData = (updater: (prev: any) => any) => {
-    handleChange({ target: { name: '_bulk_update', value: updater } } as any);
-  };
-
-  const handleDragStart = (e: React.DragEvent, index: number) => {
-    setDraggedIndex(index);
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/html', '');
-  };
-
-  const handleDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    setDragOverIndex(index);
-  };
-
-  const handleDragLeave = () => {
-    setDragOverIndex(null);
-  };
-
-  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
-    e.preventDefault();
-    if (draggedIndex === null) return;
-
-    const newSections = [...sections];
-    const draggedSection = newSections[draggedIndex];
-    newSections.splice(draggedIndex, 1);
-    newSections.splice(dropIndex, 0, draggedSection);
-    
-    setSections(newSections);
-    
-    // Update section titles to match new order
-    const newSectionTitles = [...(posterData?.sectionTitles || [])];
-    const draggedTitle = newSectionTitles[draggedIndex];
-    newSectionTitles.splice(draggedIndex, 1);
-    newSectionTitles.splice(dropIndex, 0, draggedTitle);
-    
-    // Save the new order in posterData
-    setPosterData(prev => ({
-      ...prev,
-      sectionsOrder: newSections,
-      sectionTitles: newSectionTitles
-    }));
-    
-    setDraggedIndex(null);
-    setDragOverIndex(null);
-  };
-
-  const handleDragEnd = () => {
-    setDraggedIndex(null);
-    setDragOverIndex(null);
-  };
-
-  const sectionTitles = posterData?.sectionTitles || [
-    "1. Introduction",
-    "2. Methods", 
-    "3. Findings",
-    "4. Conclusions",
-    "5. References"
-  ];
+  const isOpen = openSections['sections'];
 
   return (
     <div className="border-b border-gray-200 py-4">
       <div 
-        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded-md transition-colors mb-4"
+        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded-md transition-colors"
         onClick={() => toggleSection('sections')}
       >
         <div className="flex items-center gap-3">
@@ -130,97 +32,54 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
           </div>
           <h3 className="text-lg font-semibold text-gray-900">Sections</h3>
         </div>
-        {isSectionsOpen ? (
+        {isOpen ? (
           <ChevronUp className="h-4 w-4 text-gray-500" />
         ) : (
           <ChevronDown className="h-4 w-4 text-gray-500" />
         )}
       </div>
       
-      {isSectionsOpen && (
-        <div className="space-y-2">
-          {sections.map((section, index) => {
-            const isOpen = openSections[section.id];
-            const isDragging = draggedIndex === index;
-            const isDragOver = dragOverIndex === index;
-            
-            return (
-              <div 
-                key={section.id}
-                className={`border-b border-gray-100 pb-2 transition-all duration-200 ${
-                  isDragging ? 'opacity-50 scale-95' : ''
-                } ${isDragOver ? 'border-blue-300 bg-blue-50' : ''}`}
-                draggable
-                onDragStart={(e) => handleDragStart(e, index)}
-                onDragOver={(e) => handleDragOver(e, index)}
-                onDragLeave={handleDragLeave}
-                onDrop={(e) => handleDrop(e, index)}
-                onDragEnd={handleDragEnd}
-              >
-                {isDragOver && (
-                  <div className="h-1 bg-blue-400 rounded-full mb-2 transition-all duration-200" />
-                )}
-                
-                {!isOpen && (
-                  <div 
-                    className="flex items-center justify-between p-2 hover:bg-gray-50 transition-colors cursor-pointer rounded-md"
-                    onClick={() => toggleSection(section.id)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <GripVertical className="h-3 w-3 text-gray-400 cursor-move" />
-                      <span className="text-sm font-medium text-gray-900">
-                        {sectionTitles[index] || section.label}
-                      </span>
-                    </div>
-                    <Pencil className="h-3 w-3 text-gray-500" />
-                  </div>
-                )}
-                
-                {isOpen && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between p-2">
-                      <div className="flex items-center gap-2 flex-1">
-                        <GripVertical className="h-3 w-3 text-gray-400 cursor-move" />
-                        <Input 
-                          value={sectionTitles[index] || section.label}
-                          onChange={(e) => handleSectionTitleChange(index, e.target.value)}
-                          className="border-0 border-b border-gray-300 focus:border-blue-400 rounded-none bg-transparent text-sm font-medium text-gray-900 px-0"
-                          placeholder="Section title"
-                        />
-                      </div>
-                      <Check 
-                        className="h-3 w-3 text-gray-500 cursor-pointer" 
-                        onClick={() => toggleSection(section.id)}
-                      />
-                    </div>
-                    
-                    <div className="pl-5">
-                      <ContentSection 
-                        posterData={posterData}
-                        handleChange={handleChange}
-                        handleSectionTitleChange={handleSectionTitleChange}
-                        sectionIndex={index}
-                        sectionField={section.field}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+      {isOpen && (
+        <div className="pl-9 space-y-0">
+          <ContentSection
+            title="Introduction"
+            content={posterData?.introduction || ""}
+            name="introduction"
+            placeholder="Introduce your research topic, background, and objectives..."
+            handleChange={handleChange}
+            sectionTitle={posterData?.sectionTitles?.[0] || ""}
+            onSectionTitleChange={(value) => handleSectionTitleChange(0, value)}
+          />
           
-          {/* Add Section Button at the bottom */}
-          <div className="pt-2">
-            <Button 
-              onClick={addNewSection}
-              variant="ghost" 
-              size="sm"
-              className="h-8 px-3 text-sm text-gray-600 hover:text-gray-900 border border-dashed border-gray-300 hover:border-gray-400 w-full"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Section
-            </Button>
-          </div>
+          <ContentSection
+            title="Methods"
+            content={posterData?.methods || ""}
+            name="methods"
+            placeholder="Describe your methodology, approach, and procedures..."
+            handleChange={handleChange}
+            sectionTitle={posterData?.sectionTitles?.[1] || ""}
+            onSectionTitleChange={(value) => handleSectionTitleChange(1, value)}
+          />
+          
+          <ContentSection
+            title="Findings"
+            content={posterData?.findings || ""}
+            name="findings"
+            placeholder="Present your main results and discoveries..."
+            handleChange={handleChange}
+            sectionTitle={posterData?.sectionTitles?.[2] || ""}
+            onSectionTitleChange={(value) => handleSectionTitleChange(2, value)}
+          />
+          
+          <ContentSection
+            title="Conclusions"
+            content={posterData?.conclusions || ""}
+            name="conclusions"
+            placeholder="Summarize your conclusions and implications..."
+            handleChange={handleChange}
+            sectionTitle={posterData?.sectionTitles?.[3] || ""}
+            onSectionTitleChange={(value) => handleSectionTitleChange(3, value)}
+          />
         </div>
       )}
     </div>

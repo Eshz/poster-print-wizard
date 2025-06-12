@@ -30,19 +30,16 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
     // Auto-format with bullets: replace * at start of lines with •
     value = value.replace(/^\* /gm, '• ');
     
-    // Ensure consistent spacing for bullet points
+    // Remove excessive spacing while maintaining structure
     const lines = value.split('\n');
     const formattedLines = lines.map(line => {
-      if (line.startsWith('•') && !line.startsWith('• ')) {
-        return '• ' + line.substring(1);
-      }
-      if (line.startsWith('•')) {
-        // Ensure all bullet lines have consistent spacing
+      // For bullet points, ensure consistent spacing
+      if (line.startsWith('• ')) {
         return line.replace(/^• +/, '• ');
       }
-      // Add consistent spacing for non-bullet lines that are part of bullet points
-      if (line.trim() && !line.startsWith('•')) {
-        return '  ' + line;
+      // For asterisk lines, convert to bullets with proper spacing
+      if (line.startsWith('*')) {
+        return line.replace(/^\*\s*/, '• ');
       }
       return line;
     });
@@ -89,9 +86,9 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
               value={posterData?.references || ""}
               onChange={handleReferencesChange}
               rows={6}
-              className="border-gray-200 focus:border-blue-400 rounded-md text-sm font-mono leading-relaxed"
+              className="border-gray-200 focus:border-blue-400 rounded-md text-sm leading-relaxed"
               placeholder="Enter references in bullet format:&#10;* Reference 1&#10;* Reference 2&#10;* Reference 3"
-              style={{ lineHeight: '1.8' }}
+              style={{ lineHeight: '1.6', fontFamily: 'monospace' }}
             />
             <p className="text-xs text-gray-500">
               Use asterisk (*) at the start of each line to create bullet points

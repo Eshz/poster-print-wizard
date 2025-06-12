@@ -67,8 +67,8 @@ const AcademicModernLayout: React.FC<AcademicModernLayoutProps> = ({
 
   return (
     <div className="flex gap-3 h-full p-3">
-      {/* Left Column - Main Sections */}
-      <div className="w-2/3 space-y-3 overflow-auto">
+      {/* Left Column - Main Sections - Changed from w-2/3 to w-1/2 */}
+      <div className="w-1/2 space-y-3 overflow-auto">
         {activeSections.map((section, index) => (
           <div key={index} className="flex flex-col">
             {/* Section Header */}
@@ -122,8 +122,8 @@ const AcademicModernLayout: React.FC<AcademicModernLayoutProps> = ({
         )}
       </div>
 
-      {/* Right Column - Key Takeaways and References */}
-      <div className="w-1/3 space-y-3 overflow-auto">
+      {/* Right Column - Key Takeaways and References - Changed from w-1/3 to w-1/2 */}
+      <div className="w-1/2 space-y-3 overflow-auto">
         {/* Key Takeaways Header */}
         {showKeypoints && posterData.keypoints && posterData.keypoints.some((point: string) => point?.trim()) && (
           <div className="space-y-3">
@@ -151,7 +151,7 @@ const AcademicModernLayout: React.FC<AcademicModernLayoutProps> = ({
                 const colors = keyTakeawayColors[index] || keyTakeawayColors[0];
                 
                 return (
-                  <div key={index} className="flex min-h-[120px]">
+                  <div key={index} className="flex min-h-[80px]">
                     {/* Number Circle */}
                     <div 
                       className="w-16 flex items-center justify-center flex-shrink-0"
@@ -168,7 +168,7 @@ const AcademicModernLayout: React.FC<AcademicModernLayoutProps> = ({
                       </span>
                     </div>
                     
-                    {/* Content */}
+                    {/* Content - adaptive height */}
                     <div 
                       className="flex-1 p-4 flex flex-col justify-center gap-2"
                       style={{ backgroundColor: "#F2F2F2" }}
@@ -236,13 +236,13 @@ const AcademicModernLayout: React.FC<AcademicModernLayoutProps> = ({
               </h2>
             </div>
             
-            {/* References Content */}
+            {/* References Content - Updated font size to match introduction */}
             <div 
               className="p-4"
               style={{ backgroundColor: "#3E3C72" }}
             >
               <p 
-                className="text-xs leading-relaxed whitespace-pre-line"
+                className="text-sm leading-relaxed whitespace-pre-line"
                 style={{ 
                   color: "#FFFFFF",
                   fontFamily: `var(--font-${designSettings.contentFont})`

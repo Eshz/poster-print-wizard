@@ -81,7 +81,7 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
                     fontFamily: `var(--font-${designSettings.titleFont})`
                   }}
                 >
-                  Scan for more info
+                  Scan me!
                 </p>
               )}
             </div>
@@ -89,11 +89,12 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
         </div>
       </div>
       
-      {/* Author info with white top border only - Updated with dynamic width distribution */}
+      {/* Author info with top and bottom borders */}
       <div 
         className="w-full text-center py-2"
         style={{
-          borderTop: '1px solid #ffffff',
+          borderTop: '1px solid #202b5b',
+          borderBottom: '1px solid #202b5b',
           backgroundColor: designSettings.headerBgColor,
         }}
       >
