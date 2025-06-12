@@ -84,30 +84,7 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <Label htmlFor="upload-images" className="text-xs font-medium text-gray-700">Upload Images</Label>
-        <div>
-          <input 
-            ref={fileInputRef}
-            id="upload-images" 
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden" 
-            onChange={handleFileUpload}
-          />
-          <Button 
-            onClick={() => fileInputRef.current?.click()}
-            type="button"
-            size="sm"
-            className="bg-black text-white hover:bg-gray-800"
-          >
-            <Upload className="h-4 w-4 mr-2" /> Upload Images
-          </Button>
-        </div>
-      </div>
-      
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+      {error && <p className="text-red-500 text-sm" role="alert">{error}</p>}
       
       {images.length > 0 ? (
         <div className="space-y-3">
@@ -130,6 +107,7 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
                   value={image.upperCaption || ''}
                   onChange={(e) => handleUpperCaptionChange(index, e.target.value)}
                   className="text-xs h-8"
+                  aria-label={`Upper caption for image ${index + 1}`}
                 />
                 
                 <Input
@@ -137,6 +115,7 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
                   value={image.caption}
                   onChange={(e) => handleCaptionChange(index, e.target.value)}
                   className="text-xs h-8"
+                  aria-label={`Lower caption for image ${index + 1}`}
                 />
                 
                 <div className="flex justify-between items-center">
@@ -145,8 +124,9 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
                       id={`show-image-${index}`}
                       checked={image.visible}
                       onCheckedChange={() => handleToggleVisibility(index)}
+                      aria-describedby={`show-image-${index}-label`}
                     />
-                    <Label htmlFor={`show-image-${index}`} className="text-xs">
+                    <Label htmlFor={`show-image-${index}`} id={`show-image-${index}-label`} className="text-xs">
                       {image.visible ? 'Visible' : 'Hidden'}
                     </Label>
                   </div>
@@ -156,6 +136,7 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
                     size="sm"
                     onClick={() => handleRemoveImage(index)}
                     className="h-6 w-6 p-0"
+                    aria-label={`Remove image ${index + 1}`}
                   >
                     <Trash2 className="h-3 w-3" />
                   </Button>
@@ -163,12 +144,53 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
               </div>
             </div>
           ))}
+          
+          <div className="border border-dashed rounded-md p-8 text-center text-gray-500 relative">
+            <Image className="w-12 h-12 mx-auto mb-2 text-gray-400" />
+            <p>Drop more images here or</p>
+            <input 
+              ref={fileInputRef}
+              id="upload-more-images" 
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden" 
+              onChange={handleFileUpload}
+            />
+            <Button 
+              onClick={() => fileInputRef.current?.click()}
+              type="button"
+              size="sm"
+              className="bg-black text-white hover:bg-gray-800 mt-2"
+              aria-label="Upload more images"
+            >
+              <Upload className="h-4 w-4 mr-2" /> Upload Images
+            </Button>
+          </div>
         </div>
       ) : (
-        <div className="border border-dashed rounded-md p-8 text-center text-gray-500">
+        <div className="border border-dashed rounded-md p-8 text-center text-gray-500 relative">
           <Image className="w-12 h-12 mx-auto mb-2 text-gray-400" />
           <p>No images uploaded yet</p>
-          <p className="text-sm">Upload images to include in your poster</p>
+          <p className="text-sm mb-4">Upload images to include in your poster</p>
+          <input 
+            ref={fileInputRef}
+            id="upload-images" 
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden" 
+            onChange={handleFileUpload}
+          />
+          <Button 
+            onClick={() => fileInputRef.current?.click()}
+            type="button"
+            size="sm"
+            className="bg-black text-white hover:bg-gray-800"
+            aria-label="Upload images"
+          >
+            <Upload className="h-4 w-4 mr-2" /> Upload Images
+          </Button>
         </div>
       )}
     </div>

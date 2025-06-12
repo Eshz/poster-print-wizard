@@ -30,7 +30,6 @@ const KeyPointsSection: React.FC<KeyPointsSectionProps> = ({
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label htmlFor={`keypoint-${index}`} className="font-medium">Key Takeaway Title</Label>
           <div className="flex items-center space-x-2">
             <Checkbox
               id={`key-visible-${index}`}
@@ -45,6 +44,7 @@ const KeyPointsSection: React.FC<KeyPointsSectionProps> = ({
           value={keypoints[index] || ''}
           onChange={(e) => handleKeyPointChange(index, e.target.value)}
           placeholder="Enter key takeaway title"
+          className="border-0 border-b border-gray-300 focus:border-blue-400 focus:ring-0 rounded-none bg-transparent text-sm px-0"
         />
         <div className="space-y-2">
           <Label htmlFor={`keydesc-${index}`}>Description</Label>
@@ -66,7 +66,6 @@ const KeyPointsSection: React.FC<KeyPointsSectionProps> = ({
       {keypoints.map((point, index) => (
         <div key={index} className="mb-4 p-4 border border-gray-200 rounded-lg">
           <div className="flex items-center justify-between mb-2">
-            <Label htmlFor={`keypoint-${index}`} className="font-medium">Key Takeaway {index + 1}</Label>
             <div className="flex items-center space-x-2">
               <Checkbox
                 id={`key-visible-${index}`}
@@ -80,7 +79,7 @@ const KeyPointsSection: React.FC<KeyPointsSectionProps> = ({
             id={`keypoint-${index}`}
             value={point}
             onChange={(e) => handleKeyPointChange(index, e.target.value)}
-            className="mb-2"
+            className="mb-2 border-0 border-b border-gray-300 focus:border-blue-400 focus:ring-0 rounded-none bg-transparent text-sm px-0"
             placeholder="Enter key takeaway title"
           />
           <Label htmlFor={`keydesc-${index}`}>Description</Label>

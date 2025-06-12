@@ -40,13 +40,14 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
       </div>
       
       {isOpen && (
-        <div className="pl-9 space-y-0">
+        <div className="pl-9 space-y-6">
           <ContentSection
             posterData={posterData}
             handleChange={handleChange}
             handleSectionTitleChange={handleSectionTitleChange}
             sectionIndex={0}
             sectionField="introduction"
+            sectionTitle="Introduction"
           />
           
           <ContentSection
@@ -55,6 +56,7 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
             handleSectionTitleChange={handleSectionTitleChange}
             sectionIndex={1}
             sectionField="methods"
+            sectionTitle="Methods"
           />
           
           <ContentSection
@@ -63,6 +65,7 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
             handleSectionTitleChange={handleSectionTitleChange}
             sectionIndex={2}
             sectionField="findings"
+            sectionTitle="Findings"
           />
           
           <ContentSection
@@ -71,6 +74,7 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
             handleSectionTitleChange={handleSectionTitleChange}
             sectionIndex={3}
             sectionField="conclusions"
+            sectionTitle="Conclusions"
           />
         </div>
       )}

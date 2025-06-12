@@ -2,7 +2,8 @@
 import React from 'react';
 import QrCodeSection from './QrCodeSection';
 import { Switch } from "@/components/ui/switch";
-import { ChevronDown, ChevronUp, QrCode } from "lucide-react";
+import { CollapsibleSection } from "@/components/ui/collapsible-section";
+import { QrCode } from "lucide-react";
 
 interface QrCodeGroupProps {
   posterData: any;
@@ -23,47 +24,34 @@ const QrCodeGroup: React.FC<QrCodeGroupProps> = ({
   openSections,
   toggleSection
 }) => {
-  const isOpen = openSections['qrcode'];
+  const isOpen = openSections['qr-code'];
 
   return (
-    <div className="border-b border-gray-200 py-4">
-      <div 
-        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded-md transition-colors"
-        onClick={() => toggleSection('qrcode')}
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-6 h-6 bg-blue-50 rounded-md flex items-center justify-center">
-            <QrCode className="h-3 w-3 text-blue-600" />
-          </div>
-          <h3 className="text-lg font-semibold text-gray-900">QR Code</h3>
-        </div>
-        <div className="flex items-center gap-2">
-          <Switch 
-            checked={posterData.showQrCode !== false} 
-            onCheckedChange={handleToggleChange('showQrCode')}
-            onClick={(e) => e.stopPropagation()}
-          />
-          {isOpen ? (
-            <ChevronUp className="h-4 w-4 text-gray-500" />
-          ) : (
-            <ChevronDown className="h-4 w-4 text-gray-500" />
-          )}
-        </div>
-      </div>
-      
-      {isOpen && posterData.showQrCode !== false && (
-        <div className="mt-4 pl-9">
-          <QrCodeSection 
-            qrCodeUrl={posterData.qrCodeUrl || ''}
-            qrCodeColor={posterData.qrCodeColor || '#000000'}
-            qrCodeCaption={posterData.qrCodeCaption || ''}
-            handleQrUrlChange={handleQrUrlChange}
-            handleQrColorChange={handleQrColorChange}
-            handleQrCaptionChange={handleQrCaptionChange}
-          />
-        </div>
+    <CollapsibleSection
+      id="qr-code"
+      title="QR Code"
+      icon={<QrCode className="h-3 w-3 text-blue-600" />}
+      isOpen={isOpen}
+      onToggle={() => toggleSection('qr-code')}
+      rightContent={
+        <Switch 
+          checked={posterData.showQrCode !== false} 
+          onCheckedChange={handleToggleChange('showQrCode')}
+          onClick={(e) => e.stopPropagation()}
+        />
+      }
+    >
+      {posterData.showQrCode !== false && (
+        <QrCodeSection 
+          qrCodeUrl={posterData.qrCodeUrl || ''}
+          qrCodeColor={posterData.qrCodeColor || '#000000'}
+          qrCodeCaption={posterData.qrCodeCaption || 'Scan me!'}
+          onQrUrlChange={handleQrUrlChange}
+          onQrColorChange={handleQrColorChange}
+          onQrCaptionChange={handleQrCaptionChange}
+        />
       )}
-    </div>
+    </CollapsibleSection>
   );
 };
 

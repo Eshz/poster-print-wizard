@@ -91,8 +91,8 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
               style={{ 
                 lineHeight: '1.6', 
                 fontFamily: 'monospace',
-                textIndent: '-1.5em',
-                paddingLeft: '1.5em'
+                paddingLeft: '1rem',
+                textIndent: '-1rem'
               }}
             />
             <p className="text-xs text-gray-500">
