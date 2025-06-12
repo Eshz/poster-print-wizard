@@ -42,39 +42,35 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
       {isOpen && (
         <div className="pl-9 space-y-0">
           <ContentSection
-            content={posterData?.introduction || ""}
-            name="introduction"
-            placeholder="Introduce your research topic, background, and objectives..."
+            posterData={posterData}
             handleChange={handleChange}
-            sectionTitle={posterData?.sectionTitles?.[0] || ""}
-            onSectionTitleChange={(value) => handleSectionTitleChange(0, value)}
+            handleSectionTitleChange={handleSectionTitleChange}
+            sectionIndex={0}
+            sectionField="introduction"
           />
           
           <ContentSection
-            content={posterData?.methods || ""}
-            name="methods"
-            placeholder="Describe your methodology, approach, and procedures..."
+            posterData={posterData}
             handleChange={handleChange}
-            sectionTitle={posterData?.sectionTitles?.[1] || ""}
-            onSectionTitleChange={(value) => handleSectionTitleChange(1, value)}
+            handleSectionTitleChange={handleSectionTitleChange}
+            sectionIndex={1}
+            sectionField="methods"
           />
           
           <ContentSection
-            content={posterData?.findings || ""}
-            name="findings"
-            placeholder="Present your main results and discoveries..."
+            posterData={posterData}
             handleChange={handleChange}
-            sectionTitle={posterData?.sectionTitles?.[2] || ""}
-            onSectionTitleChange={(value) => handleSectionTitleChange(2, value)}
+            handleSectionTitleChange={handleSectionTitleChange}
+            sectionIndex={2}
+            sectionField="findings"
           />
           
           <ContentSection
-            content={posterData?.conclusions || ""}
-            name="conclusions"
-            placeholder="Summarize your conclusions and implications..."
+            posterData={posterData}
             handleChange={handleChange}
-            sectionTitle={posterData?.sectionTitles?.[3] || ""}
-            onSectionTitleChange={(value) => handleSectionTitleChange(3, value)}
+            handleSectionTitleChange={handleSectionTitleChange}
+            sectionIndex={3}
+            sectionField="conclusions"
           />
         </div>
       )}
