@@ -25,7 +25,7 @@ const ImagesGroup: React.FC<ImagesGroupProps> = ({
       <div className="pl-9">
         <ImagesSection 
           images={posterData.images || []}
-          handleImagesChange={handleImagesChange}
+          onImagesChange={handleImagesChange}
         />
       </div>
     </div>
