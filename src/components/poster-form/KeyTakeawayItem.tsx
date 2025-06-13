@@ -25,7 +25,7 @@ export const KeyTakeawayItem: React.FC<KeyTakeawayItemProps> = ({
   onVisibilityChange
 }) => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 cursor-move">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Checkbox

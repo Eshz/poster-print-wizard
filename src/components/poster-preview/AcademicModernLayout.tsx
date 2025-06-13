@@ -84,9 +84,9 @@ const AcademicModernLayout: React.FC<AcademicModernLayoutProps> = ({
   return (
     <div className="flex gap-3 h-full p-3">
       {/* Left Column - Main Sections */}
-      <div className={`w-1/2 space-y-3 overflow-auto ${shouldLeftStretch ? 'flex flex-col' : ''}`}>
+      <div className="w-1/2 space-y-3 overflow-auto flex flex-col h-full">
         {activeSections.map((section, index) => (
-          <div key={index} className="flex flex-col">
+          <div key={index} className={`flex flex-col ${shouldLeftStretch && index === activeSections.length - 1 ? 'flex-1' : ''}`}>
             {/* Section Header */}
             <div 
               className="px-4 py-3 border-b-2 border-white"
@@ -108,7 +108,7 @@ const AcademicModernLayout: React.FC<AcademicModernLayoutProps> = ({
             
             {/* Section Content */}
             <div 
-              className="p-4"
+              className={`p-4 ${shouldLeftStretch && index === activeSections.length - 1 ? 'flex-1' : ''}`}
               style={{ backgroundColor: section.contentBg }}
             >
               <p 
@@ -127,7 +127,7 @@ const AcademicModernLayout: React.FC<AcademicModernLayoutProps> = ({
         {/* Images section if present */}
         {posterData.images && posterData.images.length > 0 && (
           <div 
-            className={`p-4 rounded-lg ${shouldLeftStretch ? 'flex-1' : ''}`}
+            className={`p-4 rounded-lg ${shouldLeftStretch && !activeSections.length ? 'flex-1' : ''}`}
             style={{ backgroundColor: "#F2F2F2" }}
           >
             <ImagesDisplay 
@@ -139,7 +139,7 @@ const AcademicModernLayout: React.FC<AcademicModernLayoutProps> = ({
       </div>
 
       {/* Right Column - Key Takeaways and References */}
-      <div className={`w-1/2 space-y-3 overflow-auto ${!shouldLeftStretch ? 'flex flex-col' : ''}`}>
+      <div className="w-1/2 space-y-3 overflow-auto flex flex-col h-full">
         {/* Key Takeaways Header */}
         {showKeypoints && posterData.keypoints && posterData.keypoints.some((point: string) => point?.trim()) && (
           <div className="space-y-3">

@@ -48,6 +48,33 @@ const getOriginalPosterElement = () => {
 };
 
 /**
+ * Converts QR code images to base64 to ensure they export properly
+ */
+const processQrCodeImages = async (clonedElement: HTMLElement) => {
+  const qrImages = clonedElement.querySelectorAll('img[src*="qrserver.com"]');
+  
+  for (const img of qrImages) {
+    const imgElement = img as HTMLImageElement;
+    try {
+      // Fetch the QR code image and convert to base64
+      const response = await fetch(imgElement.src);
+      const blob = await response.blob();
+      const reader = new FileReader();
+      
+      await new Promise((resolve) => {
+        reader.onload = () => {
+          imgElement.src = reader.result as string;
+          resolve(null);
+        };
+        reader.readAsDataURL(blob);
+      });
+    } catch (error) {
+      console.warn('Could not convert QR code to base64:', error);
+    }
+  }
+};
+
+/**
  * Ensures proper styling for PDF export and removes scrollbars
  */
 const preparePosterForExport = (clonedElement: HTMLElement) => {
@@ -97,7 +124,7 @@ const preparePosterForExport = (clonedElement: HTMLElement) => {
  * Updated to use the original poster dimensions before zoom scaling
  * @param elementId The ID of the DOM element to export
  */
-export const exportToPDF = (elementId: string) => {
+export const exportToPDF = async (elementId: string) => {
   // Get the original poster content (before zoom scaling)
   const element = getOriginalPosterElement();
   
@@ -116,39 +143,48 @@ export const exportToPDF = (elementId: string) => {
   
   const tempDiv = createTempContainer(clonedElement);
   
-  // Compress images before processing
-  compressImages(clonedElement);
-  
-  // Scale the element for PDF export using the corrected scaling logic
-  scaleElementForPdf(clonedElement);
-  
-  toast.info("Preparing high-quality A0 PDF export...");
-  
-  // Create PDF configuration
-  const pdfConfig = createPdfConfig();
-  
-  setTimeout(() => {
-    html2pdf().from(clonedElement).set(pdfConfig).outputPdf('blob').then((pdfBlob: Blob) => {
-      // Create download link
-      const url = URL.createObjectURL(pdfBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'conference-poster-A0.pdf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      
-      const sizeInMB = (pdfBlob.size / (1024 * 1024)).toFixed(2);
-      toast.success(`A0 PDF exported successfully! File size: ${sizeInMB}MB`);
-      
-      // Clean up
-      cleanupTempContainer(tempDiv);
-    }).catch(err => {
-      console.error("PDF export failed:", err);
-      toast.error("PDF export failed. Please try again.");
-      // Clean up
-      cleanupTempContainer(tempDiv);
-    });
-  }, 500);
+  try {
+    // Process QR code images first
+    await processQrCodeImages(clonedElement);
+    
+    // Compress other images
+    compressImages(clonedElement);
+    
+    // Scale the element for PDF export using the corrected scaling logic
+    scaleElementForPdf(clonedElement);
+    
+    toast.info("Preparing high-quality A0 PDF export...");
+    
+    // Create PDF configuration
+    const pdfConfig = createPdfConfig();
+    
+    setTimeout(() => {
+      html2pdf().from(clonedElement).set(pdfConfig).outputPdf('blob').then((pdfBlob: Blob) => {
+        // Create download link
+        const url = URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'conference-poster-A0.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        const sizeInMB = (pdfBlob.size / (1024 * 1024)).toFixed(2);
+        toast.success(`A0 PDF exported successfully! File size: ${sizeInMB}MB`);
+        
+        // Clean up
+        cleanupTempContainer(tempDiv);
+      }).catch(err => {
+        console.error("PDF export failed:", err);
+        toast.error("PDF export failed. Please try again.");
+        // Clean up
+        cleanupTempContainer(tempDiv);
+      });
+    }, 500);
+  } catch (error) {
+    console.error("PDF preparation failed:", error);
+    toast.error("PDF preparation failed. Please try again.");
+    cleanupTempContainer(tempDiv);
+  }
 };
