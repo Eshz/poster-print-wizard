@@ -1,8 +1,6 @@
 
 import React from 'react';
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { ContentSectionItem } from './ContentSectionItem';
 
 interface ContentSectionProps {
   posterData: any;
@@ -21,36 +19,24 @@ const ContentSection: React.FC<ContentSectionProps> = ({
   sectionField,
   sectionTitle
 }) => {
+  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    handleChange(e);
+  };
+
+  const handleTitleChange = (value: string) => {
+    handleSectionTitleChange(sectionIndex, value);
+  };
+
   return (
-    <div className="space-y-4">
-      <div className="space-y-1">
-        <Label htmlFor={`section-title-${sectionIndex}`} className="text-xs font-medium text-gray-700">
-          {sectionTitle} Title
-        </Label>
-        <Input
-          id={`section-title-${sectionIndex}`}
-          value={posterData?.sectionTitles?.[sectionIndex] || `${sectionIndex + 1}. ${sectionTitle}`}
-          onChange={(e) => handleSectionTitleChange(sectionIndex, e.target.value)}
-          placeholder={`Enter ${sectionTitle.toLowerCase()} title`}
-          className="border-0 border-b border-gray-300 focus:border-blue-400 focus:ring-0 rounded-none bg-transparent text-sm px-0"
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor={sectionField} className="text-xs font-medium text-gray-700">
-          Content
-        </Label>
-        <Textarea
-          id={sectionField}
-          name={sectionField}
-          value={posterData?.[sectionField] || ""}
-          onChange={handleChange}
-          rows={6}
-          className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
-          placeholder={`Enter ${sectionTitle.toLowerCase()} content`}
-        />
-      </div>
-    </div>
+    <ContentSectionItem
+      index={sectionIndex}
+      sectionTitle={sectionTitle}
+      sectionField={sectionField}
+      defaultTitle={posterData?.sectionTitles?.[sectionIndex] || `${sectionIndex + 1}. ${sectionTitle}`}
+      content={posterData?.[sectionField] || ""}
+      onTitleChange={handleTitleChange}
+      onContentChange={handleContentChange}
+    />
   );
 };
 
