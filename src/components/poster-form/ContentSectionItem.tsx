@@ -12,6 +12,11 @@ interface ContentSectionItemProps {
   content: string;
   onTitleChange: (value: string) => void;
   onContentChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onDragStart?: () => void;
+  onDragOver?: (e: React.DragEvent) => void;
+  onDrop?: (e: React.DragEvent) => void;
+  onDragEnd?: () => void;
+  isDragging?: boolean;
 }
 
 export const ContentSectionItem: React.FC<ContentSectionItemProps> = ({
@@ -21,10 +26,22 @@ export const ContentSectionItem: React.FC<ContentSectionItemProps> = ({
   defaultTitle,
   content,
   onTitleChange,
-  onContentChange
+  onContentChange,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  onDragEnd,
+  isDragging
 }) => {
   return (
-    <Card className="p-4 border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow cursor-move">
+    <Card 
+      className={`p-4 border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow cursor-move ${isDragging ? 'opacity-50' : ''}`}
+      draggable={true}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      onDragEnd={onDragEnd}
+    >
       <CardContent className="p-0 space-y-4">
         <SectionInput
           id={`section-title-${index}`}

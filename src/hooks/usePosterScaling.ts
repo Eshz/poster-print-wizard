@@ -31,24 +31,17 @@ export const usePosterScaling = ({
       const containerRect = container.getBoundingClientRect();
       
       // Calculate what scale represents actual A0 size
-      // A0 is 84.1cm x 118.8cm. At 96 DPI, that's 3179 x 4494 pixels
-      // Our UI is 800 x 1131 pixels
-      // So to show actual A0 size, we need to scale up by the ratio
-      const a0ScaleFactor = a0WidthPx / posterUIWidth; // 3179 / 800 = ~3.97
+      const a0ScaleFactor = a0WidthPx / posterUIWidth;
       
-      // Calculate fit-to-window scale based on the actual scaled dimensions
-      const availableWidth = containerRect.width - 40;
-      const availableHeight = containerRect.height - 40;
+      // Calculate fit-to-window scale - ensure poster fits entirely in viewport
+      const availableWidth = containerRect.width - 80; // More padding for safety
+      const availableHeight = containerRect.height - 80; // More padding for safety
       
-      // The actual dimensions when at 100% zoom (manualZoom = 1)
-      const actualA0Width = posterUIWidth * a0ScaleFactor;
-      const actualA0Height = posterUIHeight * a0ScaleFactor;
+      // Calculate scale that fits both width and height
+      const scaleX = availableWidth / posterUIWidth;
+      const scaleY = availableHeight / posterUIHeight;
+      const fitToWindowScale = Math.min(scaleX, scaleY, 1); // Don't scale up beyond 100%
       
-      const scaleX = availableWidth / actualA0Width;
-      const scaleY = availableHeight / actualA0Height;
-      const fitToWindowScale = Math.min(scaleX, scaleY, 1);
-      
-      // Now 100% zoom (manualZoom = 1) represents actual A0 size
       // The actual scale applied is manualZoom * a0ScaleFactor
       const actualScale = manualZoom * a0ScaleFactor;
       
@@ -60,7 +53,6 @@ export const usePosterScaling = ({
       }
     };
 
-    // Initial calculation with a small delay to ensure DOM is ready
     const timer = setTimeout(calculateScale, 100);
     
     calculateScale();

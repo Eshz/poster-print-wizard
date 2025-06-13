@@ -15,29 +15,29 @@ const ZoomControls: React.FC<ZoomControlsProps> = ({
   currentZoom, 
   onZoomChange, 
   containerScale = 1,
-  minZoom = 0.05, // Lower minimum since A0 is very large
-  maxZoom = 2 // Lower maximum since 100% is now very large
+  minZoom = 0.05,
+  maxZoom = 2
 }) => {
-  // Now zoom percentage represents actual A0 size percentage
+  // Show zoom percentage relative to actual A0 size
   const zoomPercentage = Math.round(currentZoom * 100);
 
   const handleZoomIn = () => {
-    const newZoom = Math.min(currentZoom + 0.05, maxZoom); // Smaller increments
+    const newZoom = Math.min(currentZoom + 0.05, maxZoom);
     onZoomChange(newZoom);
   };
 
   const handleZoomOut = () => {
-    const newZoom = Math.max(currentZoom - 0.05, minZoom); // Smaller increments
+    const newZoom = Math.max(currentZoom - 0.05, minZoom);
     onZoomChange(newZoom);
   };
 
   const handleZoomReset = () => {
-    // Reset to 100% (actual A0 size - 84.1 x 118.8 cm)
+    // Reset to 100% (actual A0 size)
     onZoomChange(1);
   };
 
   const handleFitToWindow = () => {
-    // Set zoom to fit the window (will be much smaller than 100%)
+    // Set zoom to fit the entire poster in the window
     onZoomChange(containerScale);
   };
 
@@ -76,7 +76,7 @@ const ZoomControls: React.FC<ZoomControlsProps> = ({
         size="sm"
         onClick={handleFitToWindow}
         className="h-8 px-2"
-        title="Fit to Window"
+        title="Fit entire poster to window"
       >
         <Maximize className="h-4 w-4 mr-1" />
         Fit

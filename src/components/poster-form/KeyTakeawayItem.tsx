@@ -13,6 +13,11 @@ interface KeyTakeawayItemProps {
   onTitleChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
   onVisibilityChange: (visible: boolean) => void;
+  onDragStart?: () => void;
+  onDragOver?: (e: React.DragEvent) => void;
+  onDrop?: (e: React.DragEvent) => void;
+  onDragEnd?: () => void;
+  isDragging?: boolean;
 }
 
 export const KeyTakeawayItem: React.FC<KeyTakeawayItemProps> = ({
@@ -22,10 +27,22 @@ export const KeyTakeawayItem: React.FC<KeyTakeawayItemProps> = ({
   visible,
   onTitleChange,
   onDescriptionChange,
-  onVisibilityChange
+  onVisibilityChange,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  onDragEnd,
+  isDragging
 }) => {
   return (
-    <div className="space-y-4 cursor-move">
+    <div 
+      className={`space-y-4 cursor-move ${isDragging ? 'opacity-50' : ''}`}
+      draggable={true}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      onDragEnd={onDragEnd}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Checkbox
