@@ -46,9 +46,9 @@ const QrCodeGroup: React.FC<QrCodeGroupProps> = ({
           qrCodeUrl={posterData.qrCodeUrl || ''}
           qrCodeColor={posterData.qrCodeColor || '#000000'}
           qrCodeCaption={posterData.qrCodeCaption || 'Scan me!'}
-          onQrUrlChange={handleQrUrlChange}
-          onQrColorChange={handleQrColorChange}
-          onQrCaptionChange={handleQrCaptionChange}
+          handleQrUrlChange={handleQrUrlChange}
+          handleQrColorChange={handleQrColorChange}
+          handleQrCaptionChange={handleQrCaptionChange}
         />
       )}
     </CollapsibleSection>
