@@ -9,6 +9,7 @@ interface KeyPointsSectionProps {
   handleKeyPointChange: (index: number, value: string) => void;
   handleKeyDescriptionChange: (index: number, value: string) => void;
   handleKeyVisibilityChange: (index: number, visible: boolean) => void;
+  handleKeyTakeawaysReorder: (newKeypoints: string[]) => void;
   singleIndex?: number;
 }
 
@@ -19,6 +20,7 @@ const KeyPointsSection: React.FC<KeyPointsSectionProps> = ({
   handleKeyPointChange,
   handleKeyDescriptionChange,
   handleKeyVisibilityChange,
+  handleKeyTakeawaysReorder,
   singleIndex
 }) => {
   // If singleIndex is provided, only show that specific key takeaway
