@@ -9,6 +9,7 @@ interface KeyTakeawaysGroupProps {
   handleKeyPointChange: (index: number, value: string) => void;
   handleKeyDescriptionChange: (index: number, value: string) => void;
   handleKeyVisibilityChange: (index: number, visible: boolean) => void;
+  handleKeyTakeawaysReorder: (newKeypoints: string[]) => void;
   handleToggleChange: (field: string) => (checked: boolean) => void;
   openSections: {[key: string]: boolean};
   toggleSection: (sectionId: string) => void;
@@ -19,6 +20,7 @@ const KeyTakeawaysGroup: React.FC<KeyTakeawaysGroupProps> = ({
   handleKeyPointChange,
   handleKeyDescriptionChange,
   handleKeyVisibilityChange,
+  handleKeyTakeawaysReorder,
   handleToggleChange,
   openSections,
   toggleSection
@@ -60,6 +62,7 @@ const KeyTakeawaysGroup: React.FC<KeyTakeawaysGroupProps> = ({
             handleKeyPointChange={handleKeyPointChange}
             handleKeyDescriptionChange={handleKeyDescriptionChange}
             handleKeyVisibilityChange={handleKeyVisibilityChange}
+            handleKeyTakeawaysReorder={handleKeyTakeawaysReorder}
           />
         </div>
       )}

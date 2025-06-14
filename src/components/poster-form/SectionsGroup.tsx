@@ -2,11 +2,13 @@
 import React from 'react';
 import { ChevronDown, ChevronUp, FileText } from "lucide-react";
 import ContentSection from './ContentSection';
+import { useDragAndDrop } from '@/hooks/useDragAndDrop';
 
 interface SectionsGroupProps {
   posterData: any;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleSectionTitleChange: (index: number, value: string) => void;
+  handleSectionsReorder: (newSectionTitles: string[]) => void;
   openSections: {[key: string]: boolean};
   toggleSection: (sectionId: string) => void;
 }
@@ -15,10 +17,33 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
   posterData,
   handleChange,
   handleSectionTitleChange,
+  handleSectionsReorder,
   openSections,
   toggleSection
 }) => {
   const isOpen = openSections['sections'];
+  
+  const sectionTitles = posterData.sectionTitles || [
+    '1. Introduction',
+    '2. Methods', 
+    '3. Findings',
+    '4. Conclusions'
+  ];
+
+  const {
+    draggedItem,
+    handleDragStart,
+    handleDragOver,
+    handleDrop,
+    handleDragEnd
+  } = useDragAndDrop(sectionTitles, handleSectionsReorder);
+
+  const sections = [
+    { field: 'introduction', title: 'Introduction', index: 0 },
+    { field: 'methods', title: 'Methods', index: 1 },
+    { field: 'findings', title: 'Findings', index: 2 },
+    { field: 'conclusions', title: 'Conclusions', index: 3 }
+  ];
 
   return (
     <div className="border-b border-gray-200 py-4">
@@ -41,41 +66,22 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
       
       {isOpen && (
         <div className="pl-9 space-y-6">
-          <ContentSection
-            posterData={posterData}
-            handleChange={handleChange}
-            handleSectionTitleChange={handleSectionTitleChange}
-            sectionIndex={0}
-            sectionField="introduction"
-            sectionTitle="Introduction"
-          />
-          
-          <ContentSection
-            posterData={posterData}
-            handleChange={handleChange}
-            handleSectionTitleChange={handleSectionTitleChange}
-            sectionIndex={1}
-            sectionField="methods"
-            sectionTitle="Methods"
-          />
-          
-          <ContentSection
-            posterData={posterData}
-            handleChange={handleChange}
-            handleSectionTitleChange={handleSectionTitleChange}
-            sectionIndex={2}
-            sectionField="findings"
-            sectionTitle="Findings"
-          />
-          
-          <ContentSection
-            posterData={posterData}
-            handleChange={handleChange}
-            handleSectionTitleChange={handleSectionTitleChange}
-            sectionIndex={3}
-            sectionField="conclusions"
-            sectionTitle="Conclusions"
-          />
+          {sections.map((section, index) => (
+            <ContentSection
+              key={section.field}
+              posterData={posterData}
+              handleChange={handleChange}
+              handleSectionTitleChange={handleSectionTitleChange}
+              sectionIndex={section.index}
+              sectionField={section.field}
+              sectionTitle={section.title}
+              onDragStart={() => handleDragStart(index)}
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, index)}
+              onDragEnd={handleDragEnd}
+              isDragging={draggedItem?.index === index}
+            />
+          ))}
         </div>
       )}
     </div>

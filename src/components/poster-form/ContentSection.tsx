@@ -9,6 +9,11 @@ interface ContentSectionProps {
   sectionIndex: number;
   sectionField: string;
   sectionTitle: string;
+  onDragStart?: () => void;
+  onDragOver?: (e: React.DragEvent) => void;
+  onDrop?: (e: React.DragEvent) => void;
+  onDragEnd?: () => void;
+  isDragging?: boolean;
 }
 
 const ContentSection: React.FC<ContentSectionProps> = ({ 
@@ -17,7 +22,12 @@ const ContentSection: React.FC<ContentSectionProps> = ({
   handleSectionTitleChange,
   sectionIndex,
   sectionField,
-  sectionTitle
+  sectionTitle,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  onDragEnd,
+  isDragging
 }) => {
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     handleChange(e);
@@ -36,6 +46,11 @@ const ContentSection: React.FC<ContentSectionProps> = ({
       content={posterData?.[sectionField] || ""}
       onTitleChange={handleTitleChange}
       onContentChange={handleContentChange}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      onDragEnd={onDragEnd}
+      isDragging={isDragging}
     />
   );
 };
