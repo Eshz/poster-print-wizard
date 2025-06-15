@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { PosterData, DesignSettings } from '@/types/project';
 import { getFontClass } from '@/utils/fontUtils';
@@ -6,6 +5,9 @@ import ClassicLayout from './ClassicLayout';
 import ModernLayout from './ModernLayout';
 import FocusLayout from './FocusLayout';
 import AcademicModernLayout from './AcademicModernLayout';
+import MinimalistCleanLayout from './MinimalistCleanLayout';
+import DataVisualizationLayout from './DataVisualizationLayout';
+import ExecutiveSummaryLayout from './ExecutiveSummaryLayout';
 
 interface EnhancedDesignSettings extends DesignSettings {
   titleFontClass: string;
@@ -57,6 +59,42 @@ const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = React.memo(({
   }
 
   switch(layout) {
+    case 'minimalist':
+      return (
+        <div className={containerClasses}>
+          <MinimalistCleanLayout 
+            posterData={posterData}
+            designSettings={enhancedDesignSettings}
+            qrCodeUrl={qrCodeUrl}
+            showKeypoints={showKeypoints}
+            showQrCode={showQrCode}
+          />
+        </div>
+      );
+    case 'data-viz':
+      return (
+        <div className={containerClasses}>
+          <DataVisualizationLayout 
+            posterData={posterData}
+            designSettings={enhancedDesignSettings}
+            qrCodeUrl={qrCodeUrl}
+            showKeypoints={showKeypoints}
+            showQrCode={showQrCode}
+          />
+        </div>
+      );
+    case 'executive':
+      return (
+        <div className={containerClasses}>
+          <ExecutiveSummaryLayout 
+            posterData={posterData}
+            designSettings={enhancedDesignSettings}
+            qrCodeUrl={qrCodeUrl}
+            showKeypoints={showKeypoints}
+            showQrCode={showQrCode}
+          />
+        </div>
+      );
     case 'modern':
       return (
         <div className={containerClasses}>

@@ -1,4 +1,3 @@
-
 import { DesignSettings } from '@/types/design';
 
 export interface PosterStyle extends DesignSettings {
@@ -312,5 +311,102 @@ export const posterStyles: PosterStyle[] = [
     sectionTextColor: "#164E63",
     keyPointsBgColor: "#BAE6FD",
     keyPointsTextColor: "#0E7490"
+  },
+  
+  // New layouts inspired by reference images
+  {
+    id: "minimalist-clean",
+    name: "Minimalist Clean",
+    category: "Modern",
+    layout: "minimalist",
+    titleFont: "inter",
+    contentFont: "opensans",
+    headerBgColor: "#FFFFFF",
+    headerTextColor: "#2D3748",
+    sectionBgColor: "#4299E1",
+    sectionTitleColor: "#2D3748",
+    sectionTextColor: "#4A5568",
+    keyPointsBgColor: "#F7FAFC",
+    keyPointsTextColor: "#2D3748"
+  },
+  
+  {
+    id: "data-visualization",
+    name: "Data Visualization",
+    category: "Modern", 
+    layout: "data-viz",
+    titleFont: "roboto",
+    contentFont: "opensans",
+    headerBgColor: "#667EEA",
+    headerTextColor: "#FFFFFF",
+    sectionBgColor: "#667EEA",
+    sectionTitleColor: "#FFFFFF",
+    sectionTextColor: "#2D3748",
+    keyPointsBgColor: "#EDF2F7",
+    keyPointsTextColor: "#2D3748"
+  },
+  
+  {
+    id: "executive-summary",
+    name: "Executive Summary",
+    category: "Elegant",
+    layout: "executive",
+    titleFont: "playfair",
+    contentFont: "lora",
+    headerBgColor: "#805AD5",
+    headerTextColor: "#FFFFFF", 
+    sectionBgColor: "#9F7AEA",
+    sectionTitleColor: "#FFFFFF",
+    sectionTextColor: "#2D3748",
+    keyPointsBgColor: "#FAF5FF",
+    keyPointsTextColor: "#553C9A"
+  },
+  
+  {
+    id: "research-dark",
+    name: "Research Dark",
+    category: "Academic",
+    layout: "minimalist",
+    titleFont: "merriweather",
+    contentFont: "roboto",
+    headerBgColor: "#2D3748",
+    headerTextColor: "#FFFFFF",
+    sectionBgColor: "#4A5568",
+    sectionTitleColor: "#FFFFFF",
+    sectionTextColor: "#2D3748",
+    keyPointsBgColor: "#EDF2F7",
+    keyPointsTextColor: "#2D3748"
+  },
+  
+  {
+    id: "colorful-insights",
+    name: "Colorful Insights", 
+    category: "Creative",
+    layout: "data-viz",
+    titleFont: "montserrat",
+    contentFont: "nunito",
+    headerBgColor: "#ED8936",
+    headerTextColor: "#FFFFFF",
+    sectionBgColor: "#F6AD55",
+    sectionTitleColor: "#FFFFFF", 
+    sectionTextColor: "#2D3748",
+    keyPointsBgColor: "#FFFAF0",
+    keyPointsTextColor: "#C05621"
+  },
+  
+  {
+    id: "professional-blue",
+    name: "Professional Blue",
+    category: "Formal",
+    layout: "executive", 
+    titleFont: "sourceserifpro",
+    contentFont: "inter",
+    headerBgColor: "#3182CE",
+    headerTextColor: "#FFFFFF",
+    sectionBgColor: "#4299E1",
+    sectionTitleColor: "#FFFFFF",
+    sectionTextColor: "#2D3748", 
+    keyPointsBgColor: "#EBF8FF",
+    keyPointsTextColor: "#2B6CB0"
   }
 ];

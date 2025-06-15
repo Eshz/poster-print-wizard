@@ -65,12 +65,56 @@ const StyleThumbnail: React.FC<StyleThumbnailProps> = React.memo(({
             </>
           ) : (
             <>
+              {/* Minimalist layout */}
+              {style.layout === 'minimalist' && (
+                <>
+                  <div className="w-2/3 h-full flex flex-col gap-1">
+                    <div className="h-1/4 bg-white rounded-sm border"></div>
+                    <div className="h-1/4 bg-white rounded-sm border"></div>
+                    <div className="h-1/4 bg-white rounded-sm border"></div>
+                    <div className="h-1/4 bg-white rounded-sm border"></div>
+                  </div>
+                  <div className="w-1/3 h-full bg-white rounded-sm border"></div>
+                </>
+              )}
+              
+              {/* Data visualization layout */}
+              {style.layout === 'data-viz' && (
+                <>
+                  <div className="w-1/2 h-full flex flex-col gap-1">
+                    <div className="h-1/3 bg-gray-200 rounded-sm"></div>
+                    <div className="h-1/3 bg-gray-200 rounded-sm"></div>
+                    <div className="h-1/3 bg-gray-200 rounded-sm"></div>
+                  </div>
+                  <div className="w-1/2 h-full flex flex-col gap-1">
+                    <div className="h-1/2 bg-white rounded-sm border"></div>
+                    <div className="h-1/2 bg-white rounded-sm border"></div>
+                  </div>
+                </>
+              )}
+              
+              {/* Executive layout */}
+              {style.layout === 'executive' && (
+                <>
+                  <div className="w-3/5 h-full flex flex-col gap-1">
+                    <div className="h-1/4 bg-white rounded-sm shadow-sm"></div>
+                    <div className="h-1/4 bg-white rounded-sm shadow-sm"></div>
+                    <div className="h-1/4 bg-white rounded-sm shadow-sm"></div>
+                    <div className="h-1/4 bg-white rounded-sm shadow-sm"></div>
+                  </div>
+                  <div className="w-2/5 h-full bg-white rounded-sm shadow-sm"></div>
+                </>
+              )}
+              
+              {/* Classic layout */}
               {style.layout === 'classic' && (
                 <>
                   <div className="w-1/2 h-full bg-gray-200 rounded-sm"></div>
                   <div className="w-1/2 h-full bg-gray-200 rounded-sm"></div>
                 </>
               )}
+              
+              {/* Modern layout */}
               {style.layout === 'modern' && (
                 <>
                   <div className="w-1/3 h-full bg-gray-200 rounded-sm"></div>
@@ -78,6 +122,8 @@ const StyleThumbnail: React.FC<StyleThumbnailProps> = React.memo(({
                   <div className="w-1/3 h-full bg-gray-200 rounded-sm"></div>
                 </>
               )}
+              
+              {/* Focus layout */}
               {style.layout === 'focus' && (
                 <div className="w-2/3 h-full bg-gray-200 rounded-sm mx-auto"></div>
               )}
