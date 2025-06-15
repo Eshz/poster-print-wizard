@@ -1,4 +1,3 @@
-
 export const FONT_FAMILIES = {
   playfair: 'Playfair Display',
   roboto: 'Roboto',
@@ -6,7 +5,22 @@ export const FONT_FAMILIES = {
   montserrat: 'Montserrat',
   opensans: 'Open Sans',
   lora: 'Lora',
-  raleway: 'Raleway'
+  raleway: 'Raleway',
+  
+  crimsontext: 'Crimson Text',
+  sourceserifpro: 'Source Serif Pro',
+  ebgaramond: 'EB Garamond',
+  inter: 'Inter',
+  librewilson: 'Libre Baskerville',
+  nunito: 'Nunito',
+  cormorantgaramond: 'Cormorant Garamond',
+  worksans: 'Work Sans',
+  oldstandardtt: 'Old Standard TT',
+  karla: 'Karla',
+  spectral: 'Spectral',
+  publicsans: 'Public Sans',
+  vollkorn: 'Vollkorn',
+  firasans: 'Fira Sans'
 } as const;
 
 export const FONT_WEIGHTS = {

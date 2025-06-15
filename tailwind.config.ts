@@ -19,6 +19,7 @@ export default {
 		},
 		extend: {
 			fontFamily: {
+				// Existing fonts
 				'playfair': ['Playfair Display', 'serif'],
 				'roboto': ['Roboto', 'sans-serif'],
 				'merriweather': ['Merriweather', 'serif'],
@@ -26,6 +27,22 @@ export default {
 				'opensans': ['Open Sans', 'sans-serif'],
 				'lora': ['Lora', 'serif'],
 				'raleway': ['Raleway', 'sans-serif'],
+				
+				// New academic fonts
+				'crimsontext': ['Crimson Text', 'serif'],
+				'sourceserifpro': ['Source Serif Pro', 'serif'],
+				'ebgaramond': ['EB Garamond', 'serif'],
+				'inter': ['Inter', 'sans-serif'],
+				'librewilson': ['Libre Baskerville', 'serif'], // Using Libre Baskerville as alternative
+				'nunito': ['Nunito', 'sans-serif'],
+				'cormorantgaramond': ['Cormorant Garamond', 'serif'],
+				'worksans': ['Work Sans', 'sans-serif'],
+				'oldstandardtt': ['Old Standard TT', 'serif'],
+				'karla': ['Karla', 'sans-serif'],
+				'spectral': ['Spectral', 'serif'],
+				'publicsans': ['Public Sans', 'sans-serif'],
+				'vollkorn': ['Vollkorn', 'serif'],
+				'firasans': ['Fira Sans', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',

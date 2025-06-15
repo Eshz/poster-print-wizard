@@ -8,7 +8,7 @@ export interface PosterStyle extends DesignSettings {
 }
 
 export const posterStyles: PosterStyle[] = [
-  // Academic Modern Style (new)
+  // Academic Modern Style (existing)
   {
     id: "academic-modern",
     name: "Academic Modern",
@@ -24,7 +24,137 @@ export const posterStyles: PosterStyle[] = [
     keyPointsBgColor: "#EFF6FF",
     keyPointsTextColor: "#1E3A8A"
   },
-  // Modern Category
+  
+  // New Academic Designs
+  {
+    id: "academic-sage",
+    name: "Academic Sage",
+    category: "Academic",
+    layout: "modern",
+    titleFont: "crimsontext",
+    contentFont: "sourceserifpro",
+    headerBgColor: "#FFFFFF",
+    headerTextColor: "#064E3B",
+    sectionBgColor: "#059669",
+    sectionTitleColor: "#FFFFFF",
+    sectionTextColor: "#FFFFFF",
+    keyPointsBgColor: "#ECFDF5",
+    keyPointsTextColor: "#064E3B"
+  },
+  
+  {
+    id: "academic-burgundy",
+    name: "Academic Burgundy",
+    category: "Academic",
+    layout: "modern",
+    titleFont: "ebgaramond",
+    contentFont: "inter",
+    headerBgColor: "#FFFFFF",
+    headerTextColor: "#7C2D12",
+    sectionBgColor: "#B91C1C",
+    sectionTitleColor: "#FFFFFF",
+    sectionTextColor: "#FFFFFF",
+    keyPointsBgColor: "#FEF2F2",
+    keyPointsTextColor: "#7C2D12"
+  },
+  
+  {
+    id: "academic-slate",
+    name: "Academic Slate",
+    category: "Academic",
+    layout: "modern",
+    titleFont: "librewilson",
+    contentFont: "nunito",
+    headerBgColor: "#FFFFFF",
+    headerTextColor: "#0F172A",
+    sectionBgColor: "#475569",
+    sectionTitleColor: "#FFFFFF",
+    sectionTextColor: "#FFFFFF",
+    keyPointsBgColor: "#F8FAFC",
+    keyPointsTextColor: "#0F172A"
+  },
+  
+  {
+    id: "academic-navy-gold",
+    name: "Academic Navy & Gold",
+    category: "Academic",
+    layout: "modern",
+    titleFont: "cormorantgaramond",
+    contentFont: "worksans",
+    headerBgColor: "#FFFFFF",
+    headerTextColor: "#1E3A8A",
+    sectionBgColor: "#1E3A8A",
+    sectionTitleColor: "#F59E0B",
+    sectionTextColor: "#FFFFFF",
+    keyPointsBgColor: "#FEF3C7",
+    keyPointsTextColor: "#1E3A8A"
+  },
+  
+  {
+    id: "academic-forest",
+    name: "Academic Forest",
+    category: "Academic",
+    layout: "modern",
+    titleFont: "oldstandardtt",
+    contentFont: "karla",
+    headerBgColor: "#FFFFFF",
+    headerTextColor: "#14532D",
+    sectionBgColor: "#16A34A",
+    sectionTitleColor: "#FFFFFF",
+    sectionTextColor: "#FFFFFF",
+    keyPointsBgColor: "#F0FDF4",
+    keyPointsTextColor: "#14532D"
+  },
+  
+  {
+    id: "academic-royal",
+    name: "Academic Royal",
+    category: "Academic",
+    layout: "modern",
+    titleFont: "spectral",
+    contentFont: "publicsans",
+    headerBgColor: "#FFFFFF",
+    headerTextColor: "#581C87",
+    sectionBgColor: "#7C3AED",
+    sectionTitleColor: "#FFFFFF",
+    sectionTextColor: "#FFFFFF",
+    keyPointsBgColor: "#FAF5FF",
+    keyPointsTextColor: "#581C87"
+  },
+  
+  {
+    id: "academic-charcoal",
+    name: "Academic Charcoal",
+    category: "Academic",
+    layout: "modern",
+    titleFont: "sourceserifpro",
+    contentFont: "inter",
+    headerBgColor: "#FFFFFF",
+    headerTextColor: "#1F2937",
+    sectionBgColor: "#374151",
+    sectionTitleColor: "#FFFFFF",
+    sectionTextColor: "#FFFFFF",
+    keyPointsBgColor: "#F9FAFB",
+    keyPointsTextColor: "#1F2937"
+  },
+  
+  {
+    id: "academic-teal",
+    name: "Academic Teal",
+    category: "Academic",
+    layout: "modern",
+    titleFont: "vollkorn",
+    contentFont: "firasans",
+    headerBgColor: "#FFFFFF",
+    headerTextColor: "#0F766E",
+    sectionBgColor: "#14B8A6",
+    sectionTitleColor: "#FFFFFF",
+    sectionTextColor: "#FFFFFF",
+    keyPointsBgColor: "#F0FDFA",
+    keyPointsTextColor: "#0F766E"
+  },
+
+  // Modern Category (existing styles)
   {
     id: "modern-teal",
     name: "Modern Teal",
@@ -55,7 +185,8 @@ export const posterStyles: PosterStyle[] = [
     keyPointsBgColor: "#DBEAFE",
     keyPointsTextColor: "#1E40AF"
   },
-  // Elegant Category
+  
+  // Elegant Category (existing styles)
   {
     id: "elegant-purple",
     name: "Elegant Purple",
@@ -86,7 +217,8 @@ export const posterStyles: PosterStyle[] = [
     keyPointsBgColor: "#FCE7F3",
     keyPointsTextColor: "#BE185D"
   },
-  // Formal Category
+  
+  // Formal Category (existing styles)
   {
     id: "formal-navy",
     name: "Formal Navy",
@@ -117,7 +249,8 @@ export const posterStyles: PosterStyle[] = [
     keyPointsBgColor: "#F3F4F6",
     keyPointsTextColor: "#374151"
   },
-  // Academic Category
+  
+  // Academic Category (existing styles + new ones above)
   {
     id: "academic-green",
     name: "Academic Green",
@@ -148,7 +281,8 @@ export const posterStyles: PosterStyle[] = [
     keyPointsBgColor: "#E0E7FF",
     keyPointsTextColor: "#3730A3"
   },
-  // Creative Category
+  
+  // Creative Category (existing styles)
   {
     id: "creative-orange",
     name: "Creative Orange",
