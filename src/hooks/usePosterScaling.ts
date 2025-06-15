@@ -30,26 +30,29 @@ export const usePosterScaling = ({
 
       const containerRect = container.getBoundingClientRect();
       
-      // Calculate what scale represents actual A0 size
+      // Calculate what scale represents actual A0 size. This is the CSS scale for 100% zoom.
       const a0ScaleFactor = a0WidthPx / posterUIWidth;
       
       // Calculate fit-to-window scale - ensure poster fits entirely in viewport
       const availableWidth = containerRect.width - 80; // More padding for safety
       const availableHeight = containerRect.height - 80; // More padding for safety
       
-      // Calculate scale that fits both width and height
+      // Calculate CSS scale that fits both width and height
       const scaleX = availableWidth / posterUIWidth;
       const scaleY = availableHeight / posterUIHeight;
-      const fitToWindowScale = Math.min(scaleX, scaleY, 1); // Don't scale up beyond 100%
+      const fitToWindowCssScale = Math.min(scaleX, scaleY);
       
-      // The actual scale applied is manualZoom * a0ScaleFactor
+      // The actual CSS scale applied is manualZoom (e.g. 1.0 for 100%) * a0ScaleFactor
       const actualScale = manualZoom * a0ScaleFactor;
       
       posterRef.current.style.transform = `scale(${actualScale})`;
 
-      // Notify parent of fit-to-window scale for the "Fit" button
+      // Notify parent of the ZOOM LEVEL that corresponds to fitting to window.
       if (onContainerScaleChange) {
-        onContainerScaleChange(fitToWindowScale);
+        // We want: zoomLevel * a0ScaleFactor = fitToWindowCssScale
+        // So: zoomLevel = fitToWindowCssScale / a0ScaleFactor
+        const fitToWindowZoomLevel = fitToWindowCssScale / a0ScaleFactor;
+        onContainerScaleChange(fitToWindowZoomLevel);
       }
     };
 

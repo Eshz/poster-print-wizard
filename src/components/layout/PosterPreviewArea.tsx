@@ -16,23 +16,23 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = React.memo(({
   designSettings 
 }) => {
   const [manualZoom, setManualZoom] = useState<number>(0); // Start at 0 to trigger fit-to-window
-  const [containerScale, setContainerScale] = useState<number>(0);
+  const [fitZoomLevel, setFitZoomLevel] = useState<number>(0);
   const [hasInitialized, setHasInitialized] = useState<boolean>(false);
 
   // Set initial zoom to fit-to-window when container scale is calculated
   useEffect(() => {
-    if (containerScale > 0 && !hasInitialized) {
-      setManualZoom(containerScale); // Default to fit-to-window
+    if (fitZoomLevel > 0 && !hasInitialized) {
+      setManualZoom(fitZoomLevel); // Default to fit-to-window
       setHasInitialized(true);
     }
-  }, [containerScale, hasInitialized]);
+  }, [fitZoomLevel, hasInitialized]);
 
   const handleZoomChange = (zoom: number) => {
     setManualZoom(zoom);
   };
 
-  const handleContainerScaleChange = (scale: number) => {
-    setContainerScale(scale);
+  const handleFitZoomLevelChange = (scale: number) => {
+    setFitZoomLevel(scale);
   };
 
   return (
@@ -41,7 +41,7 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = React.memo(({
         <ZoomControls 
           currentZoom={manualZoom}
           onZoomChange={handleZoomChange}
-          containerScale={containerScale}
+          fitZoomLevel={fitZoomLevel}
         />
         
         <div 
@@ -56,8 +56,8 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = React.memo(({
               showQrCode: posterData.showQrCode
             }} 
             designSettings={designSettings}
-            manualZoom={manualZoom || containerScale} // Use containerScale as fallback
-            onContainerScaleChange={handleContainerScaleChange}
+            manualZoom={manualZoom || fitZoomLevel} // Use fitZoomLevel as fallback
+            onContainerScaleChange={handleFitZoomLevelChange}
           />
         </div>
       </div>

@@ -6,7 +6,7 @@ import { ZoomIn, ZoomOut, Maximize } from 'lucide-react';
 interface ZoomControlsProps {
   currentZoom: number;
   onZoomChange: (zoom: number) => void;
-  containerScale?: number;
+  fitZoomLevel?: number;
   minZoom?: number;
   maxZoom?: number;
 }
@@ -14,7 +14,7 @@ interface ZoomControlsProps {
 const ZoomControls: React.FC<ZoomControlsProps> = ({ 
   currentZoom, 
   onZoomChange, 
-  containerScale = 1,
+  fitZoomLevel,
   minZoom = 0.05,
   maxZoom = 2
 }) => {
@@ -38,7 +38,9 @@ const ZoomControls: React.FC<ZoomControlsProps> = ({
 
   const handleFitToWindow = () => {
     // Set zoom to fit the entire poster in the window
-    onZoomChange(containerScale);
+    if (fitZoomLevel) {
+      onZoomChange(fitZoomLevel);
+    }
   };
 
   return (
@@ -75,6 +77,7 @@ const ZoomControls: React.FC<ZoomControlsProps> = ({
         variant="outline"
         size="sm"
         onClick={handleFitToWindow}
+        disabled={!fitZoomLevel}
         className="h-8 px-2"
         title="Fit entire poster to window"
       >
