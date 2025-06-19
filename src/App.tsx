@@ -1,6 +1,6 @@
 
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -12,6 +12,7 @@ import { Download, Monitor, Undo, Redo } from "lucide-react";
 import { exportToPDF } from '@/utils/pdfExport';
 import ImportExportButtons from "./components/ImportExportButtons";
 import { useIsMobile } from "./hooks/use-mobile";
+import { useAnalytics } from "./hooks/useAnalytics";
 import { useEffect } from "react";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const MobileRestrictionMessage = () => {
 
 const App = () => {
   const isMobile = useIsMobile();
+  const { trackPDFExported, trackEvent } = useAnalytics();
   
   // Clear all data on page refresh/exit
   useEffect(() => {
@@ -64,16 +66,19 @@ const App = () => {
   
   const handleExportPDF = () => {
     exportToPDF('poster-content');
+    trackPDFExported();
   };
 
   const handleUndo = () => {
     // Browser undo functionality
     document.execCommand('undo');
+    trackEvent('undo_action', { event_category: 'Interaction' });
   };
 
   const handleRedo = () => {
     // Browser redo functionality  
     document.execCommand('redo');
+    trackEvent('redo_action', { event_category: 'Interaction' });
   };
 
   // Show mobile restriction message on mobile devices

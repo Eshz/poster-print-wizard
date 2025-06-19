@@ -2,6 +2,7 @@
 import React from 'react';
 import { DesignSettings } from '@/types/design';
 import { useDesignStyles } from '@/hooks/useDesignStyles';
+import { useAnalytics } from '@/hooks/useAnalytics';
 import StyleThumbnail from '@/components/design/StyleThumbnail';
 
 interface DesignPanelProps {
@@ -17,10 +18,17 @@ const DesignPanel: React.FC<DesignPanelProps> = React.memo(({
   qrColor, 
   setQrColor 
 }) => {
+  const { trackDesignStyleSelected, trackLayoutSelected } = useAnalytics();
   const { applyStyle, isStyleSelected, stylesData } = useDesignStyles(
     designSettings, 
     setDesignSettings
   );
+
+  const handleApplyStyle = (style: any) => {
+    applyStyle(style);
+    trackDesignStyleSelected(style.name);
+    trackLayoutSelected(style.settings.layout);
+  };
 
   return (
     <div className="h-full flex flex-col bg-gray-50">
@@ -36,7 +44,7 @@ const DesignPanel: React.FC<DesignPanelProps> = React.memo(({
               key={style.id} 
               style={style}
               isSelected={isStyleSelected(style)}
-              onApplyStyle={applyStyle}
+              onApplyStyle={handleApplyStyle}
             />
           ))}
         </div>

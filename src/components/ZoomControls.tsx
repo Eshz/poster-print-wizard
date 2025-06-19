@@ -2,6 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ZoomIn, ZoomOut, Maximize } from 'lucide-react';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 interface ZoomControlsProps {
   currentZoom: number;
@@ -18,28 +19,34 @@ const ZoomControls: React.FC<ZoomControlsProps> = ({
   minZoom = 0.05,
   maxZoom = 2
 }) => {
+  const { trackZoomChanged } = useAnalytics();
+  
   // Show zoom percentage relative to actual A0 size
   const zoomPercentage = Math.round(currentZoom * 100);
 
   const handleZoomIn = () => {
     const newZoom = Math.min(currentZoom + 0.05, maxZoom);
     onZoomChange(newZoom);
+    trackZoomChanged(newZoom, 'manual');
   };
 
   const handleZoomOut = () => {
     const newZoom = Math.max(currentZoom - 0.05, minZoom);
     onZoomChange(newZoom);
+    trackZoomChanged(newZoom, 'manual');
   };
 
   const handleZoomReset = () => {
     // Reset to 100% (actual A0 size)
     onZoomChange(1);
+    trackZoomChanged(1, 'reset');
   };
 
   const handleFitToWindow = () => {
     // Set zoom to fit the entire poster in the window
     if (fitZoomLevel) {
       onZoomChange(fitZoomLevel);
+      trackZoomChanged(fitZoomLevel, 'fit_to_window');
     }
   };
 
