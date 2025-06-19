@@ -7,6 +7,23 @@ export interface PosterStyle extends DesignSettings {
 }
 
 export const posterStyles: PosterStyle[] = [
+  // New Academic Blue Grid Style (matching the HTML reference)
+  {
+    id: "academic-blue-grid",
+    name: "Academic Blue Grid",
+    category: "Academic",
+    layout: "blue-grid",
+    titleFont: "inter",
+    contentFont: "opensans",
+    headerBgColor: "#0f62fe",
+    headerTextColor: "#FFFFFF",
+    sectionBgColor: "#FFFFFF",
+    sectionTitleColor: "#0f62fe",
+    sectionTextColor: "#333333",
+    keyPointsBgColor: "#f3f6fa",
+    keyPointsTextColor: "#333333"
+  },
+
   // Academic Modern Style (existing)
   {
     id: "academic-modern",
