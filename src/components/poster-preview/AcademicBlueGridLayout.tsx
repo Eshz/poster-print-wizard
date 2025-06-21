@@ -4,7 +4,6 @@ import { PosterData } from '@/types/project';
 import { getFontFamily } from '@/utils/fontUtils';
 import PosterSection from './PosterSection';
 import ImagesDisplay from './ImagesDisplay';
-import KeyTakeaway from './KeyTakeaway';
 
 interface EnhancedDesignSettings {
   layout: string;
@@ -39,6 +38,16 @@ const AcademicBlueGridLayout: React.FC<AcademicBlueGridLayoutProps> = ({
   const titleFontFamily = getFontFamily(designSettings.titleFont);
   const contentFontFamily = getFontFamily(designSettings.contentFont);
 
+  // Map poster data to sections array for easier handling
+  const sections = [
+    { title: posterData.sectionTitles[0] || 'Introduction', content: posterData.introduction },
+    { title: posterData.sectionTitles[1] || 'Objectives', content: posterData.methods },
+    { title: posterData.sectionTitles[2] || 'Methodology', content: posterData.methods },
+    { title: posterData.sectionTitles[3] || 'Results', content: posterData.findings },
+    { title: posterData.sectionTitles[4] || 'Discussion', content: posterData.conclusions },
+    { title: 'Conclusion', content: posterData.conclusions }
+  ];
+
   return (
     <div className="w-full h-full p-8 bg-white overflow-y-auto">
       {/* Main Content Grid */}
@@ -46,7 +55,7 @@ const AcademicBlueGridLayout: React.FC<AcademicBlueGridLayoutProps> = ({
         {/* Left Column */}
         <div className="space-y-6">
           {/* Introduction Section */}
-          {posterData.sections.length > 0 && (
+          {sections[0] && (
             <div className="bg-white">
               <h2 
                 className="text-lg font-semibold mb-3 pb-1 border-b-2"
@@ -56,7 +65,7 @@ const AcademicBlueGridLayout: React.FC<AcademicBlueGridLayoutProps> = ({
                   fontFamily: titleFontFamily
                 }}
               >
-                {posterData.sections[0].title}
+                {sections[0].title}
               </h2>
               <div 
                 className="text-sm leading-relaxed"
@@ -66,15 +75,17 @@ const AcademicBlueGridLayout: React.FC<AcademicBlueGridLayoutProps> = ({
                 }}
               >
                 <PosterSection 
-                  section={posterData.sections[0]} 
+                  title=""
+                  content={sections[0].content || ''}
                   designSettings={designSettings}
+                  className="p-0"
                 />
               </div>
             </div>
           )}
 
           {/* Objectives Section */}
-          {posterData.sections.length > 1 && (
+          {sections[1] && (
             <div className="bg-white">
               <h2 
                 className="text-lg font-semibold mb-3 pb-1 border-b-2"
@@ -84,7 +95,7 @@ const AcademicBlueGridLayout: React.FC<AcademicBlueGridLayoutProps> = ({
                   fontFamily: titleFontFamily
                 }}
               >
-                {posterData.sections[1].title}
+                {sections[1].title}
               </h2>
               <div 
                 className="text-sm leading-relaxed"
@@ -94,15 +105,17 @@ const AcademicBlueGridLayout: React.FC<AcademicBlueGridLayoutProps> = ({
                 }}
               >
                 <PosterSection 
-                  section={posterData.sections[1]} 
+                  title=""
+                  content={sections[1].content || ''}
                   designSettings={designSettings}
+                  className="p-0"
                 />
               </div>
             </div>
           )}
 
           {/* Methodology Section with Grid */}
-          {posterData.sections.length > 2 && (
+          {sections[2] && (
             <div className="bg-white">
               <h2 
                 className="text-lg font-semibold mb-3 pb-1 border-b-2"
@@ -112,7 +125,7 @@ const AcademicBlueGridLayout: React.FC<AcademicBlueGridLayoutProps> = ({
                   fontFamily: titleFontFamily
                 }}
               >
-                {posterData.sections[2].title}
+                {sections[2].title}
               </h2>
               <div 
                 className="text-sm leading-relaxed mb-4"
@@ -122,8 +135,10 @@ const AcademicBlueGridLayout: React.FC<AcademicBlueGridLayoutProps> = ({
                 }}
               >
                 <PosterSection 
-                  section={posterData.sections[2]} 
+                  title=""
+                  content={sections[2].content || ''}
                   designSettings={designSettings}
+                  className="p-0"
                 />
               </div>
               
@@ -149,7 +164,7 @@ const AcademicBlueGridLayout: React.FC<AcademicBlueGridLayoutProps> = ({
         {/* Right Column */}
         <div className="space-y-6">
           {/* Results Section with Grid */}
-          {posterData.sections.length > 3 && (
+          {sections[3] && (
             <div className="bg-white">
               <h2 
                 className="text-lg font-semibold mb-3 pb-1 border-b-2"
@@ -159,7 +174,7 @@ const AcademicBlueGridLayout: React.FC<AcademicBlueGridLayoutProps> = ({
                   fontFamily: titleFontFamily
                 }}
               >
-                {posterData.sections[3].title}
+                {sections[3].title}
               </h2>
               <div className="grid grid-cols-1 gap-4">
                 <div 
@@ -170,16 +185,18 @@ const AcademicBlueGridLayout: React.FC<AcademicBlueGridLayoutProps> = ({
                   }}
                 >
                   <PosterSection 
-                    section={posterData.sections[3]} 
+                    title=""
+                    content={sections[3].content || ''}
                     designSettings={designSettings}
+                    className="p-0"
                   />
                   
                   {/* Key Points as bullet list */}
-                  {showKeypoints && posterData.keyTakeaways.length > 0 && (
+                  {showKeypoints && posterData.keypoints && posterData.keypoints.length > 0 && (
                     <ul className="mt-3 space-y-1">
-                      {posterData.keyTakeaways.slice(0, 2).map((takeaway, index) => (
+                      {posterData.keypoints.slice(0, 2).map((keypoint, index) => (
                         <li key={index} className="text-sm">
-                          • {takeaway.title}: {takeaway.description}
+                          • {keypoint}: {posterData.keyDescriptions?.[index] || ''}
                         </li>
                       ))}
                     </ul>
@@ -197,7 +214,7 @@ const AcademicBlueGridLayout: React.FC<AcademicBlueGridLayoutProps> = ({
           )}
 
           {/* Discussion Section */}
-          {posterData.sections.length > 4 && (
+          {sections[4] && (
             <div className="bg-white">
               <h2 
                 className="text-lg font-semibold mb-3 pb-1 border-b-2"
@@ -207,7 +224,7 @@ const AcademicBlueGridLayout: React.FC<AcademicBlueGridLayoutProps> = ({
                   fontFamily: titleFontFamily
                 }}
               >
-                {posterData.sections[4].title}
+                {sections[4].title}
               </h2>
               <div 
                 className="text-sm leading-relaxed"
@@ -217,15 +234,17 @@ const AcademicBlueGridLayout: React.FC<AcademicBlueGridLayoutProps> = ({
                 }}
               >
                 <PosterSection 
-                  section={posterData.sections[4]} 
+                  title=""
+                  content={sections[4].content || ''}
                   designSettings={designSettings}
+                  className="p-0"
                 />
               </div>
             </div>
           )}
 
           {/* Conclusion Section */}
-          {posterData.sections.length > 5 && (
+          {sections[5] && (
             <div className="bg-white">
               <h2 
                 className="text-lg font-semibold mb-3 pb-1 border-b-2"
@@ -235,7 +254,7 @@ const AcademicBlueGridLayout: React.FC<AcademicBlueGridLayoutProps> = ({
                   fontFamily: titleFontFamily
                 }}
               >
-                {posterData.sections[5].title}
+                {sections[5].title}
               </h2>
               <div 
                 className="text-sm leading-relaxed"
@@ -245,15 +264,17 @@ const AcademicBlueGridLayout: React.FC<AcademicBlueGridLayoutProps> = ({
                 }}
               >
                 <PosterSection 
-                  section={posterData.sections[5]} 
+                  title=""
+                  content={sections[5].content || ''}
                   designSettings={designSettings}
+                  className="p-0"
                 />
               </div>
             </div>
           )}
 
           {/* References Section */}
-          {posterData.references && posterData.references.length > 0 && (
+          {posterData.references && (
             <div className="bg-white">
               <h2 
                 className="text-lg font-semibold mb-3 pb-1 border-b-2"
@@ -265,13 +286,9 @@ const AcademicBlueGridLayout: React.FC<AcademicBlueGridLayoutProps> = ({
               >
                 References
               </h2>
-              <ul className="text-xs space-y-1" style={{ fontFamily: contentFontFamily }}>
-                {posterData.references.map((ref, index) => (
-                  <li key={index} style={{ color: designSettings.sectionTextColor }}>
-                    {ref}
-                  </li>
-                ))}
-              </ul>
+              <div className="text-xs" style={{ fontFamily: contentFontFamily, color: designSettings.sectionTextColor }}>
+                {posterData.references}
+              </div>
             </div>
           )}
 

@@ -5,6 +5,7 @@ import ClassicLayout from './ClassicLayout';
 import ModernLayout from './ModernLayout';
 import FocusLayout from './FocusLayout';
 import AcademicModernLayout from './AcademicModernLayout';
+import AcademicBlueGridLayout from './AcademicBlueGridLayout';
 import MinimalistCleanLayout from './MinimalistCleanLayout';
 import DataVisualizationLayout from './DataVisualizationLayout';
 import ExecutiveSummaryLayout from './ExecutiveSummaryLayout';
@@ -59,6 +60,18 @@ const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = React.memo(({
   }
 
   switch(layout) {
+    case 'blue-grid':
+      return (
+        <div className={containerClasses}>
+          <AcademicBlueGridLayout 
+            posterData={posterData}
+            designSettings={enhancedDesignSettings}
+            qrCodeUrl={qrCodeUrl}
+            showKeypoints={showKeypoints}
+            showQrCode={showQrCode}
+          />
+        </div>
+      );
     case 'minimalist':
       return (
         <div className={containerClasses}>
