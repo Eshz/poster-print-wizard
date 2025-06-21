@@ -60,9 +60,9 @@ const MobileTopNavbar: React.FC<MobileTopNavbarProps> = ({
         {/* Center - App title */}
         <h1 className="text-lg font-semibold text-gray-900">PosterMaker</h1>
 
-        {/* Right side - Zoom controls and Export */}
+        {/* Right side - Zoom controls and Export - Reordered */}
         <div className="flex items-center gap-2">
-          {/* Zoom controls */}
+          {/* Zoom controls - reordered to match desktop */}
           <Button
             variant="ghost"
             size="icon"
@@ -76,21 +76,21 @@ const MobileTopNavbar: React.FC<MobileTopNavbarProps> = ({
           <Button
             variant="ghost"
             size="icon"
-            onClick={handleFitToWindow}
-            disabled={!fitZoomLevel}
-            className="h-10 w-10"
-          >
-            <Maximize className="h-5 w-5" />
-          </Button>
-          
-          <Button
-            variant="ghost"
-            size="icon"
             onClick={handleZoomIn}
             disabled={currentZoom >= maxZoom}
             className="h-10 w-10"
           >
             <ZoomIn className="h-5 w-5" />
+          </Button>
+          
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleFitToWindow}
+            disabled={!fitZoomLevel}
+            className="h-10 w-10"
+          >
+            <Maximize className="h-5 w-5" />
           </Button>
 
           {/* Export button */}

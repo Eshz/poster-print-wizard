@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { exportToPDF } from '@/utils/pdfExport';
 import MobileTabs from '@/components/layout/MobileTabs';
@@ -84,8 +83,8 @@ const Index = () => {
           onExportPDF={handleExportPDF}
         />
         
-        {/* Mobile Poster Preview as Main Content - Add top padding for navbar */}
-        <div className="flex-1 pt-16">
+        {/* Mobile Poster Preview as Main Content - Balanced padding */}
+        <div className="flex-1 pt-16 pb-4">
           <PosterPreviewArea 
             posterData={posterData}
             qrColor={qrColor}

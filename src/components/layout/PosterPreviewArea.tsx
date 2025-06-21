@@ -54,7 +54,7 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = React.memo(({
 
   return (
     <div className="flex-1 bg-gray-100 relative fixed right-0 top-0 bottom-0 lg:static">
-      <div className="flex items-center justify-center relative h-screen w-full overflow-hidden">
+      <div className="flex items-center justify-center relative h-screen w-full overflow-auto">
         {/* Only show zoom controls on desktop */}
         {!isMobile && (
           <ZoomControls 
@@ -66,7 +66,7 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = React.memo(({
         
         <div 
           id="poster-preview" 
-          className="w-full h-full flex items-center justify-center p-5 overflow-hidden"
+          className="w-full h-full flex items-center justify-center p-4"
         >
           <PosterPreview 
             posterData={{
@@ -76,7 +76,7 @@ const PosterPreviewArea: React.FC<PosterPreviewAreaProps> = React.memo(({
               showQrCode: posterData.showQrCode
             }} 
             designSettings={designSettings}
-            manualZoom={currentZoom || fitZoomLevel} // Use currentZoom as fallback
+            manualZoom={currentZoom || fitZoomLevel}
             onContainerScaleChange={handleFitZoomLevelChange}
           />
         </div>
