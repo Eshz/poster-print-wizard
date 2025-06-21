@@ -5,6 +5,7 @@ import ClassicLayout from './ClassicLayout';
 import ModernLayout from './ModernLayout';
 import FocusLayout from './FocusLayout';
 import AcademicModernLayout from './AcademicModernLayout';
+import AcademicModernLandscapeLayout from './AcademicModernLandscapeLayout';
 import AcademicBlueGridLayout from './AcademicBlueGridLayout';
 import MinimalistCleanLayout from './MinimalistCleanLayout';
 import DataVisualizationLayout from './DataVisualizationLayout';
@@ -45,7 +46,7 @@ const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = React.memo(({
                           designSettings.sectionBgColor === "#3B82F6" &&
                           designSettings.keyPointsBgColor === "#EFF6FF";
 
-  if (isAcademicModern) {
+  if (isAcademicModern && layout !== 'academic-landscape') {
     return (
       <div className={containerClasses}>
         <AcademicModernLayout 
@@ -60,6 +61,18 @@ const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = React.memo(({
   }
 
   switch(layout) {
+    case 'academic-landscape':
+      return (
+        <div className={containerClasses}>
+          <AcademicModernLandscapeLayout 
+            posterData={posterData}
+            designSettings={enhancedDesignSettings}
+            qrCodeUrl={qrCodeUrl}
+            showKeypoints={showKeypoints}
+            showQrCode={showQrCode}
+          />
+        </div>
+      );
     case 'blue-grid':
       return (
         <div className={containerClasses}>

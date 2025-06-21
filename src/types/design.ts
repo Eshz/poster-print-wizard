@@ -1,6 +1,6 @@
 
 export interface DesignSettings {
-  layout: 'classic' | 'modern' | 'focus' | 'minimalist' | 'data-viz' | 'executive' | 'blue-grid';
+  layout: 'classic' | 'modern' | 'focus' | 'minimalist' | 'data-viz' | 'executive' | 'blue-grid' | 'academic-landscape';
   titleFont: 'playfair' | 'roboto' | 'merriweather' | 'montserrat' | 'opensans' | 'lora' | 'raleway' | 
             'crimsontext' | 'sourceserifpro' | 'ebgaramond' | 'inter' | 'librewilson' | 'nunito' |
             'cormorantgaramond' | 'worksans' | 'oldstandardtt' | 'karla' | 'spectral' | 'publicsans' |

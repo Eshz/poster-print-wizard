@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { exportToPDF } from '@/utils/pdfExport';
 import MobileTabs from '@/components/layout/MobileTabs';
@@ -46,16 +45,16 @@ const Index = () => {
   };
   
   const designSettings: DesignSettings = currentProject?.designSettings || {
-    layout: 'classic',
-    titleFont: 'playfair',
+    layout: 'academic-landscape',
+    titleFont: 'merriweather',
     contentFont: 'roboto',
-    headerBgColor: '#4052b6',
-    headerTextColor: '#FFFFFF',
-    sectionBgColor: '#e6ebff',
-    sectionTitleColor: '#4052b6',
-    sectionTextColor: '#000000',
-    keyPointsBgColor: '#f5f7ff',
-    keyPointsTextColor: '#4052b6',
+    headerBgColor: '#FFFFFF',
+    headerTextColor: '#1E3A8A',
+    sectionBgColor: '#3B82F6',
+    sectionTitleColor: '#FFFFFF',
+    sectionTextColor: '#FFFFFF',
+    keyPointsBgColor: '#EFF6FF',
+    keyPointsTextColor: '#1E3A8A',
   };
   
   const qrColor: string = currentProject?.qrColor || "#000000";
