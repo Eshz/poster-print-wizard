@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { exportToPDF } from '@/utils/pdfExport';
 import MobileTabs from '@/components/layout/MobileTabs';
@@ -49,7 +50,7 @@ const Index = () => {
   };
   
   const designSettings: DesignSettings = currentProject?.designSettings || {
-    layout: 'academic-landscape',
+    layout: 'academic-modern-landscape',
     titleFont: 'merriweather',
     contentFont: 'roboto',
     headerBgColor: '#FFFFFF',
@@ -106,7 +107,7 @@ const Index = () => {
     );
   }
 
-  // Desktop view remains the same
+  // Desktop view
   return (
     <div className="flex lg:flex-row min-h-[calc(100vh-73px)] bg-gray-50 relative">
       {/* Mobile view tabs */}
@@ -142,14 +143,6 @@ const Index = () => {
         posterData={posterData}
         qrColor={qrColor}
         designSettings={designSettings}
-      />
-      
-      {/* Mobile-only Design Panel in Sheet (sidebar) */}
-      <MobileFloatingButton 
-        designSettings={designSettings}
-        setDesignSettings={updateDesignSettings}
-        qrColor={qrColor}
-        setQrColor={updateQrColor}
       />
     </div>
   );
