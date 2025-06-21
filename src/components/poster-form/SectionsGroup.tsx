@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ChevronDown, ChevronUp, FileText } from "lucide-react";
+import { CollapsibleSection } from '@/components/ui/collapsible-section';
 import ContentSection from './ContentSection';
 import { useDragAndDrop } from '@/hooks/useDragAndDrop';
 
@@ -21,14 +21,15 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
   openSections,
   toggleSection
 }) => {
-  const isOpen = openSections['sections'];
-  
-  const sectionTitles = posterData.sectionTitles || [
-    '1. Introduction',
-    '2. Methods', 
-    '3. Findings',
-    '4. Conclusions'
+  const sections = [
+    { field: 'introduction', title: 'Introduction', index: 0 },
+    { field: 'methods', title: 'Methods', index: 1 },
+    { field: 'findings', title: 'Findings', index: 2 },
+    { field: 'conclusions', title: 'Conclusions', index: 3 },
+    { field: 'references', title: 'References', index: 4 }
   ];
+
+  const [sectionOrder, setSectionOrder] = React.useState(sections);
 
   const {
     draggedItem,
@@ -36,55 +37,70 @@ const SectionsGroup: React.FC<SectionsGroupProps> = ({
     handleDragOver,
     handleDrop,
     handleDragEnd
-  } = useDragAndDrop(sectionTitles, handleSectionsReorder);
+  } = useDragAndDrop(sectionOrder, (newOrder) => {
+    setSectionOrder(newOrder);
+    const newSectionTitles = newOrder.map((_, index) => 
+      posterData.sectionTitles?.[newOrder[index].index] || `${index + 1}. ${newOrder[index].title}`
+    );
+    handleSectionsReorder(newSectionTitles);
+  });
 
-  const sections = [
-    { field: 'introduction', title: 'Introduction', index: 0 },
-    { field: 'methods', title: 'Methods', index: 1 },
-    { field: 'findings', title: 'Findings', index: 2 },
-    { field: 'conclusions', title: 'Conclusions', index: 3 }
-  ];
+  const handleMoveUp = (currentIndex: number) => {
+    if (currentIndex === 0) return;
+    
+    const newOrder = [...sectionOrder];
+    [newOrder[currentIndex - 1], newOrder[currentIndex]] = [newOrder[currentIndex], newOrder[currentIndex - 1]];
+    setSectionOrder(newOrder);
+    
+    const newSectionTitles = newOrder.map((section, index) => 
+      posterData.sectionTitles?.[section.index] || `${index + 1}. ${section.title}`
+    );
+    handleSectionsReorder(newSectionTitles);
+  };
+
+  const handleMoveDown = (currentIndex: number) => {
+    if (currentIndex === sectionOrder.length - 1) return;
+    
+    const newOrder = [...sectionOrder];
+    [newOrder[currentIndex], newOrder[currentIndex + 1]] = [newOrder[currentIndex + 1], newOrder[currentIndex]];
+    setSectionOrder(newOrder);
+    
+    const newSectionTitles = newOrder.map((section, index) => 
+      posterData.sectionTitles?.[section.index] || `${index + 1}. ${section.title}`
+    );
+    handleSectionsReorder(newSectionTitles);
+  };
 
   return (
-    <div className="border-b border-gray-200 py-4">
-      <div 
-        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded-md transition-colors"
-        onClick={() => toggleSection('sections')}
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-6 h-6 bg-blue-50 rounded-md flex items-center justify-center">
-            <FileText className="h-3 w-3 text-blue-600" />
-          </div>
-          <h3 className="text-lg font-semibold text-gray-900">Sections</h3>
-        </div>
-        {isOpen ? (
-          <ChevronUp className="h-4 w-4 text-gray-500" />
-        ) : (
-          <ChevronDown className="h-4 w-4 text-gray-500" />
-        )}
+    <CollapsibleSection
+      id="sections"
+      title="Content Sections"
+      isOpen={openSections['sections']}
+      onToggle={() => toggleSection('sections')}
+    >
+      <div className="space-y-4">
+        {sectionOrder.map((section, displayIndex) => (
+          <ContentSection
+            key={section.field}
+            posterData={posterData}
+            handleChange={handleChange}
+            handleSectionTitleChange={handleSectionTitleChange}
+            sectionIndex={section.index}
+            sectionField={section.field}
+            sectionTitle={section.title}
+            onDragStart={() => handleDragStart(displayIndex)}
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, displayIndex)}
+            onDragEnd={handleDragEnd}
+            isDragging={draggedItem?.index === displayIndex}
+            onMoveUp={() => handleMoveUp(displayIndex)}
+            onMoveDown={() => handleMoveDown(displayIndex)}
+            canMoveUp={displayIndex > 0}
+            canMoveDown={displayIndex < sectionOrder.length - 1}
+          />
+        ))}
       </div>
-      
-      {isOpen && (
-        <div className="pl-9 space-y-6">
-          {sections.map((section, index) => (
-            <ContentSection
-              key={section.field}
-              posterData={posterData}
-              handleChange={handleChange}
-              handleSectionTitleChange={handleSectionTitleChange}
-              sectionIndex={section.index}
-              sectionField={section.field}
-              sectionTitle={section.title}
-              onDragStart={() => handleDragStart(index)}
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, index)}
-              onDragEnd={handleDragEnd}
-              isDragging={draggedItem?.index === index}
-            />
-          ))}
-        </div>
-      )}
-    </div>
+    </CollapsibleSection>
   );
 };
 

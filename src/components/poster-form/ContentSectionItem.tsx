@@ -3,6 +3,8 @@ import React from 'react';
 import { SectionInput } from '@/components/ui/section-input';
 import { ContentEditor } from '@/components/ui/content-editor';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 
 interface ContentSectionItemProps {
   index: number;
@@ -17,6 +19,10 @@ interface ContentSectionItemProps {
   onDrop?: (e: React.DragEvent) => void;
   onDragEnd?: () => void;
   isDragging?: boolean;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
+  canMoveUp?: boolean;
+  canMoveDown?: boolean;
 }
 
 export const ContentSectionItem: React.FC<ContentSectionItemProps> = ({
@@ -31,7 +37,11 @@ export const ContentSectionItem: React.FC<ContentSectionItemProps> = ({
   onDragOver,
   onDrop,
   onDragEnd,
-  isDragging
+  isDragging,
+  onMoveUp,
+  onMoveDown,
+  canMoveUp,
+  canMoveDown
 }) => {
   return (
     <Card 
@@ -43,13 +53,41 @@ export const ContentSectionItem: React.FC<ContentSectionItemProps> = ({
       onDragEnd={onDragEnd}
     >
       <CardContent className="p-0 space-y-4">
-        <SectionInput
-          id={`section-title-${index}`}
-          label={`${sectionTitle} Title`}
-          value={defaultTitle}
-          onChange={(e) => onTitleChange(e.target.value)}
-          placeholder={`Enter ${sectionTitle.toLowerCase()} title`}
-        />
+        {/* Header with title and reorder buttons */}
+        <div className="flex items-center justify-between">
+          <SectionInput
+            id={`section-title-${index}`}
+            label={`${sectionTitle} Title`}
+            value={defaultTitle}
+            onChange={(e) => onTitleChange(e.target.value)}
+            placeholder={`Enter ${sectionTitle.toLowerCase()} title`}
+            className="flex-1"
+          />
+          
+          {/* Reorder buttons */}
+          <div className="flex flex-col ml-4 gap-1">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-6 w-6"
+              onClick={onMoveUp}
+              disabled={!canMoveUp}
+              title="Move up"
+            >
+              <ChevronUp className="h-3 w-3" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-6 w-6"
+              onClick={onMoveDown}
+              disabled={!canMoveDown}
+              title="Move down"
+            >
+              <ChevronDown className="h-3 w-3" />
+            </Button>
+          </div>
+        </div>
         
         <ContentEditor
           id={sectionField}

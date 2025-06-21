@@ -14,6 +14,10 @@ interface ContentSectionProps {
   onDrop?: (e: React.DragEvent) => void;
   onDragEnd?: () => void;
   isDragging?: boolean;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
+  canMoveUp?: boolean;
+  canMoveDown?: boolean;
 }
 
 const ContentSection: React.FC<ContentSectionProps> = ({ 
@@ -27,7 +31,11 @@ const ContentSection: React.FC<ContentSectionProps> = ({
   onDragOver,
   onDrop,
   onDragEnd,
-  isDragging
+  isDragging,
+  onMoveUp,
+  onMoveDown,
+  canMoveUp,
+  canMoveDown
 }) => {
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     handleChange(e);
@@ -51,6 +59,10 @@ const ContentSection: React.FC<ContentSectionProps> = ({
       onDrop={onDrop}
       onDragEnd={onDragEnd}
       isDragging={isDragging}
+      onMoveUp={onMoveUp}
+      onMoveDown={onMoveDown}
+      canMoveUp={canMoveUp}
+      canMoveDown={canMoveDown}
     />
   );
 };
