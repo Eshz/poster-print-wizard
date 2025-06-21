@@ -4,8 +4,10 @@ import MobileTabs from '@/components/layout/MobileTabs';
 import DesktopSidebar from '@/components/layout/DesktopSidebar';
 import PosterPreviewArea from '@/components/layout/PosterPreviewArea';
 import MobileFloatingButton from '@/components/layout/MobileFloatingButton';
+import MobileSidebarOverlay from '@/components/layout/MobileSidebarOverlay';
 import { useProjects } from '@/contexts/ProjectContext';
 import { PosterData, DesignSettings } from '@/types/project';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Index = () => {
   const { 
@@ -16,6 +18,8 @@ const Index = () => {
   } = useProjects();
   
   const [activePanel, setActivePanel] = React.useState<'content' | 'design'>('content');
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false);
+  const isMobile = useIsMobile();
   
   // Extract values from the current project with proper defaults
   const posterData: PosterData = currentProject?.posterData || {
@@ -63,6 +67,46 @@ const Index = () => {
     exportToPDF('poster-content');
   };
   
+  if (isMobile) {
+    return (
+      <div className="flex flex-col min-h-screen bg-gray-50 relative">
+        {/* Mobile Poster Preview as Main Content */}
+        <div className="flex-1">
+          <PosterPreviewArea 
+            posterData={posterData}
+            qrColor={qrColor}
+            designSettings={designSettings}
+          />
+        </div>
+        
+        {/* Mobile Sidebar Overlay */}
+        <MobileSidebarOverlay
+          isOpen={isMobileSidebarOpen}
+          onClose={() => setIsMobileSidebarOpen(false)}
+          posterData={posterData}
+          setPosterData={updatePosterData}
+          designSettings={designSettings}
+          setDesignSettings={updateDesignSettings}
+          qrColor={qrColor}
+          setQrColor={updateQrColor}
+          activePanel={activePanel}
+          setActivePanel={setActivePanel}
+          handleExportPDF={handleExportPDF}
+        />
+        
+        {/* Mobile Floating Hamburger Button */}
+        <MobileFloatingButton 
+          onClick={() => setIsMobileSidebarOpen(true)}
+          designSettings={designSettings}
+          setDesignSettings={updateDesignSettings}
+          qrColor={qrColor}
+          setQrColor={updateQrColor}
+        />
+      </div>
+    );
+  }
+
+  // Desktop view remains the same
   return (
     <div className="flex lg:flex-row min-h-[calc(100vh-73px)] bg-gray-50 relative">
       {/* Mobile view tabs */}
