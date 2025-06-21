@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { X, Text, Palette, Download } from "lucide-react";
+import { X, Text, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PosterForm from '@/components/PosterForm';
@@ -43,31 +43,31 @@ const MobileSidebarOverlay: React.FC<MobileSidebarOverlayProps> = ({
         onClick={onClose}
       />
       
-      {/* Sidebar Overlay */}
-      <div className="fixed inset-y-0 left-0 w-80 bg-white shadow-xl z-50 overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b bg-gray-50">
-          <h2 className="text-lg font-semibold text-gray-900">Edit Poster</h2>
+      {/* Sidebar Overlay - Made wider (85% of screen width) */}
+      <div className="fixed inset-y-0 left-0 w-[85%] bg-white shadow-xl z-50 overflow-y-auto">
+        {/* Header - Larger fonts and padding */}
+        <div className="flex items-center justify-between p-6 border-b bg-gray-50">
+          <h2 className="text-xl font-semibold text-gray-900">Edit Poster</h2>
           <Button 
             onClick={onClose}
             variant="ghost"
             size="icon"
-            className="h-8 w-8"
+            className="h-10 w-10"
           >
-            <X className="h-4 w-4" />
+            <X className="h-5 w-5" />
           </Button>
         </div>
         
-        {/* Content */}
-        <div className="p-4">
+        {/* Content - Larger padding and fonts */}
+        <div className="p-6">
           <Tabs defaultValue={activePanel} className="w-full" onValueChange={(value) => setActivePanel(value as 'content' | 'design')}>
-            <TabsList className="grid w-full grid-cols-2 mb-4">
-              <TabsTrigger value="content">
-                <Text className="mr-2 h-4 w-4" />
+            <TabsList className="grid w-full grid-cols-2 mb-6 h-12">
+              <TabsTrigger value="content" className="text-base">
+                <Text className="mr-2 h-5 w-5" />
                 Content
               </TabsTrigger>
-              <TabsTrigger value="design">
-                <Palette className="mr-2 h-4 w-4" />
+              <TabsTrigger value="design" className="text-base">
+                <Palette className="mr-2 h-5 w-5" />
                 Design
               </TabsTrigger>
             </TabsList>
@@ -88,18 +88,6 @@ const MobileSidebarOverlay: React.FC<MobileSidebarOverlayProps> = ({
               />
             </TabsContent>
           </Tabs>
-          
-          {/* Export Button */}
-          <div className="mt-6 pt-4 border-t">
-            <Button 
-              onClick={handleExportPDF} 
-              className="w-full"
-              variant="default"
-            >
-              <Download className="mr-2 h-4 w-4" /> 
-              Export as PDF
-            </Button>
-          </div>
         </div>
       </div>
     </>

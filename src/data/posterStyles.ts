@@ -7,12 +7,12 @@ export interface PosterStyle extends DesignSettings {
 }
 
 export const posterStyles: PosterStyle[] = [
-  // New Academic Modern Landscape Style (DEFAULT)
+  // Academic Modern Landscape Style (DEFAULT - moved to top)
   {
     id: "academic-modern-landscape",
     name: "Academic Modern Landscape",
     category: "Academic",
-    layout: "academic-landscape",
+    layout: "academic-modern-landscape",
     titleFont: "merriweather",
     contentFont: "roboto",
     headerBgColor: "#FFFFFF",

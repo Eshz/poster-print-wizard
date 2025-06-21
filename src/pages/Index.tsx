@@ -4,7 +4,7 @@ import { exportToPDF } from '@/utils/pdfExport';
 import MobileTabs from '@/components/layout/MobileTabs';
 import DesktopSidebar from '@/components/layout/DesktopSidebar';
 import PosterPreviewArea from '@/components/layout/PosterPreviewArea';
-import MobileFloatingButton from '@/components/layout/MobileFloatingButton';
+import MobileTopNavbar from '@/components/layout/MobileTopNavbar';
 import MobileSidebarOverlay from '@/components/layout/MobileSidebarOverlay';
 import { useProjects } from '@/contexts/ProjectContext';
 import { PosterData, DesignSettings } from '@/types/project';
@@ -20,9 +20,11 @@ const Index = () => {
   
   const [activePanel, setActivePanel] = React.useState<'content' | 'design'>('content');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false);
+  const [mobileZoom, setMobileZoom] = React.useState<number>(0);
+  const [mobileFitZoom, setMobileFitZoom] = React.useState<number>(0);
   const isMobile = useIsMobile();
   
-  // Extract values from the current project with proper defaults
+  // Extract values from the current project with proper defaults - Make academic-modern-landscape the default
   const posterData: PosterData = currentProject?.posterData || {
     title: "Your Conference Poster Title",
     authors: "Author Name(s)",
@@ -49,6 +51,7 @@ const Index = () => {
     images: []
   };
   
+  // Make academic-modern-landscape the default layout
   const designSettings: DesignSettings = currentProject?.designSettings || {
     layout: 'academic-modern-landscape',
     titleFont: 'merriweather',
@@ -71,12 +74,24 @@ const Index = () => {
   if (isMobile) {
     return (
       <div className="flex flex-col min-h-screen bg-gray-50 relative">
-        {/* Mobile Poster Preview as Main Content */}
-        <div className="flex-1">
+        {/* Mobile Top Navbar */}
+        <MobileTopNavbar
+          onMenuToggle={() => setIsMobileSidebarOpen(true)}
+          isMenuOpen={isMobileSidebarOpen}
+          currentZoom={mobileZoom}
+          onZoomChange={setMobileZoom}
+          fitZoomLevel={mobileFitZoom}
+          onExportPDF={handleExportPDF}
+        />
+        
+        {/* Mobile Poster Preview as Main Content - Add top padding for navbar */}
+        <div className="flex-1 pt-16">
           <PosterPreviewArea 
             posterData={posterData}
             qrColor={qrColor}
             designSettings={designSettings}
+            mobileZoom={mobileZoom}
+            onMobileFitZoomChange={setMobileFitZoom}
           />
         </div>
         
@@ -93,15 +108,6 @@ const Index = () => {
           activePanel={activePanel}
           setActivePanel={setActivePanel}
           handleExportPDF={handleExportPDF}
-        />
-        
-        {/* Mobile Floating Hamburger Button */}
-        <MobileFloatingButton 
-          onClick={() => setIsMobileSidebarOpen(true)}
-          designSettings={designSettings}
-          setDesignSettings={updateDesignSettings}
-          qrColor={qrColor}
-          setQrColor={updateQrColor}
         />
       </div>
     );

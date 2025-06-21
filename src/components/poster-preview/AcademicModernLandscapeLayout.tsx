@@ -75,186 +75,189 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
   ];
 
   return (
-    <div className="flex flex-col gap-3 h-full p-3">
-      {/* Main Content Area - 4 Column Grid for Landscape */}
-      <div className="flex-1 grid grid-cols-4 gap-3 min-h-0">
-        {/* First 4 sections in columns */}
-        {activeSections.slice(0, 4).map((section, index) => (
-          <div key={index} className="flex flex-col min-h-0">
-            {/* Section Header */}
-            <div 
-              className="px-3 py-2 border-b-2 border-white flex-shrink-0"
-              style={{ 
-                backgroundColor: section.headerBg,
-                borderBottomColor: section.headerTextColor === "#FFFFFF" ? "#FFFFFF" : "#202B5B"
-              }}
-            >
-              <h2 
-                className="text-sm font-bold"
-                style={{ 
-                  color: section.headerTextColor,
-                  fontFamily: `var(--font-${designSettings.titleFont})`
-                }}
-              >
-                {section.title}
-              </h2>
-            </div>
-            
-            {/* Section Content */}
-            <div 
-              className="p-3 flex-1 overflow-auto"
-              style={{ backgroundColor: section.contentBg }}
-            >
-              <p 
-                className="text-xs leading-relaxed"
-                style={{ 
-                  color: section.contentTextColor,
-                  fontFamily: `var(--font-${designSettings.contentFont})`
-                }}
-              >
-                {section.content}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Bottom Row - References and Key Takeaways */}
-      <div className="flex gap-3" style={{ height: '30%' }}>
-        {/* References Section - takes up 60% */}
-        {activeSections[4] && (
-          <div className="flex-[3] flex flex-col min-h-0">
-            {/* References Header */}
-            <div 
-              className="px-3 py-2 border-b-2 border-white flex-shrink-0"
-              style={{ 
-                backgroundColor: activeSections[4].headerBg,
-                borderBottomColor: "#FFFFFF"
-              }}
-            >
-              <h2 
-                className="text-sm font-bold"
-                style={{ 
-                  color: activeSections[4].headerTextColor,
-                  fontFamily: `var(--font-${designSettings.titleFont})`
-                }}
-              >
-                {activeSections[4].title}
-              </h2>
-            </div>
-            
-            {/* References Content */}
-            <div 
-              className="p-3 flex-1 overflow-auto"
-              style={{ backgroundColor: activeSections[4].contentBg }}
-            >
+    // Rotate the entire layout 90 degrees to make it landscape
+    <div className="h-full w-full transform rotate-90 origin-center" style={{ transformOrigin: 'center center' }}>
+      <div className="flex flex-col gap-3 h-full p-3" style={{ width: '100vh', height: '100vw' }}>
+        {/* Main Content Area - 4 Column Grid for Landscape */}
+        <div className="flex-1 grid grid-cols-4 gap-3 min-h-0">
+          {/* First 4 sections in columns */}
+          {activeSections.slice(0, 4).map((section, index) => (
+            <div key={index} className="flex flex-col min-h-0">
+              {/* Section Header */}
               <div 
-                className="text-xs leading-relaxed whitespace-pre-line"
+                className="px-3 py-2 border-b-2 border-white flex-shrink-0"
                 style={{ 
-                  color: activeSections[4].contentTextColor,
-                  fontFamily: `var(--font-${designSettings.contentFont})`,
-                  textIndent: '-1em',
-                  paddingLeft: '1em'
-                }}
-                dangerouslySetInnerHTML={{
-                  __html: activeSections[4].content.replace(/\n/g, '<br>')
-                }}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Key Takeaways - takes up 40% */}
-        {showKeypoints && posterData.keypoints && posterData.keypoints.some((point: string) => point?.trim()) && (
-          <div className="flex-[2] flex flex-col min-h-0">
-            {/* Key Takeaways Title with lines */}
-            <div className="flex items-center gap-2 pb-2 flex-shrink-0">
-              <div className="flex-1 h-0.5 bg-gray-800"></div>
-              <h2 
-                className="text-sm font-bold text-center whitespace-nowrap"
-                style={{ 
-                  color: "#202B5B",
-                  fontFamily: `var(--font-${designSettings.titleFont})`
+                  backgroundColor: section.headerBg,
+                  borderBottomColor: section.headerTextColor === "#FFFFFF" ? "#FFFFFF" : "#202B5B"
                 }}
               >
-                Key Takeaways
-              </h2>
-              <div className="flex-1 h-0.5 bg-gray-800"></div>
+                <h2 
+                  className="text-sm font-bold"
+                  style={{ 
+                    color: section.headerTextColor,
+                    fontFamily: `var(--font-${designSettings.titleFont})`
+                  }}
+                >
+                  {section.title}
+                </h2>
+              </div>
+              
+              {/* Section Content */}
+              <div 
+                className="p-3 flex-1 overflow-auto"
+                style={{ backgroundColor: section.contentBg }}
+              >
+                <p 
+                  className="text-xs leading-relaxed"
+                  style={{ 
+                    color: section.contentTextColor,
+                    fontFamily: `var(--font-${designSettings.contentFont})`
+                  }}
+                >
+                  {section.content}
+                </p>
+              </div>
             </div>
-            
-            {/* Key Takeaways Items - Compact grid for landscape */}
-            <div className="grid grid-cols-2 gap-2 flex-1 overflow-auto">
-              {posterData.keypoints.slice(0, 4).map((point: string, index: number) => {
-                const isVisible = posterData.keyVisibility?.[index] !== false;
-                if (!point?.trim() || !isVisible) return null;
-                
-                const colors = keyTakeawayColors[index] || keyTakeawayColors[0];
-                
-                return (
-                  <div key={index} className="flex flex-col min-h-[80px]">
-                    {/* Number Circle - smaller for landscape */}
-                    <div 
-                      className="w-full h-8 flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: colors.bg }}
-                    >
-                      <span 
-                        className="text-lg font-bold"
-                        style={{ 
-                          color: colors.textColor,
-                          fontFamily: `var(--font-${designSettings.titleFont})`
-                        }}
+          ))}
+        </div>
+
+        {/* Bottom Row - References and Key Takeaways */}
+        <div className="flex gap-3" style={{ height: '30%' }}>
+          {/* References Section - takes up 60% */}
+          {activeSections[4] && (
+            <div className="flex-[3] flex flex-col min-h-0">
+              {/* References Header */}
+              <div 
+                className="px-3 py-2 border-b-2 border-white flex-shrink-0"
+                style={{ 
+                  backgroundColor: activeSections[4].headerBg,
+                  borderBottomColor: "#FFFFFF"
+                }}
+              >
+                <h2 
+                  className="text-sm font-bold"
+                  style={{ 
+                    color: activeSections[4].headerTextColor,
+                    fontFamily: `var(--font-${designSettings.titleFont})`
+                  }}
+                >
+                  {activeSections[4].title}
+                </h2>
+              </div>
+              
+              {/* References Content */}
+              <div 
+                className="p-3 flex-1 overflow-auto"
+                style={{ backgroundColor: activeSections[4].contentBg }}
+              >
+                <div 
+                  className="text-xs leading-relaxed whitespace-pre-line"
+                  style={{ 
+                    color: activeSections[4].contentTextColor,
+                    fontFamily: `var(--font-${designSettings.contentFont})`,
+                    textIndent: '-1em',
+                    paddingLeft: '1em'
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: activeSections[4].content.replace(/\n/g, '<br>')
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Key Takeaways - takes up 40% */}
+          {showKeypoints && posterData.keypoints && posterData.keypoints.some((point: string) => point?.trim()) && (
+            <div className="flex-[2] flex flex-col min-h-0">
+              {/* Key Takeaways Title with lines */}
+              <div className="flex items-center gap-2 pb-2 flex-shrink-0">
+                <div className="flex-1 h-0.5 bg-gray-800"></div>
+                <h2 
+                  className="text-sm font-bold text-center whitespace-nowrap"
+                  style={{ 
+                    color: "#202B5B",
+                    fontFamily: `var(--font-${designSettings.titleFont})`
+                  }}
+                >
+                  Key Takeaways
+                </h2>
+                <div className="flex-1 h-0.5 bg-gray-800"></div>
+              </div>
+              
+              {/* Key Takeaways Items - Compact grid for landscape */}
+              <div className="grid grid-cols-2 gap-2 flex-1 overflow-auto">
+                {posterData.keypoints.slice(0, 4).map((point: string, index: number) => {
+                  const isVisible = posterData.keyVisibility?.[index] !== false;
+                  if (!point?.trim() || !isVisible) return null;
+                  
+                  const colors = keyTakeawayColors[index] || keyTakeawayColors[0];
+                  
+                  return (
+                    <div key={index} className="flex flex-col min-h-[80px]">
+                      {/* Number Circle - smaller for landscape */}
+                      <div 
+                        className="w-full h-8 flex items-center justify-center flex-shrink-0"
+                        style={{ backgroundColor: colors.bg }}
                       >
-                        {index + 1}
-                      </span>
-                    </div>
-                    
-                    {/* Content - compact for landscape */}
-                    <div 
-                      className="flex-1 p-2 flex flex-col justify-center gap-1 overflow-auto"
-                      style={{ backgroundColor: "#F2F2F2" }}
-                    >
-                      <h3 
-                        className="text-xs font-black leading-tight"
-                        style={{ 
-                          color: "#202B5B",
-                          fontFamily: `var(--font-${designSettings.titleFont})`
-                        }}
-                      >
-                        {point}
-                      </h3>
-                      {posterData.keyDescriptions?.[index] && (
-                        <p 
-                          className="text-xs leading-relaxed"
+                        <span 
+                          className="text-lg font-bold"
                           style={{ 
-                            color: "#202B5B",
-                            fontFamily: `var(--font-${designSettings.contentFont})`
+                            color: colors.textColor,
+                            fontFamily: `var(--font-${designSettings.titleFont})`
                           }}
                         >
-                          {posterData.keyDescriptions[index]}
-                        </p>
-                      )}
+                          {index + 1}
+                        </span>
+                      </div>
+                      
+                      {/* Content - compact for landscape */}
+                      <div 
+                        className="flex-1 p-2 flex flex-col justify-center gap-1 overflow-auto"
+                        style={{ backgroundColor: "#F2F2F2" }}
+                      >
+                        <h3 
+                          className="text-xs font-black leading-tight"
+                          style={{ 
+                            color: "#202B5B",
+                            fontFamily: `var(--font-${designSettings.titleFont})`
+                          }}
+                        >
+                          {point}
+                        </h3>
+                        {posterData.keyDescriptions?.[index] && (
+                          <p 
+                            className="text-xs leading-relaxed"
+                            style={{ 
+                              color: "#202B5B",
+                              fontFamily: `var(--font-${designSettings.contentFont})`
+                            }}
+                          >
+                            {posterData.keyDescriptions[index]}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Images section - if no key takeaways */}
-        {(!showKeypoints || !posterData.keypoints?.some((point: string) => point?.trim())) && 
-         posterData.images && posterData.images.length > 0 && (
-          <div 
-            className="flex-[2] p-3 rounded-lg overflow-auto"
-            style={{ backgroundColor: "#F2F2F2" }}
-          >
-            <ImagesDisplay 
-              images={posterData.images}
-              designSettings={designSettings}
-              className="h-full"
-            />
-          </div>
-        )}
+          {/* Images section - if no key takeaways */}
+          {(!showKeypoints || !posterData.keypoints?.some((point: string) => point?.trim())) && 
+           posterData.images && posterData.images.length > 0 && (
+            <div 
+              className="flex-[2] p-3 rounded-lg overflow-auto"
+              style={{ backgroundColor: "#F2F2F2" }}
+            >
+              <ImagesDisplay 
+                images={posterData.images}
+                designSettings={designSettings}
+                className="h-full"
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
