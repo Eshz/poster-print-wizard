@@ -28,36 +28,38 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
   setActivePanel
 }) => {
   return (
-    <div className="p-4 h-screen overflow-y-auto">
-      <div className="p-4 bg-white rounded-lg shadow">
-        <Tabs defaultValue={activePanel} className="w-full" onValueChange={(value) => setActivePanel(value as 'content' | 'design')}>
-          <TabsList className="grid w-full grid-cols-2 mb-4">
-            <TabsTrigger value="content">
-              <Text className="mr-2 h-4 w-4" />
-              Content
-            </TabsTrigger>
-            <TabsTrigger value="design">
-              <Palette className="mr-2 h-4 w-4" />
-              Design
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="content" className="space-y-6">
-            <PosterForm 
-              posterData={posterData}
-              setPosterData={setPosterData}
-            />
-          </TabsContent>
-          
-          <TabsContent value="design" className="space-y-6">
-            <DesignPanel 
-              designSettings={designSettings}
-              setDesignSettings={setDesignSettings}
-              qrColor={qrColor}
-              setQrColor={setQrColor}
-            />
-          </TabsContent>
-        </Tabs>
+    <div className="h-screen overflow-y-auto" style={{ width: '400px', minWidth: '400px', maxWidth: '400px' }}>
+      <div className="p-4">
+        <div className="p-4 bg-white rounded-lg shadow">
+          <Tabs defaultValue={activePanel} className="w-full" onValueChange={(value) => setActivePanel(value as 'content' | 'design')}>
+            <TabsList className="grid w-full grid-cols-2 mb-4">
+              <TabsTrigger value="content">
+                <Text className="mr-2 h-4 w-4" />
+                Content
+              </TabsTrigger>
+              <TabsTrigger value="design">
+                <Palette className="mr-2 h-4 w-4" />
+                Design
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="content" className="space-y-6">
+              <PosterForm 
+                posterData={posterData}
+                setPosterData={setPosterData}
+              />
+            </TabsContent>
+            
+            <TabsContent value="design" className="space-y-6">
+              <DesignPanel 
+                designSettings={designSettings}
+                setDesignSettings={setDesignSettings}
+                qrColor={qrColor}
+                setQrColor={setQrColor}
+              />
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
     </div>
   );

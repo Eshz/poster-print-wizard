@@ -32,14 +32,14 @@ const DesignPanel: React.FC<DesignPanelProps> = React.memo(({
   };
 
   return (
-    <div className="h-full flex flex-col bg-gray-50 w-80 flex-shrink-0">
+    <div className="h-full flex flex-col bg-gray-50" style={{ width: '320px', minWidth: '320px', maxWidth: '320px' }}>
       <div className="p-4 border-b bg-white flex-shrink-0">
         <h2 className="text-lg font-semibold text-gray-900 mb-1">Design Styles</h2>
         <p className="text-sm text-gray-600">Choose from pre-designed poster styles</p>
       </div>
       
       <div className="flex-1 overflow-y-auto p-4 min-h-0">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3">
           {stylesData.map((style) => (
             <StyleThumbnail 
               key={style.id} 
