@@ -19,8 +19,8 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
   showKeypoints,
   showQrCode
 }) => {
-  // Get all sections including references
-  const allSections = [
+  // Get all sections
+  const sections = [
     { 
       title: posterData.sectionTitles?.[0] || "1. Background", 
       content: posterData.introduction,
@@ -52,34 +52,28 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
       headerTextColor: "#202B5B",
       contentBg: "#BAE1FE",
       contentTextColor: "#202B5B"
-    },
-    { 
-      title: posterData.sectionTitles?.[4] || "5. References", 
-      content: posterData.references,
-      headerBg: "#3E3C72",
-      headerTextColor: "#FFFFFF",
-      contentBg: "#3E3C72",
-      contentTextColor: "#FFFFFF"
     }
   ];
 
   // Filter out empty sections
-  const activeSections = allSections.filter(section => section.content?.trim());
+  const activeSections = sections.filter(section => section.content?.trim());
 
-  // Key takeaway colors matching the design
-  const keyTakeawayColors = [
-    { bg: "#0007DB", textColor: "#FFFFFF" }, // Blue
-    { bg: "#244466", textColor: "#FFFFFF" }, // Dark blue
-    { bg: "#C8E4F2", textColor: "#202B5B" }, // Light blue
-    { bg: "#D0D0F4", textColor: "#202B5B" }  // Light purple
-  ];
+  // References section
+  const referencesSection = {
+    title: posterData.sectionTitles?.[4] || "5. References", 
+    content: posterData.references,
+    headerBg: "#3E3C72",
+    headerTextColor: "#FFFFFF",
+    contentBg: "#3E3C72",
+    contentTextColor: "#FFFFFF"
+  };
 
   return (
     <div className="h-full w-full flex flex-col gap-2 p-2">
-      {/* Main Content Area - 4-Column Landscape Layout */}
+      {/* Main Content Area - 4-Column Horizontal Layout */}
       <div className="flex-1 grid grid-cols-4 gap-2 min-h-0">
         
-        {/* First Column - Background */}
+        {/* Column 1 - Background */}
         {activeSections[0] && (
           <div className="flex flex-col min-h-0">
             <div 
@@ -117,7 +111,7 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
           </div>
         )}
 
-        {/* Second Column - Methodology */}
+        {/* Column 2 - Methodology */}
         {activeSections[1] && (
           <div className="flex flex-col min-h-0">
             <div 
@@ -155,7 +149,7 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
           </div>
         )}
 
-        {/* Third Column - Results and Images */}
+        {/* Column 3 - Results and Images */}
         <div className="flex flex-col gap-2">
           {/* Results Section */}
           {activeSections[2] && (
@@ -211,7 +205,7 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
           )}
         </div>
 
-        {/* Fourth Column - Conclusions and Key Takeaways */}
+        {/* Column 4 - Conclusions, Key Takeaways and References */}
         <div className="flex flex-col gap-2">
           {/* Conclusions Section */}
           {activeSections[3] && (
@@ -251,13 +245,13 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
             </div>
           )}
 
-          {/* Key Takeaways */}
+          {/* Key Takeaways - Vertical Stack */}
           {showKeypoints && posterData.keypoints && posterData.keypoints.some((point: string) => point?.trim()) && (
-            <div className="flex-1 flex flex-col min-h-0">
-              <div className="flex items-center gap-1 pb-1 flex-shrink-0">
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-1 pb-1">
                 <div className="flex-1 h-0.5 bg-gray-800"></div>
                 <h2 
-                  className="text-xs font-bold text-center whitespace-nowrap"
+                  className="text-xs font-bold text-center whitespace-nowrap px-2"
                   style={{ 
                     color: "#202B5B",
                     fontFamily: `var(--font-${designSettings.titleFont})`
@@ -268,23 +262,30 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
                 <div className="flex-1 h-0.5 bg-gray-800"></div>
               </div>
               
-              <div className="grid grid-cols-2 gap-1 flex-1 overflow-auto">
+              <div className="flex flex-col gap-1">
                 {posterData.keypoints.slice(0, 4).map((point: string, index: number) => {
                   const isVisible = posterData.keyVisibility?.[index] !== false;
                   if (!point?.trim() || !isVisible) return null;
                   
-                  const colors = keyTakeawayColors[index] || keyTakeawayColors[0];
+                  const colors = [
+                    { bg: "#0007DB", textColor: "#FFFFFF" },
+                    { bg: "#244466", textColor: "#FFFFFF" },
+                    { bg: "#C8E4F2", textColor: "#202B5B" },
+                    { bg: "#D0D0F4", textColor: "#202B5B" }
+                  ];
+                  
+                  const colorSet = colors[index] || colors[0];
                   
                   return (
-                    <div key={index} className="flex flex-col min-h-[60px]">
+                    <div key={index} className="flex items-center gap-2 min-h-[40px]">
                       <div 
-                        className="w-full h-6 flex items-center justify-center flex-shrink-0"
-                        style={{ backgroundColor: colors.bg }}
+                        className="w-6 h-6 flex items-center justify-center flex-shrink-0 rounded-full"
+                        style={{ backgroundColor: colorSet.bg }}
                       >
                         <span 
-                          className="text-sm font-bold"
+                          className="text-xs font-bold"
                           style={{ 
-                            color: colors.textColor,
+                            color: colorSet.textColor,
                             fontFamily: `var(--font-${designSettings.titleFont})`
                           }}
                         >
@@ -292,12 +293,9 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
                         </span>
                       </div>
                       
-                      <div 
-                        className="flex-1 p-1 flex flex-col justify-center gap-0.5 overflow-auto"
-                        style={{ backgroundColor: "#F2F2F2" }}
-                      >
+                      <div className="flex-1 min-w-0">
                         <h3 
-                          className="text-xs font-black leading-tight"
+                          className="text-xs font-bold leading-tight"
                           style={{ 
                             color: "#202B5B",
                             fontFamily: `var(--font-${designSettings.titleFont})`
@@ -307,9 +305,9 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
                         </h3>
                         {posterData.keyDescriptions?.[index] && (
                           <p 
-                            className="text-xs leading-tight"
+                            className="text-xs leading-tight mt-0.5"
                             style={{ 
-                              color: "#202B5B",
+                              color: "#666666",
                               fontFamily: `var(--font-${designSettings.contentFont})`
                             }}
                           >
@@ -323,49 +321,49 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
               </div>
             </div>
           )}
+
+          {/* References Section */}
+          {referencesSection.content?.trim() && (
+            <div className="flex flex-col min-h-0 flex-1">
+              <div 
+                className="px-2 py-1 border-b-2 border-white flex-shrink-0"
+                style={{ 
+                  backgroundColor: referencesSection.headerBg,
+                  borderBottomColor: "#FFFFFF"
+                }}
+              >
+                <h2 
+                  className="text-xs font-bold"
+                  style={{ 
+                    color: referencesSection.headerTextColor,
+                    fontFamily: `var(--font-${designSettings.titleFont})`
+                  }}
+                >
+                  {referencesSection.title}
+                </h2>
+              </div>
+              
+              <div 
+                className="p-2 flex-1 overflow-auto"
+                style={{ backgroundColor: referencesSection.contentBg }}
+              >
+                <div 
+                  className="text-xs leading-relaxed whitespace-pre-line"
+                  style={{ 
+                    color: referencesSection.contentTextColor,
+                    fontFamily: `var(--font-${designSettings.contentFont})`,
+                    textIndent: '-1em',
+                    paddingLeft: '1em'
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: referencesSection.content.replace(/\n/g, '<br>')
+                  }}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Bottom Row - References */}
-      {activeSections[4] && (
-        <div className="h-24 flex flex-col min-h-0">
-          <div 
-            className="px-2 py-1 border-b-2 border-white flex-shrink-0"
-            style={{ 
-              backgroundColor: activeSections[4].headerBg,
-              borderBottomColor: "#FFFFFF"
-            }}
-          >
-            <h2 
-              className="text-xs font-bold"
-              style={{ 
-                color: activeSections[4].headerTextColor,
-                fontFamily: `var(--font-${designSettings.titleFont})`
-              }}
-            >
-              {activeSections[4].title}
-            </h2>
-          </div>
-          
-          <div 
-            className="p-2 flex-1 overflow-auto"
-            style={{ backgroundColor: activeSections[4].contentBg }}
-          >
-            <div 
-              className="text-xs leading-relaxed whitespace-pre-line columns-4 gap-4"
-              style={{ 
-                color: activeSections[4].contentTextColor,
-                fontFamily: `var(--font-${designSettings.contentFont})`,
-                textIndent: '-1em',
-                paddingLeft: '1em'
-              }}
-              dangerouslySetInnerHTML={{
-                __html: activeSections[4].content.replace(/\n/g, '<br>')
-              }}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 };
