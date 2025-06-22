@@ -1,26 +1,18 @@
-import React, { createContext, useState, useContext, useCallback } from 'react';
-import { PosterData, DesignSettings } from '@/types/project';
 
-interface Project {
-  id: string;
-  name: string;
-  createdAt: Date;
-  updatedAt: Date;
-  posterData: PosterData;
-  designSettings: DesignSettings;
-  qrColor: string;
-}
+import React, { createContext, useState, useContext, useCallback } from 'react';
+import { PosterData, DesignSettings, ProjectData } from '@/types/project';
 
 interface ProjectContextType {
-  projects: Project[];
-  currentProject: Project | null;
-  createProject: (name: string, template?: Partial<Project>) => void;
-  setCurrentProject: (project: Project | null) => void;
-  updateProject: (id: string, updates: Partial<Project>) => void;
-  deleteProject: (id: string) => void;
-  updatePosterData: (id: string, posterData: PosterData) => void;
-  updateDesignSettings: (id: string, designSettings: DesignSettings) => void;
-  updateQrColor: (id: string, qrColor: string) => void;
+  projects: ProjectData[];
+  currentProject: ProjectData | null;
+  loadProject: (id: string) => void;
+  createNewProject: (name: string) => void;
+  saveCurrentProject: () => void;
+  renameCurrentProject: (newName: string) => void;
+  deleteCurrentProject: () => void;
+  updatePosterData: (posterData: Partial<PosterData> | ((prev: PosterData) => PosterData)) => void;
+  updateDesignSettings: (designSettings: Partial<DesignSettings> | ((prev: DesignSettings) => DesignSettings)) => void;
+  updateQrColor: (qrColor: string) => void;
 }
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -34,29 +26,37 @@ export const useProjects = () => {
 };
 
 export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [projects, setProjects] = useState<Project[]>(() => {
+  const [projects, setProjects] = useState<ProjectData[]>(() => {
     const storedProjects = localStorage.getItem('postermaker-projects');
     return storedProjects ? JSON.parse(storedProjects) : [];
   });
-  const [currentProject, setCurrentProject] = useState<Project | null>(() => {
+  const [currentProject, setCurrentProject] = useState<ProjectData | null>(() => {
     const currentProjectId = localStorage.getItem('postermaker-current-project');
     if (currentProjectId) {
       const storedProjects = localStorage.getItem('postermaker-projects');
       if (storedProjects) {
-        const parsedProjects: Project[] = JSON.parse(storedProjects);
+        const parsedProjects: ProjectData[] = JSON.parse(storedProjects);
         return parsedProjects.find(project => project.id === currentProjectId) || null;
       }
     }
     return null;
   });
 
-  const createProject = useCallback((name: string, template?: Partial<Project>) => {
-    const newProject: Project = {
+  const loadProject = useCallback((id: string) => {
+    const project = projects.find(p => p.id === id);
+    if (project) {
+      setCurrentProject(project);
+      localStorage.setItem('postermaker-current-project', project.id);
+    }
+  }, [projects]);
+
+  const createNewProject = useCallback((name: string) => {
+    const newProject: ProjectData = {
       id: Date.now().toString(),
       name,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      posterData: template?.posterData || {
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      posterData: {
         title: "Your Conference Poster Title",
         authors: "Author Name(s)",
         school: "Institution Name",
@@ -81,7 +81,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         showQrCode: true,
         images: []
       },
-      designSettings: template?.designSettings || {
+      designSettings: {
         layout: 'academic-modern-landscape',
         titleFont: 'merriweather',
         contentFont: 'roboto',
@@ -93,7 +93,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         keyPointsBgColor: '#EFF6FF',
         keyPointsTextColor: '#1E3A8A',
       },
-      qrColor: template?.qrColor || "#000000"
+      qrColor: "#000000"
     };
 
     setProjects(prev => [newProject, ...prev]);
@@ -103,56 +103,93 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const updatedProjects = [newProject, ...projects];
     localStorage.setItem('postermaker-projects', JSON.stringify(updatedProjects));
     localStorage.setItem('postermaker-current-project', newProject.id);
-    
-    // Removed toast notification
   }, [projects]);
 
-  const updateProject = useCallback((id: string, updates: Partial<Project>) => {
-    setProjects(prevProjects => {
-      const updatedProjects = prevProjects.map(project =>
-        project.id === id ? { ...project, ...updates, updatedAt: new Date() } : project
-      );
-      localStorage.setItem('postermaker-projects', JSON.stringify(updatedProjects));
-      return updatedProjects;
-    });
-
-    if (currentProject?.id === id) {
-      setCurrentProject(prev => prev ? { ...prev, ...updates, updatedAt: new Date() } : null);
+  const saveCurrentProject = useCallback(() => {
+    if (currentProject) {
+      const updatedProject = { ...currentProject, updatedAt: Date.now() };
+      setProjects(prev => prev.map(p => p.id === updatedProject.id ? updatedProject : p));
+      setCurrentProject(updatedProject);
+      localStorage.setItem('postermaker-projects', JSON.stringify(projects.map(p => p.id === updatedProject.id ? updatedProject : p)));
     }
-  }, [currentProject]);
+  }, [currentProject, projects]);
 
-  const deleteProject = useCallback((id: string) => {
-    setProjects(prevProjects => {
-      const updatedProjects = prevProjects.filter(project => project.id !== id);
-      localStorage.setItem('postermaker-projects', JSON.stringify(updatedProjects));
-      return updatedProjects;
-    });
+  const renameCurrentProject = useCallback((newName: string) => {
+    if (currentProject) {
+      const updatedProject = { ...currentProject, name: newName, updatedAt: Date.now() };
+      setProjects(prev => prev.map(p => p.id === updatedProject.id ? updatedProject : p));
+      setCurrentProject(updatedProject);
+      localStorage.setItem('postermaker-projects', JSON.stringify(projects.map(p => p.id === updatedProject.id ? updatedProject : p)));
+    }
+  }, [currentProject, projects]);
 
-    if (currentProject?.id === id) {
+  const deleteCurrentProject = useCallback(() => {
+    if (currentProject) {
+      setProjects(prev => prev.filter(p => p.id !== currentProject.id));
       setCurrentProject(null);
+      localStorage.setItem('postermaker-projects', JSON.stringify(projects.filter(p => p.id !== currentProject.id)));
       localStorage.removeItem('postermaker-current-project');
     }
-  }, [currentProject]);
+  }, [currentProject, projects]);
 
-  const updatePosterData = useCallback((id: string, posterData: PosterData) => {
-    updateProject(id, { posterData });
-  }, [updateProject]);
+  const updatePosterData = useCallback((posterData: Partial<PosterData> | ((prev: PosterData) => PosterData)) => {
+    if (currentProject) {
+      const newPosterData = typeof posterData === 'function'
+        ? posterData(currentProject.posterData)
+        : { ...currentProject.posterData, ...posterData };
 
-  const updateDesignSettings = useCallback((id: string, designSettings: DesignSettings) => {
-    updateProject(id, { designSettings });
-  }, [updateProject]);
+      const updatedProject = {
+        ...currentProject,
+        posterData: newPosterData,
+        updatedAt: Date.now(),
+      };
 
-  const updateQrColor = useCallback((id: string, qrColor: string) => {
-    updateProject(id, { qrColor });
-  }, [updateProject]);
+      setCurrentProject(updatedProject);
+      setProjects(prev => prev.map(p => p.id === updatedProject.id ? updatedProject : p));
+      localStorage.setItem('postermaker-projects', JSON.stringify(projects.map(p => p.id === updatedProject.id ? updatedProject : p)));
+    }
+  }, [currentProject, projects]);
+
+  const updateDesignSettings = useCallback((designSettings: Partial<DesignSettings> | ((prev: DesignSettings) => DesignSettings)) => {
+    if (currentProject) {
+      const newDesignSettings = typeof designSettings === 'function'
+        ? designSettings(currentProject.designSettings)
+        : { ...currentProject.designSettings, ...designSettings };
+
+      const updatedProject = {
+        ...currentProject,
+        designSettings: newDesignSettings,
+        updatedAt: Date.now(),
+      };
+
+      setCurrentProject(updatedProject);
+      setProjects(prev => prev.map(p => p.id === updatedProject.id ? updatedProject : p));
+      localStorage.setItem('postermaker-projects', JSON.stringify(projects.map(p => p.id === updatedProject.id ? updatedProject : p)));
+    }
+  }, [currentProject, projects]);
+
+  const updateQrColor = useCallback((qrColor: string) => {
+    if (currentProject) {
+      const updatedProject = {
+        ...currentProject,
+        qrColor,
+        updatedAt: Date.now(),
+      };
+
+      setCurrentProject(updatedProject);
+      setProjects(prev => prev.map(p => p.id === updatedProject.id ? updatedProject : p));
+      localStorage.setItem('postermaker-projects', JSON.stringify(projects.map(p => p.id === updatedProject.id ? updatedProject : p)));
+    }
+  }, [currentProject, projects]);
 
   const value: ProjectContextType = {
     projects,
     currentProject,
-    createProject,
-    setCurrentProject,
-    updateProject,
-    deleteProject,
+    loadProject,
+    createNewProject,
+    saveCurrentProject,
+    renameCurrentProject,
+    deleteCurrentProject,
     updatePosterData,
     updateDesignSettings,
     updateQrColor,
