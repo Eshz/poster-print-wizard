@@ -75,14 +75,14 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
   ];
 
   return (
-    // Rotate the entire layout 90 degrees to make it landscape
-    <div className="h-full w-full transform rotate-90 origin-center" style={{ transformOrigin: 'center center' }}>
-      <div className="flex flex-col gap-3 h-full p-3" style={{ width: '100vh', height: '100vw' }}>
-        {/* Main Content Area - 4 Column Grid for Landscape */}
-        <div className="flex-1 grid grid-cols-4 gap-3 min-h-0">
-          {/* First 4 sections in columns */}
-          {activeSections.slice(0, 4).map((section, index) => (
-            <div key={index} className="flex flex-col min-h-0">
+    <div className="h-full w-full flex flex-col gap-3 p-3">
+      {/* Main Content Area - Proper Landscape Layout */}
+      <div className="flex-1 grid grid-cols-3 gap-3 min-h-0">
+        
+        {/* Left Column - First two sections */}
+        <div className="flex flex-col gap-3">
+          {activeSections.slice(0, 2).map((section, index) => (
+            <div key={index} className="flex-1 flex flex-col min-h-0">
               {/* Section Header */}
               <div 
                 className="px-3 py-2 border-b-2 border-white flex-shrink-0"
@@ -121,55 +121,105 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
           ))}
         </div>
 
-        {/* Bottom Row - References and Key Takeaways */}
-        <div className="flex gap-3" style={{ height: '30%' }}>
-          {/* References Section - takes up 60% */}
-          {activeSections[4] && (
-            <div className="flex-[3] flex flex-col min-h-0">
-              {/* References Header */}
+        {/* Middle Column - Results and Images/Charts area */}
+        <div className="flex flex-col gap-3">
+          {/* Results Section */}
+          {activeSections[2] && (
+            <div className="flex-1 flex flex-col min-h-0">
               <div 
                 className="px-3 py-2 border-b-2 border-white flex-shrink-0"
                 style={{ 
-                  backgroundColor: activeSections[4].headerBg,
+                  backgroundColor: activeSections[2].headerBg,
                   borderBottomColor: "#FFFFFF"
                 }}
               >
                 <h2 
                   className="text-sm font-bold"
                   style={{ 
-                    color: activeSections[4].headerTextColor,
+                    color: activeSections[2].headerTextColor,
                     fontFamily: `var(--font-${designSettings.titleFont})`
                   }}
                 >
-                  {activeSections[4].title}
+                  {activeSections[2].title}
                 </h2>
               </div>
               
-              {/* References Content */}
               <div 
                 className="p-3 flex-1 overflow-auto"
-                style={{ backgroundColor: activeSections[4].contentBg }}
+                style={{ backgroundColor: activeSections[2].contentBg }}
               >
-                <div 
-                  className="text-xs leading-relaxed whitespace-pre-line"
+                <p 
+                  className="text-xs leading-relaxed"
                   style={{ 
-                    color: activeSections[4].contentTextColor,
-                    fontFamily: `var(--font-${designSettings.contentFont})`,
-                    textIndent: '-1em',
-                    paddingLeft: '1em'
+                    color: activeSections[2].contentTextColor,
+                    fontFamily: `var(--font-${designSettings.contentFont})`
                   }}
-                  dangerouslySetInnerHTML={{
-                    __html: activeSections[4].content.replace(/\n/g, '<br>')
-                  }}
-                />
+                >
+                  {activeSections[2].content}
+                </p>
               </div>
             </div>
           )}
 
-          {/* Key Takeaways - takes up 40% */}
+          {/* Images/Charts Area */}
+          {posterData.images && posterData.images.length > 0 && (
+            <div 
+              className="flex-1 p-3 rounded-lg overflow-auto bg-gray-50 border border-gray-200"
+              style={{ minHeight: '200px' }}
+            >
+              <h3 className="text-sm font-bold mb-2 text-gray-700">Visual Data</h3>
+              <ImagesDisplay 
+                images={posterData.images}
+                designSettings={designSettings}
+                className="h-full"
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Right Column - Conclusions and Key Takeaways */}
+        <div className="flex flex-col gap-3">
+          {/* Conclusions Section */}
+          {activeSections[3] && (
+            <div className="flex-1 flex flex-col min-h-0">
+              <div 
+                className="px-3 py-2 border-b-2 border-white flex-shrink-0"
+                style={{ 
+                  backgroundColor: activeSections[3].headerBg,
+                  borderBottomColor: activeSections[3].headerTextColor === "#FFFFFF" ? "#FFFFFF" : "#202B5B"
+                }}
+              >
+                <h2 
+                  className="text-sm font-bold"
+                  style={{ 
+                    color: activeSections[3].headerTextColor,
+                    fontFamily: `var(--font-${designSettings.titleFont})`
+                  }}
+                >
+                  {activeSections[3].title}
+                </h2>
+              </div>
+              
+              <div 
+                className="p-3 flex-1 overflow-auto"
+                style={{ backgroundColor: activeSections[3].contentBg }}
+              >
+                <p 
+                  className="text-xs leading-relaxed"
+                  style={{ 
+                    color: activeSections[3].contentTextColor,
+                    fontFamily: `var(--font-${designSettings.contentFont})`
+                  }}
+                >
+                  {activeSections[3].content}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Key Takeaways */}
           {showKeypoints && posterData.keypoints && posterData.keypoints.some((point: string) => point?.trim()) && (
-            <div className="flex-[2] flex flex-col min-h-0">
-              {/* Key Takeaways Title with lines */}
+            <div className="flex-1 flex flex-col min-h-0">
               <div className="flex items-center gap-2 pb-2 flex-shrink-0">
                 <div className="flex-1 h-0.5 bg-gray-800"></div>
                 <h2 
@@ -184,7 +234,6 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
                 <div className="flex-1 h-0.5 bg-gray-800"></div>
               </div>
               
-              {/* Key Takeaways Items - Compact grid for landscape */}
               <div className="grid grid-cols-2 gap-2 flex-1 overflow-auto">
                 {posterData.keypoints.slice(0, 4).map((point: string, index: number) => {
                   const isVisible = posterData.keyVisibility?.[index] !== false;
@@ -194,7 +243,6 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
                   
                   return (
                     <div key={index} className="flex flex-col min-h-[80px]">
-                      {/* Number Circle - smaller for landscape */}
                       <div 
                         className="w-full h-8 flex items-center justify-center flex-shrink-0"
                         style={{ backgroundColor: colors.bg }}
@@ -210,7 +258,6 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
                         </span>
                       </div>
                       
-                      {/* Content - compact for landscape */}
                       <div 
                         className="flex-1 p-2 flex flex-col justify-center gap-1 overflow-auto"
                         style={{ backgroundColor: "#F2F2F2" }}
@@ -242,23 +289,49 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
               </div>
             </div>
           )}
-
-          {/* Images section - if no key takeaways */}
-          {(!showKeypoints || !posterData.keypoints?.some((point: string) => point?.trim())) && 
-           posterData.images && posterData.images.length > 0 && (
-            <div 
-              className="flex-[2] p-3 rounded-lg overflow-auto"
-              style={{ backgroundColor: "#F2F2F2" }}
-            >
-              <ImagesDisplay 
-                images={posterData.images}
-                designSettings={designSettings}
-                className="h-full"
-              />
-            </div>
-          )}
         </div>
       </div>
+
+      {/* Bottom Row - References */}
+      {activeSections[4] && (
+        <div className="h-32 flex flex-col min-h-0">
+          <div 
+            className="px-3 py-2 border-b-2 border-white flex-shrink-0"
+            style={{ 
+              backgroundColor: activeSections[4].headerBg,
+              borderBottomColor: "#FFFFFF"
+            }}
+          >
+            <h2 
+              className="text-sm font-bold"
+              style={{ 
+                color: activeSections[4].headerTextColor,
+                fontFamily: `var(--font-${designSettings.titleFont})`
+              }}
+            >
+              {activeSections[4].title}
+            </h2>
+          </div>
+          
+          <div 
+            className="p-3 flex-1 overflow-auto"
+            style={{ backgroundColor: activeSections[4].contentBg }}
+          >
+            <div 
+              className="text-xs leading-relaxed whitespace-pre-line columns-3 gap-6"
+              style={{ 
+                color: activeSections[4].contentTextColor,
+                fontFamily: `var(--font-${designSettings.contentFont})`,
+                textIndent: '-1em',
+                paddingLeft: '1em'
+              }}
+              dangerouslySetInnerHTML={{
+                __html: activeSections[4].content.replace(/\n/g, '<br>')
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
