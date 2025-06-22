@@ -8,6 +8,19 @@ export const useDesignStyles = (
   setDesignSettings: (settings: DesignSettings) => void
 ) => {
   const applyStyle = useCallback((style: PosterStyle) => {
+    console.log('Setting design settings to:', {
+      layout: style.layout,
+      titleFont: style.titleFont,
+      contentFont: style.contentFont,
+      headerBgColor: style.headerBgColor,
+      headerTextColor: style.headerTextColor,
+      sectionBgColor: style.sectionBgColor,
+      sectionTitleColor: style.sectionTitleColor,
+      sectionTextColor: style.sectionTextColor,
+      keyPointsBgColor: style.keyPointsBgColor,
+      keyPointsTextColor: style.keyPointsTextColor
+    });
+    
     setDesignSettings({
       layout: style.layout,
       titleFont: style.titleFont,
@@ -23,7 +36,7 @@ export const useDesignStyles = (
   }, [setDesignSettings]);
 
   const isStyleSelected = useCallback((style: PosterStyle): boolean => {
-    return (
+    const isSelected = (
       designSettings.layout === style.layout &&
       designSettings.titleFont === style.titleFont &&
       designSettings.contentFont === style.contentFont &&
@@ -35,6 +48,9 @@ export const useDesignStyles = (
       designSettings.keyPointsBgColor === style.keyPointsBgColor &&
       designSettings.keyPointsTextColor === style.keyPointsTextColor
     );
+    
+    console.log(`Style ${style.name} selected:`, isSelected);
+    return isSelected;
   }, [designSettings]);
 
   const stylesData = useMemo(() => posterStyles, []);

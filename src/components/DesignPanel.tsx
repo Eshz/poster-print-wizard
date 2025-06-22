@@ -25,20 +25,21 @@ const DesignPanel: React.FC<DesignPanelProps> = React.memo(({
   );
 
   const handleApplyStyle = (style: any) => {
+    console.log('Applying style:', style.name, 'with layout:', style.layout);
     applyStyle(style);
     trackDesignStyleSelected(style.name);
-    trackLayoutSelected(style.settings.layout);
+    trackLayoutSelected(style.layout);
   };
 
   return (
-    <div className="h-full flex flex-col bg-gray-50">
-      <div className="p-6 border-b bg-white">
-        <h2 className="text-xl font-semibold text-gray-900 mb-1">Design Styles</h2>
+    <div className="h-full flex flex-col bg-gray-50 min-w-0">
+      <div className="p-4 border-b bg-white flex-shrink-0">
+        <h2 className="text-lg font-semibold text-gray-900 mb-1">Design Styles</h2>
         <p className="text-sm text-gray-600">Choose from pre-designed poster styles</p>
       </div>
       
-      <div className="flex-1 overflow-y-auto p-6">
-        <div className="grid grid-cols-2 gap-4">
+      <div className="flex-1 overflow-y-auto p-4 min-h-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {stylesData.map((style) => (
             <StyleThumbnail 
               key={style.id} 

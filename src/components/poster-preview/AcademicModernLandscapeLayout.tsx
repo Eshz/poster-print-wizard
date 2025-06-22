@@ -75,66 +75,100 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
   ];
 
   return (
-    <div className="h-full w-full flex flex-col gap-3 p-3">
-      {/* Main Content Area - Proper Landscape Layout */}
-      <div className="flex-1 grid grid-cols-3 gap-3 min-h-0">
+    <div className="h-full w-full flex flex-col gap-2 p-2">
+      {/* Main Content Area - 4-Column Landscape Layout */}
+      <div className="flex-1 grid grid-cols-4 gap-2 min-h-0">
         
-        {/* Left Column - First two sections */}
-        <div className="flex flex-col gap-3">
-          {activeSections.slice(0, 2).map((section, index) => (
-            <div key={index} className="flex-1 flex flex-col min-h-0">
-              {/* Section Header */}
-              <div 
-                className="px-3 py-2 border-b-2 border-white flex-shrink-0"
+        {/* First Column - Background */}
+        {activeSections[0] && (
+          <div className="flex flex-col min-h-0">
+            <div 
+              className="px-2 py-1 border-b-2 border-white flex-shrink-0"
+              style={{ 
+                backgroundColor: activeSections[0].headerBg,
+                borderBottomColor: "#FFFFFF"
+              }}
+            >
+              <h2 
+                className="text-xs font-bold"
                 style={{ 
-                  backgroundColor: section.headerBg,
-                  borderBottomColor: section.headerTextColor === "#FFFFFF" ? "#FFFFFF" : "#202B5B"
+                  color: activeSections[0].headerTextColor,
+                  fontFamily: `var(--font-${designSettings.titleFont})`
                 }}
               >
-                <h2 
-                  className="text-sm font-bold"
-                  style={{ 
-                    color: section.headerTextColor,
-                    fontFamily: `var(--font-${designSettings.titleFont})`
-                  }}
-                >
-                  {section.title}
-                </h2>
-              </div>
-              
-              {/* Section Content */}
-              <div 
-                className="p-3 flex-1 overflow-auto"
-                style={{ backgroundColor: section.contentBg }}
-              >
-                <p 
-                  className="text-xs leading-relaxed"
-                  style={{ 
-                    color: section.contentTextColor,
-                    fontFamily: `var(--font-${designSettings.contentFont})`
-                  }}
-                >
-                  {section.content}
-                </p>
-              </div>
+                {activeSections[0].title}
+              </h2>
             </div>
-          ))}
-        </div>
+            
+            <div 
+              className="p-2 flex-1 overflow-auto"
+              style={{ backgroundColor: activeSections[0].contentBg }}
+            >
+              <p 
+                className="text-xs leading-relaxed"
+                style={{ 
+                  color: activeSections[0].contentTextColor,
+                  fontFamily: `var(--font-${designSettings.contentFont})`
+                }}
+              >
+                {activeSections[0].content}
+              </p>
+            </div>
+          </div>
+        )}
 
-        {/* Middle Column - Results and Images/Charts area */}
-        <div className="flex flex-col gap-3">
+        {/* Second Column - Methodology */}
+        {activeSections[1] && (
+          <div className="flex flex-col min-h-0">
+            <div 
+              className="px-2 py-1 border-b-2 flex-shrink-0"
+              style={{ 
+                backgroundColor: activeSections[1].headerBg,
+                borderBottomColor: activeSections[1].headerTextColor === "#FFFFFF" ? "#FFFFFF" : "#202B5B"
+              }}
+            >
+              <h2 
+                className="text-xs font-bold"
+                style={{ 
+                  color: activeSections[1].headerTextColor,
+                  fontFamily: `var(--font-${designSettings.titleFont})`
+                }}
+              >
+                {activeSections[1].title}
+              </h2>
+            </div>
+            
+            <div 
+              className="p-2 flex-1 overflow-auto"
+              style={{ backgroundColor: activeSections[1].contentBg }}
+            >
+              <p 
+                className="text-xs leading-relaxed"
+                style={{ 
+                  color: activeSections[1].contentTextColor,
+                  fontFamily: `var(--font-${designSettings.contentFont})`
+                }}
+              >
+                {activeSections[1].content}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Third Column - Results and Images */}
+        <div className="flex flex-col gap-2">
           {/* Results Section */}
           {activeSections[2] && (
             <div className="flex-1 flex flex-col min-h-0">
               <div 
-                className="px-3 py-2 border-b-2 border-white flex-shrink-0"
+                className="px-2 py-1 border-b-2 border-white flex-shrink-0"
                 style={{ 
                   backgroundColor: activeSections[2].headerBg,
                   borderBottomColor: "#FFFFFF"
                 }}
               >
                 <h2 
-                  className="text-sm font-bold"
+                  className="text-xs font-bold"
                   style={{ 
                     color: activeSections[2].headerTextColor,
                     fontFamily: `var(--font-${designSettings.titleFont})`
@@ -145,7 +179,7 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
               </div>
               
               <div 
-                className="p-3 flex-1 overflow-auto"
+                className="p-2 flex-1 overflow-auto"
                 style={{ backgroundColor: activeSections[2].contentBg }}
               >
                 <p 
@@ -164,10 +198,10 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
           {/* Images/Charts Area */}
           {posterData.images && posterData.images.length > 0 && (
             <div 
-              className="flex-1 p-3 rounded-lg overflow-auto bg-gray-50 border border-gray-200"
-              style={{ minHeight: '200px' }}
+              className="flex-1 p-2 rounded overflow-auto bg-gray-50 border border-gray-200"
+              style={{ minHeight: '120px' }}
             >
-              <h3 className="text-sm font-bold mb-2 text-gray-700">Visual Data</h3>
+              <h3 className="text-xs font-bold mb-1 text-gray-700">Visual Data</h3>
               <ImagesDisplay 
                 images={posterData.images}
                 designSettings={designSettings}
@@ -177,20 +211,20 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
           )}
         </div>
 
-        {/* Right Column - Conclusions and Key Takeaways */}
-        <div className="flex flex-col gap-3">
+        {/* Fourth Column - Conclusions and Key Takeaways */}
+        <div className="flex flex-col gap-2">
           {/* Conclusions Section */}
           {activeSections[3] && (
             <div className="flex-1 flex flex-col min-h-0">
               <div 
-                className="px-3 py-2 border-b-2 border-white flex-shrink-0"
+                className="px-2 py-1 border-b-2 flex-shrink-0"
                 style={{ 
                   backgroundColor: activeSections[3].headerBg,
                   borderBottomColor: activeSections[3].headerTextColor === "#FFFFFF" ? "#FFFFFF" : "#202B5B"
                 }}
               >
                 <h2 
-                  className="text-sm font-bold"
+                  className="text-xs font-bold"
                   style={{ 
                     color: activeSections[3].headerTextColor,
                     fontFamily: `var(--font-${designSettings.titleFont})`
@@ -201,7 +235,7 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
               </div>
               
               <div 
-                className="p-3 flex-1 overflow-auto"
+                className="p-2 flex-1 overflow-auto"
                 style={{ backgroundColor: activeSections[3].contentBg }}
               >
                 <p 
@@ -220,10 +254,10 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
           {/* Key Takeaways */}
           {showKeypoints && posterData.keypoints && posterData.keypoints.some((point: string) => point?.trim()) && (
             <div className="flex-1 flex flex-col min-h-0">
-              <div className="flex items-center gap-2 pb-2 flex-shrink-0">
+              <div className="flex items-center gap-1 pb-1 flex-shrink-0">
                 <div className="flex-1 h-0.5 bg-gray-800"></div>
                 <h2 
-                  className="text-sm font-bold text-center whitespace-nowrap"
+                  className="text-xs font-bold text-center whitespace-nowrap"
                   style={{ 
                     color: "#202B5B",
                     fontFamily: `var(--font-${designSettings.titleFont})`
@@ -234,7 +268,7 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
                 <div className="flex-1 h-0.5 bg-gray-800"></div>
               </div>
               
-              <div className="grid grid-cols-2 gap-2 flex-1 overflow-auto">
+              <div className="grid grid-cols-2 gap-1 flex-1 overflow-auto">
                 {posterData.keypoints.slice(0, 4).map((point: string, index: number) => {
                   const isVisible = posterData.keyVisibility?.[index] !== false;
                   if (!point?.trim() || !isVisible) return null;
@@ -242,13 +276,13 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
                   const colors = keyTakeawayColors[index] || keyTakeawayColors[0];
                   
                   return (
-                    <div key={index} className="flex flex-col min-h-[80px]">
+                    <div key={index} className="flex flex-col min-h-[60px]">
                       <div 
-                        className="w-full h-8 flex items-center justify-center flex-shrink-0"
+                        className="w-full h-6 flex items-center justify-center flex-shrink-0"
                         style={{ backgroundColor: colors.bg }}
                       >
                         <span 
-                          className="text-lg font-bold"
+                          className="text-sm font-bold"
                           style={{ 
                             color: colors.textColor,
                             fontFamily: `var(--font-${designSettings.titleFont})`
@@ -259,7 +293,7 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
                       </div>
                       
                       <div 
-                        className="flex-1 p-2 flex flex-col justify-center gap-1 overflow-auto"
+                        className="flex-1 p-1 flex flex-col justify-center gap-0.5 overflow-auto"
                         style={{ backgroundColor: "#F2F2F2" }}
                       >
                         <h3 
@@ -273,7 +307,7 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
                         </h3>
                         {posterData.keyDescriptions?.[index] && (
                           <p 
-                            className="text-xs leading-relaxed"
+                            className="text-xs leading-tight"
                             style={{ 
                               color: "#202B5B",
                               fontFamily: `var(--font-${designSettings.contentFont})`
@@ -294,16 +328,16 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
 
       {/* Bottom Row - References */}
       {activeSections[4] && (
-        <div className="h-32 flex flex-col min-h-0">
+        <div className="h-24 flex flex-col min-h-0">
           <div 
-            className="px-3 py-2 border-b-2 border-white flex-shrink-0"
+            className="px-2 py-1 border-b-2 border-white flex-shrink-0"
             style={{ 
               backgroundColor: activeSections[4].headerBg,
               borderBottomColor: "#FFFFFF"
             }}
           >
             <h2 
-              className="text-sm font-bold"
+              className="text-xs font-bold"
               style={{ 
                 color: activeSections[4].headerTextColor,
                 fontFamily: `var(--font-${designSettings.titleFont})`
@@ -314,11 +348,11 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
           </div>
           
           <div 
-            className="p-3 flex-1 overflow-auto"
+            className="p-2 flex-1 overflow-auto"
             style={{ backgroundColor: activeSections[4].contentBg }}
           >
             <div 
-              className="text-xs leading-relaxed whitespace-pre-line columns-3 gap-6"
+              className="text-xs leading-relaxed whitespace-pre-line columns-4 gap-4"
               style={{ 
                 color: activeSections[4].contentTextColor,
                 fontFamily: `var(--font-${designSettings.contentFont})`,

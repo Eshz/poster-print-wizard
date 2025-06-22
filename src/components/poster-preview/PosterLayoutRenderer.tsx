@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { PosterData, DesignSettings } from '@/types/project';
 import { getFontClass } from '@/utils/fontUtils';
@@ -41,27 +42,13 @@ const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = React.memo(({
     contentFontClass: getFontClass('content', designSettings.titleFont, designSettings.contentFont)
   };
 
-  // Check if this is the Academic Modern style specifically
-  const isAcademicModern = designSettings.headerBgColor === "#FFFFFF" && 
-                          designSettings.sectionBgColor === "#3B82F6" &&
-                          designSettings.keyPointsBgColor === "#EFF6FF";
+  console.log('PosterLayoutRenderer - Current layout:', layout, 'Design settings layout:', designSettings.layout);
 
-  if (isAcademicModern && layout !== 'academic-landscape') {
-    return (
-      <div className={containerClasses}>
-        <AcademicModernLayout 
-          posterData={posterData}
-          designSettings={enhancedDesignSettings}
-          qrCodeUrl={qrCodeUrl}
-          showKeypoints={showKeypoints}
-          showQrCode={showQrCode}
-        />
-      </div>
-    );
-  }
+  // Use the layout from designSettings, not the layout prop
+  const currentLayout = designSettings.layout;
 
-  switch(layout) {
-    case 'academic-landscape':
+  switch(currentLayout) {
+    case 'academic-modern-landscape':
       return (
         <div className={containerClasses}>
           <AcademicModernLandscapeLayout 
