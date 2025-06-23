@@ -15,7 +15,6 @@ interface FormFieldProps {
   rows?: number;
   className?: string;
   required?: boolean;
-  disabled?: boolean;
   error?: string;
 }
 
@@ -29,7 +28,6 @@ export const FormField: React.FC<FormFieldProps> = ({
   rows = 3,
   className,
   required = false,
-  disabled = false,
   error
 }) => {
   const baseInputClasses = "border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm";
@@ -53,7 +51,6 @@ export const FormField: React.FC<FormFieldProps> = ({
           placeholder={placeholder}
           rows={rows}
           className={cn(baseInputClasses, error && "border-red-500")}
-          disabled={disabled}
           required={required}
           aria-describedby={error ? `${id}-error` : undefined}
         />
@@ -67,7 +64,6 @@ export const FormField: React.FC<FormFieldProps> = ({
             type === 'underline-input' ? underlineInputClasses : baseInputClasses,
             error && "border-red-500"
           )}
-          disabled={disabled}
           required={required}
           aria-describedby={error ? `${id}-error` : undefined}
         />

@@ -75,30 +75,31 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
       <div className="flex-1 grid grid-cols-4 gap-2 min-h-0">
         
         {/* Column 1 - Background */}
-        {activeSections[0] && (
-          <ContentSection {...activeSections[0]} designSettings={designSettings} />
-        )}
+        <div className="h-full flex flex-col">
+          {activeSections[0] && (
+            <ContentSection {...activeSections[0]} designSettings={designSettings} />
+          )}
+        </div>
 
         {/* Column 2 - Methodology */}
-        {activeSections[1] && (
-          <ContentSection {...activeSections[1]} designSettings={designSettings} />
-        )}
+        <div className="h-full flex flex-col">
+          {activeSections[1] && (
+            <ContentSection {...activeSections[1]} designSettings={designSettings} />
+          )}
+        </div>
 
         {/* Column 3 - Results and Images */}
-        <div className="flex flex-col gap-2">
-          {/* Results Section */}
+        <div className="h-full flex flex-col gap-2">
+          {/* Results Section - takes up 60% of height */}
           {activeSections[2] && (
-            <div className="flex-1 flex flex-col min-h-0">
+            <div className="flex-[3] flex flex-col min-h-0">
               <ContentSection {...activeSections[2]} designSettings={designSettings} />
             </div>
           )}
 
-          {/* Images/Charts Area */}
+          {/* Images/Charts Area - takes up 40% of height */}
           {posterData.images && posterData.images.length > 0 && (
-            <div 
-              className="flex-1 p-2 rounded overflow-auto bg-gray-50 border border-gray-200"
-              style={{ minHeight: '120px' }}
-            >
+            <div className="flex-[2] p-2 rounded overflow-auto bg-gray-50 border border-gray-200">
               <h3 className="text-xs font-bold mb-1 text-gray-700">Visual Data</h3>
               <ImagesDisplay 
                 images={posterData.images}
@@ -110,26 +111,30 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
         </div>
 
         {/* Column 4 - Conclusions, Key Takeaways and References */}
-        <div className="flex flex-col gap-2">
-          {/* Conclusions Section */}
+        <div className="h-full flex flex-col gap-2">
+          {/* Conclusions Section - flexible height */}
           {activeSections[3] && (
             <div className="flex-1 flex flex-col min-h-0">
               <ContentSection {...activeSections[3]} designSettings={designSettings} />
             </div>
           )}
 
-          {/* Key Takeaways - Vertical Stack */}
+          {/* Key Takeaways - compact */}
           {showKeypoints && posterData.keypoints && posterData.keypoints.some((point: string) => point?.trim()) && (
-            <KeyTakeawaysSection 
-              keypoints={posterData.keypoints}
-              keyDescriptions={posterData.keyDescriptions}
-              keyVisibility={posterData.keyVisibility}
-              designSettings={designSettings}
-            />
+            <div className="flex-shrink-0">
+              <KeyTakeawaysSection 
+                keypoints={posterData.keypoints}
+                keyDescriptions={posterData.keyDescriptions}
+                keyVisibility={posterData.keyVisibility}
+                designSettings={designSettings}
+              />
+            </div>
           )}
 
-          {/* References Section */}
-          <ReferencesSection {...referencesSection} designSettings={designSettings} />
+          {/* References Section - fixed size at bottom */}
+          <div className="flex-1 flex flex-col min-h-0">
+            <ReferencesSection {...referencesSection} designSettings={designSettings} />
+          </div>
         </div>
       </div>
     </div>
