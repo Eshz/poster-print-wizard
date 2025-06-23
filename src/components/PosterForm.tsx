@@ -1,27 +1,33 @@
 
 import React, { useState } from 'react';
-import ContactInfoSection from './poster-form/ContactInfoSection';
-import SectionsGroup from './poster-form/SectionsGroup';
+import { ContactInfoForm } from './forms/ContactInfoForm';
+import { ContentSectionsForm } from './forms/ContentSectionsForm';
 import KeyTakeawaysGroup from './poster-form/KeyTakeawaysGroup';
 import ImagesGroup from './poster-form/ImagesGroup';
 import QrCodeGroup from './poster-form/QrCodeGroup';
 import ReferencesSection from './poster-form/ReferencesSection';
-import { PosterData } from '@/types/project';
+import { usePosterData } from '@/hooks/usePosterData';
 import { PosterImage } from '@/types/poster';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 
-interface PosterFormProps {
-  posterData: PosterData;
-  setPosterData: (posterData: Partial<PosterData> | ((prev: PosterData) => PosterData)) => void;
-}
+const PosterForm: React.FC = () => {
+  const {
+    posterData,
+    updateField,
+    updateKeyPoint,
+    updateKeyDescription,
+    updateKeyVisibility,
+    updateSectionTitle,
+    updatePosterData
+  } = usePosterData();
 
-const PosterForm: React.FC<PosterFormProps> = ({ 
-  posterData, 
-  setPosterData
-}) => {
   const [openSections, setOpenSections] = useState<{[key: string]: boolean}>({
-    'general-info': true,
-    'sections': false
+    'contact-info': true,
+    'content-sections': false,
+    'key-takeaways': false,
+    'references': false,
+    'qr-code': false,
+    'images': false
   });
 
   const toggleSection = (sectionId: string) => {
@@ -31,56 +37,31 @@ const PosterForm: React.FC<PosterFormProps> = ({
     }));
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    
-    if (name === '_bulk_update' && typeof value === 'function') {
-      setPosterData(value);
-      return;
-    }
-    
-    setPosterData(prev => ({ ...prev, [name]: value }));
-  };
-  
-  const handleKeyPointChange = (index: number, value: string) => {
-    setPosterData(prev => {
-      const updatedKeypoints = [...prev.keypoints];
-      updatedKeypoints[index] = value;
-      return { ...prev, keypoints: updatedKeypoints };
-    });
-  };
-  
-  const handleKeyDescriptionChange = (index: number, value: string) => {
-    setPosterData(prev => {
-      const updatedDescriptions = [...prev.keyDescriptions];
-      updatedDescriptions[index] = value;
-      return { ...prev, keyDescriptions: updatedDescriptions };
-    });
+  const handleImagesChange = (images: PosterImage[]) => {
+    updateField('images', images);
   };
 
-  const handleKeyVisibilityChange = (index: number, visible: boolean) => {
-    setPosterData(prev => {
-      const updatedVisibility = [...(prev.keyVisibility || [true, true, true, true])];
-      updatedVisibility[index] = visible;
-      return { ...prev, keyVisibility: updatedVisibility };
-    });
+  const handleToggleChange = (field: keyof typeof posterData) => (checked: boolean) => {
+    updateField(field, checked);
   };
 
-  const handleSectionTitleChange = (index: number, value: string) => {
-    setPosterData(prev => {
-      const updatedSectionTitles = [...prev.sectionTitles];
-      updatedSectionTitles[index] = value;
-      return { ...prev, sectionTitles: updatedSectionTitles };
-    });
+  const handleQrUrlChange = (url: string) => {
+    updateField('qrCodeUrl', url);
   };
 
-  // Handle reordering of key takeaways
+  const handleQrColorChange = (color: string) => {
+    updateField('qrCodeColor', color);
+  };
+
+  const handleQrCaptionChange = (caption: string) => {
+    updateField('qrCodeCaption', caption);
+  };
+
   const handleKeyTakeawaysReorder = (newKeypoints: string[]) => {
     const currentKeypoints = posterData.keypoints || [];
     const currentDescriptions = posterData.keyDescriptions || [];
     const currentVisibility = posterData.keyVisibility || [];
     
-    // Create mapping of old indices to new indices
     const indexMap = new Map();
     newKeypoints.forEach((keypoint, newIndex) => {
       const oldIndex = currentKeypoints.indexOf(keypoint);
@@ -89,7 +70,6 @@ const PosterForm: React.FC<PosterFormProps> = ({
       }
     });
     
-    // Reorder descriptions and visibility arrays accordingly
     const newDescriptions = new Array(newKeypoints.length);
     const newVisibility = new Array(newKeypoints.length);
     
@@ -98,7 +78,7 @@ const PosterForm: React.FC<PosterFormProps> = ({
       newVisibility[newIndex] = currentVisibility[oldIndex] !== undefined ? currentVisibility[oldIndex] : true;
     });
     
-    setPosterData(prev => ({
+    updatePosterData(prev => ({
       ...prev,
       keypoints: newKeypoints,
       keyDescriptions: newDescriptions,
@@ -106,7 +86,6 @@ const PosterForm: React.FC<PosterFormProps> = ({
     }));
   };
 
-  // Handle reordering of sections
   const handleSectionsReorder = (newSectionTitles: string[]) => {
     const sectionFields = ['introduction', 'methods', 'findings', 'conclusions', 'references'];
     const currentData = [
@@ -117,7 +96,6 @@ const PosterForm: React.FC<PosterFormProps> = ({
       posterData.references || ''
     ];
     
-    // Find the mapping between old and new positions
     const currentTitles = posterData.sectionTitles || [];
     const indexMap = new Map();
     newSectionTitles.forEach((title, newIndex) => {
@@ -127,13 +105,12 @@ const PosterForm: React.FC<PosterFormProps> = ({
       }
     });
     
-    // Reorder content accordingly
     const newData = new Array(5).fill('');
     indexMap.forEach((newIndex, oldIndex) => {
       newData[newIndex] = currentData[oldIndex];
     });
     
-    setPosterData(prev => ({
+    updatePosterData(prev => ({
       ...prev,
       sectionTitles: newSectionTitles,
       introduction: newData[0],
@@ -144,51 +121,36 @@ const PosterForm: React.FC<PosterFormProps> = ({
     }));
   };
 
-  const handleQrUrlChange = (url: string) => {
-    setPosterData(prev => ({ ...prev, qrCodeUrl: url }));
+  // Legacy handler for backward compatibility
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    updateField(name as keyof typeof posterData, value);
   };
-  
-  const handleQrColorChange = (color: string) => {
-    setPosterData(prev => ({ ...prev, qrCodeColor: color }));
-  };
-  
-  const handleImagesChange = (images: PosterImage[]) => {
-    setPosterData(prev => ({ ...prev, images }));
-  };
-  
-  const handleToggleChange = (field: keyof PosterData) => (checked: boolean) => {
-    setPosterData(prev => ({ ...prev, [field]: checked }));
-  };
-  
-  const handleQrCaptionChange = (caption: string) => {
-    setPosterData(prev => ({ ...prev, qrCodeCaption: caption }));
-  };
-  
+
   return (
     <ErrorBoundary>
       <div className="h-full flex flex-col">
         <div className="flex-1 overflow-y-auto p-6 space-y-0">
-          <ContactInfoSection 
+          <ContactInfoForm
             posterData={posterData}
-            handleChange={handleChange}
-            openSections={openSections}
-            toggleSection={toggleSection}
+            onUpdateField={updateField}
+            isOpen={openSections['contact-info']}
+            onToggle={() => toggleSection('contact-info')}
           />
           
-          <SectionsGroup 
+          <ContentSectionsForm
             posterData={posterData}
-            handleChange={handleChange}
-            handleSectionTitleChange={handleSectionTitleChange}
-            handleSectionsReorder={handleSectionsReorder}
-            openSections={openSections}
-            toggleSection={toggleSection}
+            onUpdateField={updateField}
+            onUpdateSectionTitle={updateSectionTitle}
+            isOpen={openSections['content-sections']}
+            onToggle={() => toggleSection('content-sections')}
           />
 
           <KeyTakeawaysGroup 
             posterData={posterData}
-            handleKeyPointChange={handleKeyPointChange}
-            handleKeyDescriptionChange={handleKeyDescriptionChange}
-            handleKeyVisibilityChange={handleKeyVisibilityChange}
+            handleKeyPointChange={updateKeyPoint}
+            handleKeyDescriptionChange={updateKeyDescription}
+            handleKeyVisibilityChange={updateKeyVisibility}
             handleKeyTakeawaysReorder={handleKeyTakeawaysReorder}
             handleToggleChange={handleToggleChange}
             openSections={openSections}

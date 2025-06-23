@@ -7,16 +7,18 @@ import PosterPreviewArea from '@/components/layout/PosterPreviewArea';
 import MobileTopNavbar from '@/components/layout/MobileTopNavbar';
 import MobileSidebarOverlay from '@/components/layout/MobileSidebarOverlay';
 import { useProjects } from '@/contexts/ProjectContext';
+import { usePosterData } from '@/hooks/usePosterData';
 import { PosterData, DesignSettings } from '@/types/project';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Index = () => {
   const { 
     currentProject, 
-    updatePosterData, 
     updateDesignSettings, 
     updateQrColor
   } = useProjects();
+  
+  const { posterData, updatePosterData } = usePosterData();
   
   const [activePanel, setActivePanel] = React.useState<'content' | 'design'>('content');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false);
@@ -24,34 +26,7 @@ const Index = () => {
   const [mobileFitZoom, setMobileFitZoom] = React.useState<number>(0);
   const isMobile = useIsMobile();
   
-  // Extract values from the current project with proper defaults - Make academic-modern-landscape the default
-  const posterData: PosterData = currentProject?.posterData || {
-    title: "Your Conference Poster Title",
-    authors: "Author Name(s)",
-    school: "Institution Name",
-    contact: "email@example.com",
-    introduction: "Introduction text...",
-    methods: "Methods text...",
-    findings: "Findings text...",
-    conclusions: "Conclusions text...",
-    references: "References...",
-    keypoints: ["Key Point 1", "Key Point 2", "Key Point 3", "Key Point 4"],
-    keyDescriptions: ["Description 1", "Description 2", "Description 3", "Description 4"],
-    sectionTitles: [
-      "1. Introduction",
-      "2. Methods",
-      "3. Findings",
-      "4. Conclusions",
-      "5. References"
-    ],
-    qrCodeUrl: "https://example.com/poster",
-    qrCodeColor: "#000000",
-    showKeypoints: true,
-    showQrCode: true,
-    images: []
-  };
-  
-  // Make academic-modern-landscape the default layout
+  // Extract design settings with proper defaults
   const designSettings: DesignSettings = currentProject?.designSettings || {
     layout: 'academic-modern-landscape',
     titleFont: 'merriweather',
@@ -74,7 +49,6 @@ const Index = () => {
   if (isMobile) {
     return (
       <div className="flex flex-col min-h-screen bg-gray-50 relative">
-        {/* Mobile Top Navbar */}
         <MobileTopNavbar
           onMenuToggle={() => setIsMobileSidebarOpen(true)}
           isMenuOpen={isMobileSidebarOpen}
@@ -84,7 +58,6 @@ const Index = () => {
           onExportPDF={handleExportPDF}
         />
         
-        {/* Mobile Poster Preview as Main Content - Balanced padding */}
         <div className="flex-1 pt-16 pb-4">
           <PosterPreviewArea 
             posterData={posterData}
@@ -95,7 +68,6 @@ const Index = () => {
           />
         </div>
         
-        {/* Mobile Sidebar Overlay */}
         <MobileSidebarOverlay
           isOpen={isMobileSidebarOpen}
           onClose={() => setIsMobileSidebarOpen(false)}
@@ -113,10 +85,8 @@ const Index = () => {
     );
   }
 
-  // Desktop view with fixed sidebar width
   return (
     <div className="flex min-h-[calc(100vh-73px)] bg-gray-50 relative">
-      {/* Mobile view tabs */}
       <MobileTabs 
         posterData={posterData}
         setPosterData={updatePosterData}
@@ -129,7 +99,6 @@ const Index = () => {
         handleExportPDF={handleExportPDF}
       />
       
-      {/* Desktop sidebar - fixed width */}
       <div className="hidden lg:block">
         <DesktopSidebar 
           posterData={posterData}
@@ -144,7 +113,6 @@ const Index = () => {
         />
       </div>
       
-      {/* Preview Area - takes remaining space */}
       <div className="flex-1">
         <PosterPreviewArea 
           posterData={posterData}
