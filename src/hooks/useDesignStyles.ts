@@ -8,20 +8,9 @@ export const useDesignStyles = (
   setDesignSettings: (settings: DesignSettings) => void
 ) => {
   const applyStyle = useCallback((style: PosterStyle) => {
-    console.log('Setting design settings to:', {
-      layout: style.layout,
-      titleFont: style.titleFont,
-      contentFont: style.contentFont,
-      headerBgColor: style.headerBgColor,
-      headerTextColor: style.headerTextColor,
-      sectionBgColor: style.sectionBgColor,
-      sectionTitleColor: style.sectionTitleColor,
-      sectionTextColor: style.sectionTextColor,
-      keyPointsBgColor: style.keyPointsBgColor,
-      keyPointsTextColor: style.keyPointsTextColor
-    });
+    console.log('Applying design style:', style.name, 'with layout:', style.layout);
     
-    setDesignSettings({
+    const newSettings = {
       layout: style.layout,
       titleFont: style.titleFont,
       contentFont: style.contentFont,
@@ -32,7 +21,10 @@ export const useDesignStyles = (
       sectionTextColor: style.sectionTextColor,
       keyPointsBgColor: style.keyPointsBgColor,
       keyPointsTextColor: style.keyPointsTextColor
-    });
+    };
+    
+    console.log('Setting new design settings:', newSettings);
+    setDesignSettings(newSettings);
   }, [setDesignSettings]);
 
   const isStyleSelected = useCallback((style: PosterStyle): boolean => {
@@ -49,7 +41,6 @@ export const useDesignStyles = (
       designSettings.keyPointsTextColor === style.keyPointsTextColor
     );
     
-    console.log(`Style ${style.name} selected:`, isSelected);
     return isSelected;
   }, [designSettings]);
 

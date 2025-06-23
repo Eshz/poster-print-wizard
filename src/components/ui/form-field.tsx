@@ -57,6 +57,7 @@ export const FormField: React.FC<FormFieldProps> = ({
       ) : (
         <Input
           id={id}
+          type="text"
           value={value}
           onChange={onChange}
           placeholder={placeholder}
