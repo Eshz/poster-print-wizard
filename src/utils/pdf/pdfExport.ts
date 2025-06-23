@@ -1,25 +1,32 @@
-
 import { toast } from "sonner";
 import html2pdf from 'html2pdf.js';
 import { compressImages } from './imageCompression';
 import { scaleElementForPdf } from './elementScaling';
-import { createPdfConfig } from './pdfConfig';
+import { createPdfConfig, detectPosterOrientation } from './pdfConfig';
 
 /**
  * Creates a temporary container for the cloned element with proper isolation
  */
-const createTempContainer = (clonedElement: HTMLElement) => {
+const createTempContainer = (clonedElement: HTMLElement, orientation: 'landscape' | 'portrait') => {
   const tempDiv = document.createElement('div');
   tempDiv.style.position = 'fixed';
   tempDiv.style.left = '-9999px';
   tempDiv.style.top = '-9999px';
   tempDiv.style.zIndex = '-1000';
-  tempDiv.style.width = '800px';
-  tempDiv.style.height = '1131px';
   tempDiv.style.overflow = 'hidden';
   tempDiv.style.backgroundColor = '#ffffff';
   tempDiv.style.margin = '0';
   tempDiv.style.padding = '0';
+  
+  // Set dimensions based on orientation
+  if (orientation === 'landscape') {
+    tempDiv.style.width = '1131px';
+    tempDiv.style.height = '800px';
+  } else {
+    tempDiv.style.width = '800px';
+    tempDiv.style.height = '1131px';
+  }
+  
   document.body.appendChild(tempDiv);
   tempDiv.appendChild(clonedElement);
   return tempDiv;
@@ -32,6 +39,45 @@ const cleanupTempContainer = (tempDiv: HTMLElement) => {
   if (tempDiv && tempDiv.parentNode) {
     document.body.removeChild(tempDiv);
   }
+};
+
+/**
+ * Ensures all Google Fonts are loaded and applied correctly
+ */
+const ensureFontsLoaded = async (clonedElement: HTMLElement) => {
+  // Get all unique font families used in the element
+  const fontFamilies = new Set<string>();
+  
+  const allElements = clonedElement.querySelectorAll('*');
+  allElements.forEach((el) => {
+    const computedStyle = window.getComputedStyle(el);
+    const fontFamily = computedStyle.fontFamily;
+    if (fontFamily && fontFamily !== 'inherit') {
+      fontFamilies.add(fontFamily);
+    }
+  });
+
+  // Load fonts explicitly
+  const fontPromises = Array.from(fontFamilies).map(async (fontFamily) => {
+    try {
+      await document.fonts.load(`16px ${fontFamily}`);
+      await document.fonts.load(`bold 16px ${fontFamily}`);
+    } catch (error) {
+      console.warn(`Could not load font: ${fontFamily}`, error);
+    }
+  });
+
+  await Promise.all(fontPromises);
+  
+  // Ensure fonts are applied to all elements
+  allElements.forEach((el) => {
+    const htmlElement = el as HTMLElement;
+    const computedStyle = window.getComputedStyle(el);
+    htmlElement.style.fontFamily = computedStyle.fontFamily;
+    htmlElement.style.fontSize = computedStyle.fontSize;
+    htmlElement.style.fontWeight = computedStyle.fontWeight;
+    htmlElement.style.fontStyle = computedStyle.fontStyle;
+  });
 };
 
 /**
@@ -77,10 +123,16 @@ const processQrCodeImages = async (clonedElement: HTMLElement) => {
 /**
  * Ensures proper styling for PDF export and removes scrollbars
  */
-const preparePosterForExport = (clonedElement: HTMLElement) => {
-  // Set exact dimensions to match preview
-  clonedElement.style.width = '800px';
-  clonedElement.style.height = '1131px';
+const preparePosterForExport = (clonedElement: HTMLElement, orientation: 'landscape' | 'portrait') => {
+  // Set exact dimensions based on orientation
+  if (orientation === 'landscape') {
+    clonedElement.style.width = '1131px';
+    clonedElement.style.height = '800px';
+  } else {
+    clonedElement.style.width = '800px';
+    clonedElement.style.height = '1131px';
+  }
+  
   clonedElement.style.position = 'relative';
   clonedElement.style.overflow = 'hidden';
   clonedElement.style.display = 'flex';
@@ -121,7 +173,7 @@ const preparePosterForExport = (clonedElement: HTMLElement) => {
 
 /**
  * Exports a DOM element as a high-quality A0-sized PDF
- * Updated to use the original poster dimensions before zoom scaling
+ * Automatically detects orientation and preserves fonts
  * @param elementId The ID of the DOM element to export
  */
 export const exportToPDF = async (elementId: string) => {
@@ -135,15 +187,22 @@ export const exportToPDF = async (elementId: string) => {
   
   console.log("Found original poster content element:", element);
   
+  // Detect poster orientation
+  const orientation = detectPosterOrientation(element);
+  console.log("Detected poster orientation:", orientation);
+  
   // Create a clean copy of the poster for PDF export
   const clonedElement = element.cloneNode(true) as HTMLElement;
   
   // Prepare the element for export
-  preparePosterForExport(clonedElement);
+  preparePosterForExport(clonedElement, orientation);
   
-  const tempDiv = createTempContainer(clonedElement);
+  const tempDiv = createTempContainer(clonedElement, orientation);
   
   try {
+    // Ensure fonts are loaded and applied
+    await ensureFontsLoaded(clonedElement);
+    
     // Process QR code images first
     await processQrCodeImages(clonedElement);
     
@@ -151,12 +210,12 @@ export const exportToPDF = async (elementId: string) => {
     compressImages(clonedElement);
     
     // Scale the element for PDF export using the corrected scaling logic
-    scaleElementForPdf(clonedElement);
+    scaleElementForPdf(clonedElement, orientation);
     
-    toast.info("Preparing high-quality A0 PDF export...");
+    toast.info(`Preparing high-quality A0 ${orientation} PDF export...`);
     
-    // Create PDF configuration
-    const pdfConfig = createPdfConfig();
+    // Create PDF configuration with detected orientation
+    const pdfConfig = createPdfConfig(orientation);
     
     setTimeout(() => {
       html2pdf().from(clonedElement).set(pdfConfig).outputPdf('blob').then((pdfBlob: Blob) => {
@@ -164,14 +223,14 @@ export const exportToPDF = async (elementId: string) => {
         const url = URL.createObjectURL(pdfBlob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'conference-poster-A0.pdf';
+        link.download = `conference-poster-A0-${orientation}.pdf`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
         
         const sizeInMB = (pdfBlob.size / (1024 * 1024)).toFixed(2);
-        toast.success(`A0 PDF exported successfully! File size: ${sizeInMB}MB`);
+        toast.success(`A0 ${orientation} PDF exported successfully! File size: ${sizeInMB}MB`);
         
         // Clean up
         cleanupTempContainer(tempDiv);
