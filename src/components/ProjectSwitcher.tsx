@@ -24,17 +24,22 @@ const ProjectSwitcher: React.FC = React.memo(() => {
     loadProject(projectId);
   };
 
-  const handleProjectCreate = (name: string) => {
+  const handleProjectCreate = async (name: string) => {
     try {
-      createNewProject(name);
+      await createNewProject(name);
       return true;
     } catch (error) {
       return false;
     }
   };
 
-  const handleProjectRename = (newName: string) => {
-    renameCurrentProject(newName);
+  const handleProjectRename = async (newName: string) => {
+    try {
+      await renameCurrentProject(newName);
+      return true;
+    } catch (error) {
+      return false;
+    }
   };
 
   return (
