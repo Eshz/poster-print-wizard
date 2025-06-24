@@ -1,5 +1,5 @@
 
-import { PosterData, PosterImage } from './poster';
+import { PosterData } from './poster';
 import { DesignSettings } from './design';
 
 export interface ProjectData {
@@ -28,5 +28,5 @@ export interface ProjectContextType {
 }
 
 // Re-export types for convenience
-export type { PosterData, PosterImage } from './poster';
+export type { PosterData } from './poster';
 export type { DesignSettings } from './design';

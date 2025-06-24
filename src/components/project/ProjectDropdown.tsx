@@ -28,7 +28,7 @@ interface ProjectDropdownProps {
   currentProject: ProjectData | null;
   projects: ProjectData[];
   onProjectLoad: (id: string) => void;
-  onProjectCreate: (name: string) => Promise<boolean>;
+  onProjectCreate: (name: string) => boolean;
   newProjectName: string;
   setNewProjectName: (name: string) => void;
   newProjectDialogOpen: boolean;
@@ -45,9 +45,8 @@ const ProjectDropdown: React.FC<ProjectDropdownProps> = React.memo(({
   newProjectDialogOpen,
   setNewProjectDialogOpen
 }) => {
-  const handleCreateNewProject = async () => {
-    const success = await onProjectCreate(newProjectName);
-    if (success) {
+  const handleCreateNewProject = () => {
+    if (onProjectCreate(newProjectName)) {
       setNewProjectName('');
       setNewProjectDialogOpen(false);
     }

@@ -1,32 +1,25 @@
 
 import React from 'react';
-import { ExportService } from '@/services/ExportService';
+import { exportToPDF } from '@/utils/pdfExport';
 import MobileTabs from '@/components/layout/MobileTabs';
 import DesktopSidebar from '@/components/layout/DesktopSidebar';
 import PosterPreviewArea from '@/components/layout/PosterPreviewArea';
-import MobileTopNavbar from '@/components/layout/MobileTopNavbar';
-import MobileSidebarOverlay from '@/components/layout/MobileSidebarOverlay';
-import { LayoutProvider } from '@/components/layout/LayoutProvider';
-import { useProjectState } from '@/hooks/useProjectState';
+import MobileFloatingButton from '@/components/layout/MobileFloatingButton';
+import { useProjects } from '@/contexts/ProjectContext';
 import { PosterData, DesignSettings } from '@/types/project';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 const Index = () => {
   const { 
-    state,
+    currentProject, 
     updatePosterData, 
     updateDesignSettings, 
     updateQrColor
-  } = useProjectState();
+  } = useProjects();
   
   const [activePanel, setActivePanel] = React.useState<'content' | 'design'>('content');
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false);
-  const [mobileZoom, setMobileZoom] = React.useState<number>(0);
-  const [mobileFitZoom, setMobileFitZoom] = React.useState<number>(0);
-  const isMobile = useIsMobile();
   
-  // Extract current project data with proper defaults
-  const posterData: PosterData = state.currentProject?.posterData || {
+  // Extract values from the current project with proper defaults
+  const posterData: PosterData = currentProject?.posterData || {
     title: "Your Conference Poster Title",
     authors: "Author Name(s)",
     school: "Institution Name",
@@ -38,7 +31,6 @@ const Index = () => {
     references: "References...",
     keypoints: ["Key Point 1", "Key Point 2", "Key Point 3", "Key Point 4"],
     keyDescriptions: ["Description 1", "Description 2", "Description 3", "Description 4"],
-    keyVisibility: [true, true, true, true],
     sectionTitles: [
       "1. Introduction",
       "2. Methods",
@@ -48,83 +40,48 @@ const Index = () => {
     ],
     qrCodeUrl: "https://example.com/poster",
     qrCodeColor: "#000000",
-    qrCodeCaption: "",
     showKeypoints: true,
     showQrCode: true,
-    showReferences: true,
     images: []
   };
   
-  const designSettings: DesignSettings = state.currentProject?.designSettings || {
-    layout: 'academic-modern-landscape',
-    titleFont: 'merriweather',
+  const designSettings: DesignSettings = currentProject?.designSettings || {
+    layout: 'classic',
+    titleFont: 'playfair',
     contentFont: 'roboto',
-    headerBgColor: '#FFFFFF',
-    headerTextColor: '#1E3A8A',
-    sectionBgColor: '#3B82F6',
-    sectionTitleColor: '#FFFFFF',
-    sectionTextColor: '#FFFFFF',
-    keyPointsBgColor: '#EFF6FF',
-    keyPointsTextColor: '#1E3A8A',
+    headerBgColor: '#4052b6',
+    headerTextColor: '#FFFFFF',
+    sectionBgColor: '#e6ebff',
+    sectionTitleColor: '#4052b6',
+    sectionTextColor: '#000000',
+    keyPointsBgColor: '#f5f7ff',
+    keyPointsTextColor: '#4052b6',
   };
   
-  const qrColor: string = state.currentProject?.qrColor || "#000000";
+  const qrColor: string = currentProject?.qrColor || "#000000";
   
-  const handleExportPDF = async () => {
-    await ExportService.exportPoster('poster-content');
+  const handleExportPDF = () => {
+    exportToPDF('poster-content');
   };
-
-  // Debug logging to track state changes
-  React.useEffect(() => {
-    console.log('Index - Current project state:', state.currentProject);
-    console.log('Index - Design settings:', designSettings);
-  }, [state.currentProject, designSettings]);
   
-  if (isMobile) {
-    return (
-      <LayoutProvider posterData={posterData}>
-        <div className="flex flex-col min-h-screen bg-gray-50 relative">
-          <MobileTopNavbar
-            onMenuToggle={() => setIsMobileSidebarOpen(true)}
-            isMenuOpen={isMobileSidebarOpen}
-            currentZoom={mobileZoom}
-            onZoomChange={setMobileZoom}
-            fitZoomLevel={mobileFitZoom}
-            onExportPDF={handleExportPDF}
-          />
-          
-          <div className="flex-1 pt-16 pb-4">
-            <PosterPreviewArea 
-              posterData={posterData}
-              qrColor={qrColor}
-              designSettings={designSettings}
-              mobileZoom={mobileZoom}
-              onMobileFitZoomChange={setMobileFitZoom}
-            />
-          </div>
-          
-          <MobileSidebarOverlay
-            isOpen={isMobileSidebarOpen}
-            onClose={() => setIsMobileSidebarOpen(false)}
-            posterData={posterData}
-            setPosterData={updatePosterData}
-            designSettings={designSettings}
-            setDesignSettings={updateDesignSettings}
-            qrColor={qrColor}
-            setQrColor={updateQrColor}
-            activePanel={activePanel}
-            setActivePanel={setActivePanel}
-            handleExportPDF={handleExportPDF}
-          />
-        </div>
-      </LayoutProvider>
-    );
-  }
-
   return (
-    <LayoutProvider posterData={posterData}>
-      <div className="flex min-h-[calc(100vh-73px)] bg-gray-50 relative">
-        <MobileTabs 
+    <div className="flex lg:flex-row min-h-[calc(100vh-73px)] bg-gray-50 relative">
+      {/* Mobile view tabs */}
+      <MobileTabs 
+        posterData={posterData}
+        setPosterData={updatePosterData}
+        designSettings={designSettings}
+        setDesignSettings={updateDesignSettings}
+        qrColor={qrColor}
+        setQrColor={updateQrColor}
+        activePanel={activePanel}
+        setActivePanel={setActivePanel}
+        handleExportPDF={handleExportPDF}
+      />
+      
+      {/* Desktop sidebar - scrollable */}
+      <div className="hidden lg:block lg:w-1/3 overflow-y-auto">
+        <DesktopSidebar 
           posterData={posterData}
           setPosterData={updatePosterData}
           designSettings={designSettings}
@@ -135,30 +92,23 @@ const Index = () => {
           setActivePanel={setActivePanel}
           handleExportPDF={handleExportPDF}
         />
-        
-        <div className="hidden lg:block">
-          <DesktopSidebar 
-            posterData={posterData}
-            setPosterData={updatePosterData}
-            designSettings={designSettings}
-            setDesignSettings={updateDesignSettings}
-            qrColor={qrColor}
-            setQrColor={updateQrColor}
-            activePanel={activePanel}
-            setActivePanel={setActivePanel}
-            handleExportPDF={handleExportPDF}
-          />
-        </div>
-        
-        <div className="flex-1">
-          <PosterPreviewArea 
-            posterData={posterData}
-            qrColor={qrColor}
-            designSettings={designSettings}
-          />
-        </div>
       </div>
-    </LayoutProvider>
+      
+      {/* Preview Area - fixed position */}
+      <PosterPreviewArea 
+        posterData={posterData}
+        qrColor={qrColor}
+        designSettings={designSettings}
+      />
+      
+      {/* Mobile-only Design Panel in Sheet (sidebar) */}
+      <MobileFloatingButton 
+        designSettings={designSettings}
+        setDesignSettings={updateDesignSettings}
+        qrColor={qrColor}
+        setQrColor={updateQrColor}
+      />
+    </div>
   );
 };
 

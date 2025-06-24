@@ -7,23 +7,6 @@ export interface PosterStyle extends DesignSettings {
 }
 
 export const posterStyles: PosterStyle[] = [
-  // Academic Modern Landscape Style (DEFAULT - moved to top)
-  {
-    id: "academic-modern-landscape",
-    name: "Academic Modern Landscape",
-    category: "Academic",
-    layout: "academic-modern-landscape",
-    titleFont: "merriweather",
-    contentFont: "roboto",
-    headerBgColor: "#FFFFFF",
-    headerTextColor: "#1E3A8A",
-    sectionBgColor: "#3B82F6",
-    sectionTitleColor: "#FFFFFF",
-    sectionTextColor: "#FFFFFF",
-    keyPointsBgColor: "#EFF6FF",
-    keyPointsTextColor: "#1E3A8A"
-  },
-
   // Academic Modern Style (existing)
   {
     id: "academic-modern",
@@ -425,21 +408,5 @@ export const posterStyles: PosterStyle[] = [
     sectionTextColor: "#2D3748", 
     keyPointsBgColor: "#EBF8FF",
     keyPointsTextColor: "#2B6CB0"
-  },
-  // New Academic Blue Grid Style (matching the HTML reference)
-  {
-    id: "academic-blue-grid",
-    name: "Academic Blue Grid",
-    category: "Academic",
-    layout: "blue-grid",
-    titleFont: "inter",
-    contentFont: "opensans",
-    headerBgColor: "#0f62fe",
-    headerTextColor: "#FFFFFF",
-    sectionBgColor: "#FFFFFF",
-    sectionTitleColor: "#0f62fe",
-    sectionTextColor: "#333333",
-    keyPointsBgColor: "#f3f6fa",
-    keyPointsTextColor: "#333333"
   }
 ];

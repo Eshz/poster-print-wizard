@@ -16,7 +16,7 @@ const StyleThumbnail: React.FC<StyleThumbnailProps> = React.memo(({
   isSelected, 
   onApplyStyle 
 }) => {
-  const isAcademicModernLandscape = style.id === "academic-modern-landscape";
+  const isAcademicModern = style.id === "academic-modern";
 
   return (
     <Button
@@ -43,7 +43,7 @@ const StyleThumbnail: React.FC<StyleThumbnailProps> = React.memo(({
                        style.titleFont === 'merriweather' ? 'Merriweather' :
                        style.titleFont === 'montserrat' ? 'Montserrat' :
                        style.titleFont === 'raleway' ? 'Raleway' : 'sans-serif',
-            border: isAcademicModernLandscape ? '1px solid #E5E7EB' : 'none'
+            border: isAcademicModern ? '1px solid #E5E7EB' : 'none'
           }}
         >
           Title
@@ -52,15 +52,16 @@ const StyleThumbnail: React.FC<StyleThumbnailProps> = React.memo(({
         {/* Content Area */}
         <div 
           className="flex-1 p-1 flex gap-1"
-          style={{ backgroundColor: isAcademicModernLandscape ? '#F9FAFB' : style.sectionBgColor }}
+          style={{ backgroundColor: isAcademicModern ? '#F9FAFB' : style.sectionBgColor }}
         >
-          {/* Academic Modern Landscape specific layout */}
-          {isAcademicModernLandscape ? (
+          {/* Academic Modern specific layout */}
+          {isAcademicModern ? (
             <>
-              <div className="w-1/4 h-full bg-blue-700 rounded-sm"></div>
-              <div className="w-1/4 h-full bg-blue-200 rounded-sm"></div>
-              <div className="w-1/4 h-full bg-blue-600 rounded-sm"></div>
-              <div className="w-1/4 h-full bg-blue-300 rounded-sm"></div>
+              <div className="w-2/3 h-full flex flex-col gap-1">
+                <div className="h-1/2 bg-blue-500 rounded-sm"></div>
+                <div className="h-1/2 bg-blue-500 rounded-sm"></div>
+              </div>
+              <div className="w-1/3 h-full bg-blue-100 rounded-sm"></div>
             </>
           ) : (
             <>
@@ -102,16 +103,6 @@ const StyleThumbnail: React.FC<StyleThumbnailProps> = React.memo(({
                     <div className="h-1/4 bg-white rounded-sm shadow-sm"></div>
                   </div>
                   <div className="w-2/5 h-full bg-white rounded-sm shadow-sm"></div>
-                </>
-              )}
-              
-              {/* Blue Grid layout */}
-              {style.layout === 'blue-grid' && (
-                <>
-                  <div className="w-1/4 h-full bg-blue-500 rounded-sm"></div>
-                  <div className="w-1/4 h-full bg-blue-300 rounded-sm"></div>
-                  <div className="w-1/4 h-full bg-blue-400 rounded-sm"></div>
-                  <div className="w-1/4 h-full bg-blue-200 rounded-sm"></div>
                 </>
               )}
               

@@ -89,9 +89,9 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
         </div>
       </div>
       
-      {/* Author info with top and bottom borders - Fixed height and responsive text */}
+      {/* Author info with top and bottom borders */}
       <div 
-        className="w-full text-center py-2 h-12 flex items-center"
+        className="w-full text-center py-2"
         style={{
           borderTop: '1px solid #202b5b',
           borderBottom: '1px solid #202b5b',
@@ -99,31 +99,28 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
         }}
       >
         <div 
-          className="flex flex-row justify-between items-center gap-2 px-2 mx-auto overflow-hidden w-full"
+          className="flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4 px-2 mx-auto text-xs md:text-sm overflow-hidden"
           style={{ 
             color: designSettings.headerTextColor,
             fontFamily: `var(--font-${designSettings.titleFont})`,
-            fontSize: 'clamp(10px, 1.2vw, 14px)'
+            maxWidth: '98%'
           }}
         >
           <div 
-            className="font-semibold min-w-0 truncate leading-tight"
+            className="mb-1 md:mb-0 font-semibold min-w-0 break-words"
             style={{ flexBasis: `${authorsFlex}%` }}
-            title={authors || 'Authors'}
           >
             {authors || 'Authors'}
           </div>
           <div 
-            className="font-semibold min-w-0 truncate leading-tight"
+            className="mb-1 md:mb-0 font-semibold min-w-0 break-words"
             style={{ flexBasis: `${schoolFlex}%` }}
-            title={school || 'Institution'}
           >
             {school || 'Institution'}
           </div>
           <div 
-            className="font-semibold min-w-0 truncate leading-tight"
+            className="font-semibold min-w-0 break-words"
             style={{ flexBasis: `${contactFlex}%` }}
-            title={contact || 'Contact'}
           >
             {contact || 'Contact'}
           </div>

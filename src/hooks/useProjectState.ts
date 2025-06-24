@@ -33,7 +33,6 @@ export const useProjectState = () => {
   }, []);
 
   const updatePosterData = useCallback((posterData: Partial<PosterData> | ((prev: PosterData) => PosterData)) => {
-    console.log('useProjectState - updatePosterData called with:', posterData);
     dispatch(projectActions.updatePosterData(posterData));
   }, []);
 

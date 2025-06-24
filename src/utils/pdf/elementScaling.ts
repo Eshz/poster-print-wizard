@@ -1,27 +1,13 @@
-import { 
-  A0_WIDTH_POINTS_PORTRAIT, 
-  A0_HEIGHT_POINTS_PORTRAIT,
-  A0_WIDTH_POINTS_LANDSCAPE,
-  A0_HEIGHT_POINTS_LANDSCAPE,
-  PREVIEW_WIDTH, 
-  PREVIEW_HEIGHT,
-  PREVIEW_WIDTH_LANDSCAPE,
-  PREVIEW_HEIGHT_LANDSCAPE
-} from './pdfConfig';
+
+import { A0_WIDTH_POINTS, A0_HEIGHT_POINTS, PREVIEW_WIDTH, PREVIEW_HEIGHT } from './pdfConfig';
 
 /**
- * Calculates the scale factor for A0 export at 300 DPI based on orientation
+ * Calculates the scale factor for A0 export at 300 DPI
  */
-export const calculateScaleFactor = (orientation: 'landscape' | 'portrait' = 'portrait') => {
-  const isLandscape = orientation === 'landscape';
-  
-  const targetWidth = isLandscape ? A0_WIDTH_POINTS_LANDSCAPE : A0_WIDTH_POINTS_PORTRAIT;
-  const targetHeight = isLandscape ? A0_HEIGHT_POINTS_LANDSCAPE : A0_HEIGHT_POINTS_PORTRAIT;
-  const previewWidth = isLandscape ? PREVIEW_WIDTH_LANDSCAPE : PREVIEW_WIDTH;
-  const previewHeight = isLandscape ? PREVIEW_HEIGHT_LANDSCAPE : PREVIEW_HEIGHT;
-  
-  const widthRatio = targetWidth / previewWidth;
-  const heightRatio = targetHeight / previewHeight;
+export const calculateScaleFactor = () => {
+  // Calculate the scale factor needed to go from preview size to A0 300 DPI size
+  const widthRatio = A0_WIDTH_POINTS / PREVIEW_WIDTH; // 2384 / 800 = ~2.98
+  const heightRatio = A0_HEIGHT_POINTS / PREVIEW_HEIGHT; // 3370 / 1131 = ~2.98
   
   // Use the smaller ratio to maintain aspect ratio
   return Math.min(widthRatio, heightRatio);
@@ -30,18 +16,14 @@ export const calculateScaleFactor = (orientation: 'landscape' | 'portrait' = 'po
 /**
  * Applies minimal scaling to maintain preview appearance in PDF
  */
-export const scaleElementForPdf = (clonedElement: HTMLElement, orientation: 'landscape' | 'portrait' = 'portrait') => {
+export const scaleElementForPdf = (clonedElement: HTMLElement) => {
   // Reset any transformations that might be applied from zoom
   clonedElement.style.transform = 'none';
   clonedElement.style.transformOrigin = 'initial';
   
-  const isLandscape = orientation === 'landscape';
-  const previewWidth = isLandscape ? PREVIEW_WIDTH_LANDSCAPE : PREVIEW_WIDTH;
-  const previewHeight = isLandscape ? PREVIEW_HEIGHT_LANDSCAPE : PREVIEW_HEIGHT;
-  
-  // Set dimensions to match preview exactly based on orientation
-  clonedElement.style.width = `${previewWidth}px`;
-  clonedElement.style.height = `${previewHeight}px`;
+  // Set dimensions to match preview exactly
+  clonedElement.style.width = `${PREVIEW_WIDTH}px`;
+  clonedElement.style.height = `${PREVIEW_HEIGHT}px`;
   clonedElement.style.margin = '0';
   clonedElement.style.padding = '0';
   clonedElement.style.overflow = 'visible';

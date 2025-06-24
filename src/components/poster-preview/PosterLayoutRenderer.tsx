@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { PosterData, DesignSettings } from '@/types/project';
 import { getFontClass } from '@/utils/fontUtils';
@@ -6,8 +5,6 @@ import ClassicLayout from './ClassicLayout';
 import ModernLayout from './ModernLayout';
 import FocusLayout from './FocusLayout';
 import AcademicModernLayout from './AcademicModernLayout';
-import AcademicModernLandscapeLayout from './AcademicModernLandscapeLayout';
-import AcademicBlueGridLayout from './AcademicBlueGridLayout';
 import MinimalistCleanLayout from './MinimalistCleanLayout';
 import DataVisualizationLayout from './DataVisualizationLayout';
 import ExecutiveSummaryLayout from './ExecutiveSummaryLayout';
@@ -42,36 +39,26 @@ const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = React.memo(({
     contentFontClass: getFontClass('content', designSettings.titleFont, designSettings.contentFont)
   };
 
-  console.log('PosterLayoutRenderer - Current layout:', layout, 'Design settings layout:', designSettings.layout);
+  // Check if this is the Academic Modern style specifically
+  const isAcademicModern = designSettings.headerBgColor === "#FFFFFF" && 
+                          designSettings.sectionBgColor === "#3B82F6" &&
+                          designSettings.keyPointsBgColor === "#EFF6FF";
 
-  // Use the layout from designSettings, not the layout prop
-  const currentLayout = designSettings.layout;
+  if (isAcademicModern) {
+    return (
+      <div className={containerClasses}>
+        <AcademicModernLayout 
+          posterData={posterData}
+          designSettings={enhancedDesignSettings}
+          qrCodeUrl={qrCodeUrl}
+          showKeypoints={showKeypoints}
+          showQrCode={showQrCode}
+        />
+      </div>
+    );
+  }
 
-  switch(currentLayout) {
-    case 'academic-modern-landscape':
-      return (
-        <div className={containerClasses}>
-          <AcademicModernLandscapeLayout 
-            posterData={posterData}
-            designSettings={enhancedDesignSettings}
-            qrCodeUrl={qrCodeUrl}
-            showKeypoints={showKeypoints}
-            showQrCode={showQrCode}
-          />
-        </div>
-      );
-    case 'blue-grid':
-      return (
-        <div className={containerClasses}>
-          <AcademicBlueGridLayout 
-            posterData={posterData}
-            designSettings={enhancedDesignSettings}
-            qrCodeUrl={qrCodeUrl}
-            showKeypoints={showKeypoints}
-            showQrCode={showQrCode}
-          />
-        </div>
-      );
+  switch(layout) {
     case 'minimalist':
       return (
         <div className={containerClasses}>

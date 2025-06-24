@@ -8,6 +8,7 @@ interface VisibilityToggleProps {
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
   label?: string;
+  onClick?: (e: React.MouseEvent) => void;
   className?: string;
 }
 
@@ -16,26 +17,22 @@ export const VisibilityToggle: React.FC<VisibilityToggleProps> = ({
   checked,
   onCheckedChange,
   label = "Show",
+  onClick,
   className
 }) => {
-  const handleToggle = (newChecked: boolean) => {
-    console.log(`Toggle ${id} changed to:`, newChecked);
-    onCheckedChange(newChecked);
-  };
-
   return (
     <div className={`flex items-center space-x-2 ${className || ''}`}>
       <Switch 
         id={id}
         checked={checked} 
-        onCheckedChange={handleToggle}
+        onCheckedChange={onCheckedChange}
+        onClick={onClick}
         aria-describedby={`${id}-label`}
       />
       <Label 
         htmlFor={id} 
         id={`${id}-label`}
-        className="text-sm text-gray-600 cursor-pointer"
-        onClick={() => handleToggle(!checked)}
+        className="text-sm text-gray-600"
       >
         {label}
       </Label>

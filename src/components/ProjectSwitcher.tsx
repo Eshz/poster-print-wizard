@@ -8,10 +8,10 @@ const ProjectSwitcher: React.FC = React.memo(() => {
   const { 
     currentProject, 
     projects, 
-    loadProject, 
-    createNewProject, 
+    handleProjectLoad, 
+    handleProjectCreate, 
     saveCurrentProject,
-    renameCurrentProject,
+    handleProjectRename,
     deleteCurrentProject 
   } = useProjectManagement();
   
@@ -19,28 +19,6 @@ const ProjectSwitcher: React.FC = React.memo(() => {
   const [renameValue, setRenameValue] = useState('');
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [newProjectDialogOpen, setNewProjectDialogOpen] = useState(false);
-
-  const handleProjectLoad = (projectId: string) => {
-    loadProject(projectId);
-  };
-
-  const handleProjectCreate = async (name: string) => {
-    try {
-      await createNewProject(name);
-      return true;
-    } catch (error) {
-      return false;
-    }
-  };
-
-  const handleProjectRename = async (newName: string) => {
-    try {
-      await renameCurrentProject(newName);
-      return true;
-    } catch (error) {
-      return false;
-    }
-  };
 
   return (
     <div className="flex items-center space-x-2">

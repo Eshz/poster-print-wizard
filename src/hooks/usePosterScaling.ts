@@ -47,22 +47,6 @@ export const usePosterScaling = ({
       
       posterRef.current.style.transform = `scale(${actualScale})`;
 
-      // Enable scrolling when zoomed beyond fit-to-window
-      if (container && actualScale > fitToWindowCssScale) {
-        container.style.overflow = 'auto';
-        // Set container dimensions to allow proper scrolling
-        const scaledWidth = posterUIWidth * actualScale;
-        const scaledHeight = posterUIHeight * actualScale;
-        containerRef.current.style.width = `${scaledWidth}px`;
-        containerRef.current.style.height = `${scaledHeight}px`;
-      } else {
-        if (container) {
-          container.style.overflow = 'hidden';
-        }
-        containerRef.current.style.width = 'auto';
-        containerRef.current.style.height = 'auto';
-      }
-
       // Notify parent of the ZOOM LEVEL that corresponds to fitting to window.
       if (onContainerScaleChange) {
         // We want: zoomLevel * a0ScaleFactor = fitToWindowCssScale

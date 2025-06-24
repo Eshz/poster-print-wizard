@@ -62,6 +62,14 @@ const ZoomControls: React.FC<ZoomControlsProps> = ({
         <ZoomOut className="h-4 w-4" />
       </Button>
       
+      <button
+        onClick={handleZoomReset}
+        className="px-3 py-1 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded transition-colors"
+        title="Reset to 100% (A0 size: 84.1 x 118.8 cm)"
+      >
+        {zoomPercentage}%
+      </button>
+      
       <Button
         variant="outline"
         size="sm"
@@ -71,14 +79,6 @@ const ZoomControls: React.FC<ZoomControlsProps> = ({
       >
         <ZoomIn className="h-4 w-4" />
       </Button>
-      
-      <button
-        onClick={handleZoomReset}
-        className="px-3 py-1 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded transition-colors"
-        title="Reset to 100% (A0 size: 84.1 x 118.8 cm)"
-      >
-        {zoomPercentage}%
-      </button>
 
       <Button
         variant="outline"

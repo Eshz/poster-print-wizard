@@ -54,7 +54,6 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
           <Input
             id={singleField}
             name={singleField}
-            type="text"
             value={value}
             onChange={handleChange}
             placeholder={config.placeholder}
@@ -86,7 +85,6 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
           <Input
             id="title"
             name="title"
-            type="text"
             value={posterData.title || ''}
             onChange={handleChange}
             placeholder="Enter your poster title"
@@ -113,7 +111,6 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
           <Input
             id="authors"
             name="authors"
-            type="text"
             value={posterData.authors || ''}
             onChange={handleChange}
             placeholder="Enter author names"
@@ -140,7 +137,6 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
           <Input
             id="school"
             name="school"
-            type="text"
             value={posterData.school || ''}
             onChange={handleChange}
             placeholder="Enter institution name"
@@ -167,7 +163,6 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
           <Input
             id="contact"
             name="contact"
-            type="text"
             value={posterData.contact || ''}
             onChange={handleChange}
             placeholder="Enter contact information"

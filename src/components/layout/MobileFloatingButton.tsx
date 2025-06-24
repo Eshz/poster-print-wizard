@@ -1,10 +1,11 @@
 
 import React from 'react';
-import { Menu } from "lucide-react";
+import { Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import DesignPanel from '@/components/DesignPanel';
 
 interface MobileFloatingButtonProps {
-  onClick: () => void;
   designSettings: any;
   setDesignSettings: React.Dispatch<React.SetStateAction<any>>;
   qrColor: string;
@@ -12,17 +13,33 @@ interface MobileFloatingButtonProps {
 }
 
 const MobileFloatingButton: React.FC<MobileFloatingButtonProps> = ({
-  onClick
+  designSettings,
+  setDesignSettings,
+  qrColor,
+  setQrColor
 }) => {
   return (
-    <Button 
-      onClick={onClick}
-      variant="default" 
-      size="icon"
-      className="fixed top-4 left-4 rounded-full h-12 w-12 shadow-lg z-50 bg-blue-600 hover:bg-blue-700"
-    >
-      <Menu className="h-6 w-6 text-white" />
-    </Button>
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button 
+          variant="outline" 
+          size="icon"
+          className="fixed bottom-4 right-4 rounded-full h-14 w-14 shadow-lg lg:hidden"
+        >
+          <Palette className="h-6 w-6" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="right" className="w-[85%] sm:w-[385px] overflow-y-auto">
+        <div className="py-4">
+          <DesignPanel 
+            designSettings={designSettings}
+            setDesignSettings={setDesignSettings}
+            qrColor={qrColor}
+            setQrColor={setQrColor}
+          />
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 };
 
