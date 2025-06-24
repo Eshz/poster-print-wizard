@@ -54,7 +54,12 @@ export class ProjectService {
         qrCodeCaption: validatedProject.posterData.qrCodeCaption || '',
         showKeypoints: validatedProject.posterData.showKeypoints ?? true,
         showQrCode: validatedProject.posterData.showQrCode ?? true,
-        images: validatedProject.posterData.images || []
+        images: (validatedProject.posterData.images || []).map(img => ({
+          url: img.url || '',
+          visible: img.visible ?? true,
+          caption: img.caption || '',
+          upperCaption: img.upperCaption
+        }))
       };
 
       const designSettings: DesignSettings = {
