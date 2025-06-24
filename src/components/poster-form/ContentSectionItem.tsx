@@ -33,6 +33,19 @@ export const ContentSectionItem: React.FC<ContentSectionItemProps> = ({
   onDragEnd,
   isDragging
 }) => {
+  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // Ensure the event has the correct name attribute for the parent handler
+    const syntheticEvent = {
+      ...e,
+      target: {
+        ...e.target,
+        name: sectionField
+      }
+    } as React.ChangeEvent<HTMLTextAreaElement>;
+    
+    onContentChange(syntheticEvent);
+  };
+
   return (
     <Card 
       className={`p-4 border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow cursor-move ${isDragging ? 'opacity-50' : ''}`}
@@ -55,7 +68,7 @@ export const ContentSectionItem: React.FC<ContentSectionItemProps> = ({
           id={sectionField}
           label="Content"
           value={content}
-          onChange={onContentChange}
+          onChange={handleContentChange}
           placeholder={`Enter ${sectionTitle.toLowerCase()} content`}
         />
       </CardContent>
