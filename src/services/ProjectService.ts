@@ -35,10 +35,14 @@ export class ProjectService {
       const projects = await this.loadProjects();
       const now = Date.now();
       
-      // Ensure id is always present
+      // Ensure all required properties are present
       const updatedProject: ProjectData = {
-        ...validatedProject,
         id: validatedProject.id || this.generateId(),
+        name: validatedProject.name,
+        createdAt: validatedProject.createdAt,
+        posterData: validatedProject.posterData,
+        designSettings: validatedProject.designSettings,
+        qrColor: validatedProject.qrColor,
         updatedAt: now
       };
       
