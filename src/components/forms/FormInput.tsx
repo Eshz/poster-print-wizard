@@ -28,6 +28,7 @@ export const FormInput: React.FC<FormInputProps> = ({
   error
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    console.log(`FormInput ${id} - Raw value:`, e.target.value);
     onChange(e.target.value);
   };
 
