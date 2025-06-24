@@ -1,12 +1,12 @@
 
 import { useCallback } from 'react';
 import { PosterData } from '@/types/project';
-import { useProjects } from '@/contexts/ProjectContext';
+import { useProjectState } from '@/hooks/useProjectState';
 
 export const usePosterData = () => {
-  const { currentProject, updatePosterData } = useProjects();
+  const { state, updatePosterData } = useProjectState();
 
-  const posterData: PosterData = currentProject?.posterData || {
+  const posterData: PosterData = state.currentProject?.posterData || {
     title: "Your Conference Poster Title",
     authors: "Author Name(s)",
     school: "Institution Name",
@@ -18,6 +18,7 @@ export const usePosterData = () => {
     references: "References...",
     keypoints: ["Key Point 1", "Key Point 2", "Key Point 3", "Key Point 4"],
     keyDescriptions: ["Description 1", "Description 2", "Description 3", "Description 4"],
+    keyVisibility: [true, true, true, true],
     sectionTitles: [
       "1. Introduction",
       "2. Methods",
@@ -27,6 +28,7 @@ export const usePosterData = () => {
     ],
     qrCodeUrl: "https://example.com/poster",
     qrCodeColor: "#000000",
+    qrCodeCaption: "",
     showKeypoints: true,
     showQrCode: true,
     images: []
@@ -38,7 +40,7 @@ export const usePosterData = () => {
 
   const updateKeyPoint = useCallback((index: number, value: string) => {
     updatePosterData(prev => {
-      const updatedKeypoints = [...prev.keypoints];
+      const updatedKeypoints = [...(prev.keypoints || [])];
       updatedKeypoints[index] = value;
       return { ...prev, keypoints: updatedKeypoints };
     });
@@ -46,7 +48,7 @@ export const usePosterData = () => {
 
   const updateKeyDescription = useCallback((index: number, value: string) => {
     updatePosterData(prev => {
-      const updatedDescriptions = [...prev.keyDescriptions];
+      const updatedDescriptions = [...(prev.keyDescriptions || [])];
       updatedDescriptions[index] = value;
       return { ...prev, keyDescriptions: updatedDescriptions };
     });
@@ -62,7 +64,7 @@ export const usePosterData = () => {
 
   const updateSectionTitle = useCallback((index: number, value: string) => {
     updatePosterData(prev => {
-      const updatedSectionTitles = [...prev.sectionTitles];
+      const updatedSectionTitles = [...(prev.sectionTitles || [])];
       updatedSectionTitles[index] = value;
       return { ...prev, sectionTitles: updatedSectionTitles };
     });
