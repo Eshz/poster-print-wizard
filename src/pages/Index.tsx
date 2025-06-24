@@ -66,7 +66,7 @@ const Index = () => {
   };
   
   return (
-    <div className="flex lg:flex-row min-h-[calc(100vh-73px)] bg-gray-50 relative">
+    <div className="flex min-h-[calc(100vh-73px)] bg-gray-50 relative">
       {/* Mobile view tabs */}
       <MobileTabs 
         posterData={posterData}
@@ -80,8 +80,8 @@ const Index = () => {
         handleExportPDF={handleExportPDF}
       />
       
-      {/* Desktop sidebar - scrollable */}
-      <div className="hidden lg:block lg:w-1/3 overflow-y-auto">
+      {/* Desktop sidebar - fixed width */}
+      <div className="hidden lg:block">
         <DesktopSidebar 
           posterData={posterData}
           setPosterData={updatePosterData}
@@ -95,12 +95,14 @@ const Index = () => {
         />
       </div>
       
-      {/* Preview Area - fixed position */}
-      <PosterPreviewArea 
-        posterData={posterData}
-        qrColor={qrColor}
-        designSettings={designSettings}
-      />
+      {/* Preview Area - takes remaining space */}
+      <div className="flex-1">
+        <PosterPreviewArea 
+          posterData={posterData}
+          qrColor={qrColor}
+          designSettings={designSettings}
+        />
+      </div>
       
       {/* Mobile-only Design Panel in Sheet (sidebar) */}
       <MobileFloatingButton 
