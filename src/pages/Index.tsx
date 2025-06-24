@@ -73,6 +73,12 @@ const Index = () => {
   const handleExportPDF = async () => {
     await ExportService.exportPoster('poster-content');
   };
+
+  // Debug logging to track state changes
+  React.useEffect(() => {
+    console.log('Index - Current project state:', state.currentProject);
+    console.log('Index - Design settings:', designSettings);
+  }, [state.currentProject, designSettings]);
   
   if (isMobile) {
     return (

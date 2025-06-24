@@ -5,7 +5,7 @@ import { useDesignStyles } from '@/hooks/useDesignStyles';
 
 export const useDesignPanel = (
   designSettings: DesignSettings,
-  setDesignSettings: (settings: DesignSettings) => void
+  setDesignSettings: (settings: Partial<DesignSettings> | ((prev: DesignSettings) => DesignSettings)) => void
 ) => {
   const { applyStyle, isStyleSelected, stylesData } = useDesignStyles(
     designSettings, 
@@ -16,14 +16,16 @@ export const useDesignPanel = (
     key: keyof DesignSettings, 
     value: any
   ) => {
-    setDesignSettings({
-      ...designSettings,
+    console.log('useDesignPanel - Updating design setting:', key, value);
+    setDesignSettings((prev: DesignSettings) => ({
+      ...prev,
       [key]: value
-    });
-  }, [designSettings, setDesignSettings]);
+    }));
+  }, [setDesignSettings]);
 
   const resetToDefaults = useCallback(() => {
-    setDesignSettings({
+    console.log('useDesignPanel - Resetting to defaults');
+    const defaultSettings: DesignSettings = {
       layout: 'academic-modern-landscape',
       titleFont: 'merriweather',
       contentFont: 'roboto',
@@ -34,7 +36,8 @@ export const useDesignPanel = (
       sectionTextColor: '#FFFFFF',
       keyPointsBgColor: '#EFF6FF',
       keyPointsTextColor: '#1E3A8A',
-    });
+    };
+    setDesignSettings(defaultSettings);
   }, [setDesignSettings]);
 
   return {

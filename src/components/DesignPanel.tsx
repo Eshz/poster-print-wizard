@@ -7,7 +7,7 @@ import DesignStyleList from '@/components/design/DesignStyleList';
 
 interface DesignPanelProps {
   designSettings: DesignSettings;
-  setDesignSettings: (designSettings: DesignSettings) => void;
+  setDesignSettings: (designSettings: Partial<DesignSettings> | ((prev: DesignSettings) => DesignSettings)) => void;
   qrColor: string;
   setQrColor: (color: string) => void;
 }
@@ -27,10 +27,14 @@ const DesignPanel: React.FC<DesignPanelProps> = React.memo(({
   } = useDesignPanel(designSettings, setDesignSettings);
 
   const handleApplyStyle = (style: any) => {
-    console.log('Applying style:', style.name, 'with layout:', style.layout);
-    applyStyle(style);
-    trackDesignStyleSelected(style.name);
-    trackLayoutSelected(style.layout);
+    console.log('DesignPanel - Applying style:', style.name, 'with layout:', style.layout);
+    try {
+      applyStyle(style);
+      trackDesignStyleSelected(style.name);
+      trackLayoutSelected(style.layout);
+    } catch (error) {
+      console.error('Failed to apply style:', error);
+    }
   };
 
   return (

@@ -5,12 +5,12 @@ import { PosterStyle, posterStyles } from '@/data/posterStyles';
 
 export const useDesignStyles = (
   designSettings: DesignSettings,
-  setDesignSettings: (settings: DesignSettings) => void
+  setDesignSettings: (settings: Partial<DesignSettings> | ((prev: DesignSettings) => DesignSettings)) => void
 ) => {
   const applyStyle = useCallback((style: PosterStyle) => {
-    console.log('Applying design style:', style.name, 'with layout:', style.layout);
+    console.log('useDesignStyles - Applying design style:', style.name, 'with layout:', style.layout);
     
-    const newSettings = {
+    const newSettings: DesignSettings = {
       layout: style.layout,
       titleFont: style.titleFont,
       contentFont: style.contentFont,
@@ -23,7 +23,7 @@ export const useDesignStyles = (
       keyPointsTextColor: style.keyPointsTextColor
     };
     
-    console.log('Setting new design settings:', newSettings);
+    console.log('useDesignStyles - Setting new design settings:', newSettings);
     setDesignSettings(newSettings);
   }, [setDesignSettings]);
 
@@ -41,6 +41,7 @@ export const useDesignStyles = (
       designSettings.keyPointsTextColor === style.keyPointsTextColor
     );
     
+    console.log('useDesignStyles - Style selection check for', style.name, ':', isSelected);
     return isSelected;
   }, [designSettings]);
 
