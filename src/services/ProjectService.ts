@@ -1,4 +1,3 @@
-
 import { PosterData, DesignSettings, ProjectData } from '@/types/project';
 import { projectDataSchema } from '@/utils/validation/schemas';
 import { toast } from 'sonner';
@@ -35,13 +34,48 @@ export class ProjectService {
       const projects = await this.loadProjects();
       const now = Date.now();
       
-      // Ensure all required properties are present
+      // Ensure all required properties are present with defaults
+      const posterData: PosterData = {
+        title: validatedProject.posterData.title || '',
+        authors: validatedProject.posterData.authors || '',
+        school: validatedProject.posterData.school || '',
+        contact: validatedProject.posterData.contact || '',
+        introduction: validatedProject.posterData.introduction || '',
+        methods: validatedProject.posterData.methods || '',
+        findings: validatedProject.posterData.findings || '',
+        conclusions: validatedProject.posterData.conclusions || '',
+        references: validatedProject.posterData.references || '',
+        keypoints: validatedProject.posterData.keypoints || [],
+        keyDescriptions: validatedProject.posterData.keyDescriptions || [],
+        keyVisibility: validatedProject.posterData.keyVisibility || [],
+        sectionTitles: validatedProject.posterData.sectionTitles || [],
+        qrCodeUrl: validatedProject.posterData.qrCodeUrl || '',
+        qrCodeColor: validatedProject.posterData.qrCodeColor || '#000000',
+        qrCodeCaption: validatedProject.posterData.qrCodeCaption || '',
+        showKeypoints: validatedProject.posterData.showKeypoints ?? true,
+        showQrCode: validatedProject.posterData.showQrCode ?? true,
+        images: validatedProject.posterData.images || []
+      };
+
+      const designSettings: DesignSettings = {
+        layout: validatedProject.designSettings.layout || 'classic',
+        titleFont: validatedProject.designSettings.titleFont || 'roboto',
+        contentFont: validatedProject.designSettings.contentFont || 'roboto',
+        headerBgColor: validatedProject.designSettings.headerBgColor || '#ffffff',
+        headerTextColor: validatedProject.designSettings.headerTextColor || '#000000',
+        sectionBgColor: validatedProject.designSettings.sectionBgColor || '#ffffff',
+        sectionTitleColor: validatedProject.designSettings.sectionTitleColor || '#000000',
+        sectionTextColor: validatedProject.designSettings.sectionTextColor || '#000000',
+        keyPointsBgColor: validatedProject.designSettings.keyPointsBgColor || '#ffffff',
+        keyPointsTextColor: validatedProject.designSettings.keyPointsTextColor || '#000000'
+      };
+
       const updatedProject: ProjectData = {
         id: validatedProject.id || this.generateId(),
         name: validatedProject.name,
         createdAt: validatedProject.createdAt,
-        posterData: validatedProject.posterData,
-        designSettings: validatedProject.designSettings,
+        posterData,
+        designSettings,
         qrColor: validatedProject.qrColor,
         updatedAt: now
       };
