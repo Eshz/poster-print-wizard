@@ -1,4 +1,3 @@
-
 import { useCallback } from 'react';
 import { PosterData } from '@/types/project';
 import { useProjectState } from '@/hooks/useProjectState';
@@ -35,7 +34,12 @@ export const usePosterData = () => {
   };
 
   const updateField = useCallback((field: keyof PosterData, value: any) => {
-    updatePosterData(prev => ({ ...prev, [field]: value }));
+    console.log(`usePosterData - Updating field ${field} with value:`, value);
+    updatePosterData(prev => {
+      const updated = { ...prev, [field]: value };
+      console.log(`usePosterData - Updated posterData:`, updated);
+      return updated;
+    });
   }, [updatePosterData]);
 
   const updateKeyPoint = useCallback((index: number, value: string) => {
