@@ -6,7 +6,7 @@ import ContentVisibilityWarning from './poster-preview/ContentVisibilityWarning'
 import PosterLayoutRenderer from './poster-preview/PosterLayoutRenderer';
 import { checkContentVisibility } from '@/utils/contentVisibilityChecker';
 import { usePosterScaling } from '@/hooks/usePosterScaling';
-import { A0_WIDTH_PX, A0_HEIGHT_PX, POSTER_UI_WIDTH, POSTER_UI_HEIGHT } from '@/utils/posterConstants';
+import { getPosterDimensions } from '@/utils/posterConstants';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 interface PosterPreviewProps {
@@ -22,13 +22,19 @@ const PosterPreview: React.FC<PosterPreviewProps> = React.memo(({
   manualZoom = 1,
   onContainerScaleChange 
 }) => {
+  // Get dimensions based on orientation
+  const dimensions = useMemo(() => 
+    getPosterDimensions(designSettings.orientation || 'portrait'), 
+    [designSettings.orientation]
+  );
+
   const { containerRef, posterRef } = usePosterScaling({
     manualZoom,
     onContainerScaleChange,
-    posterUIWidth: POSTER_UI_WIDTH,
-    posterUIHeight: POSTER_UI_HEIGHT,
-    a0WidthPx: A0_WIDTH_PX,
-    a0HeightPx: A0_HEIGHT_PX
+    posterUIWidth: dimensions.width,
+    posterUIHeight: dimensions.height,
+    a0WidthPx: dimensions.a0Width,
+    a0HeightPx: dimensions.a0Height
   });
 
   // QR Code generation - memoized for performance
@@ -44,8 +50,8 @@ const PosterPreview: React.FC<PosterPreviewProps> = React.memo(({
     [posterData, designSettings]
   );
 
-  // A0 aspect ratio calculation - memoized
-  const aspectRatio = useMemo(() => POSTER_UI_HEIGHT / POSTER_UI_WIDTH, []);
+  // Aspect ratio calculation - memoized
+  const aspectRatio = useMemo(() => dimensions.height / dimensions.width, [dimensions]);
 
   return (
     <div ref={containerRef} className="flex flex-col items-center justify-center w-full">
@@ -55,7 +61,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = React.memo(({
         warnings={visibilityCheck.warnings}
       />
 
-      <div style={{ width: `${POSTER_UI_WIDTH}px` }}>
+      <div style={{ width: `${dimensions.width}px` }}>
         <AspectRatio ratio={1/aspectRatio}>
           <div
             id="poster-content"

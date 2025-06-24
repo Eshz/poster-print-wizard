@@ -1,5 +1,7 @@
+
 export interface DesignSettings {
   layout: 'classic' | 'modern' | 'focus' | 'minimalist' | 'data-viz' | 'executive';
+  orientation: 'portrait' | 'landscape';
   titleFont: 'playfair' | 'roboto' | 'merriweather' | 'montserrat' | 'opensans' | 'lora' | 'raleway' | 
             'crimsontext' | 'sourceserifpro' | 'ebgaramond' | 'inter' | 'librewilson' | 'nunito' |
             'cormorantgaramond' | 'worksans' | 'oldstandardtt' | 'karla' | 'spectral' | 'publicsans' |

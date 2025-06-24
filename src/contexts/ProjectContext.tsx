@@ -81,6 +81,7 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
     
     const defaultDesignSettings: DesignSettings = {
       layout: 'classic',
+      orientation: 'portrait',
       titleFont: 'playfair',
       contentFont: 'roboto',
       headerBgColor: '#4052b6',
