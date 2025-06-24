@@ -18,7 +18,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 interface ProjectActionsProps {
   currentProjectName?: string;
   onSave: () => void;
-  onRename: (newName: string) => boolean;
+  onRename: (newName: string) => Promise<boolean>;
   onDelete: () => void;
   renameValue: string;
   setRenameValue: (value: string) => void;
@@ -36,8 +36,9 @@ const ProjectActions: React.FC<ProjectActionsProps> = React.memo(({
   renameDialogOpen,
   setRenameDialogOpen
 }) => {
-  const handleRename = () => {
-    if (onRename(renameValue)) {
+  const handleRename = async () => {
+    const success = await onRename(renameValue);
+    if (success) {
       setRenameValue('');
       setRenameDialogOpen(false);
     }
