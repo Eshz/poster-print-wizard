@@ -17,6 +17,14 @@ export const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
   isOpen,
   onToggle
 }) => {
+  console.log('ContactInfoForm - posterData:', posterData);
+  console.log('ContactInfoForm - onUpdateField:', typeof onUpdateField);
+
+  const handleFieldUpdate = (field: keyof PosterData) => (value: string) => {
+    console.log(`Updating field ${field} with value:`, value);
+    onUpdateField(field, value);
+  };
+
   return (
     <CollapsibleSection
       id="contact-info"
@@ -28,8 +36,8 @@ export const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
         <FormInput
           id="title"
           label="Poster Title"
-          value={posterData.title}
-          onChange={(value) => onUpdateField('title', value)}
+          value={posterData.title || ''}
+          onChange={handleFieldUpdate('title')}
           placeholder="Enter your poster title"
           required
         />
@@ -37,8 +45,8 @@ export const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
         <FormInput
           id="authors"
           label="Authors"
-          value={posterData.authors}
-          onChange={(value) => onUpdateField('authors', value)}
+          value={posterData.authors || ''}
+          onChange={handleFieldUpdate('authors')}
           placeholder="Enter author names"
           required
         />
@@ -46,8 +54,8 @@ export const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
         <FormInput
           id="school"
           label="Institution/School"
-          value={posterData.school}
-          onChange={(value) => onUpdateField('school', value)}
+          value={posterData.school || ''}
+          onChange={handleFieldUpdate('school')}
           placeholder="Enter institution name"
           required
         />
@@ -55,8 +63,8 @@ export const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
         <FormInput
           id="contact"
           label="Contact Information"
-          value={posterData.contact}
-          onChange={(value) => onUpdateField('contact', value)}
+          value={posterData.contact || ''}
+          onChange={handleFieldUpdate('contact')}
           placeholder="Enter contact email or information"
           required
         />
