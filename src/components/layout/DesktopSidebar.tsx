@@ -44,10 +44,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
             </TabsList>
             
             <TabsContent value="content" className="space-y-6">
-              <PosterForm 
-                posterData={posterData}
-                setPosterData={setPosterData}
-              />
+              <PosterForm />
             </TabsContent>
             
             <TabsContent value="design" className="space-y-6">

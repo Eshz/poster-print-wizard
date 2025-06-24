@@ -46,10 +46,7 @@ const MobileTabs: React.FC<MobileTabsProps> = ({
         
         <TabsContent value="content">
           <div className="bg-white rounded-lg shadow p-4">
-            <PosterForm 
-              posterData={posterData}
-              setPosterData={setPosterData}
-            />
+            <PosterForm />
             
             <Button 
               onClick={handleExportPDF} 
