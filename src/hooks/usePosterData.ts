@@ -1,3 +1,4 @@
+
 import { useCallback } from 'react';
 import { PosterData } from '@/types/project';
 import { useProjectState } from '@/hooks/useProjectState';
@@ -30,6 +31,7 @@ export const usePosterData = () => {
     qrCodeCaption: "",
     showKeypoints: true,
     showQrCode: true,
+    showReferences: true,
     images: []
   };
 

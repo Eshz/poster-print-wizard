@@ -25,5 +25,6 @@ export interface PosterData {
   qrCodeCaption?: string;
   showKeypoints: boolean;
   showQrCode: boolean;
+  showReferences?: boolean;
   images: PosterImage[];
 }

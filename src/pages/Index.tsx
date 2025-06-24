@@ -51,6 +51,7 @@ const Index = () => {
     qrCodeCaption: "",
     showKeypoints: true,
     showQrCode: true,
+    showReferences: true,
     images: []
   };
   

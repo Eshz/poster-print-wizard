@@ -69,6 +69,7 @@ export const useProjectManagement = () => {
           qrCodeCaption: "",
           showKeypoints: true,
           showQrCode: true,
+          showReferences: true,
           images: []
         },
         designSettings: {

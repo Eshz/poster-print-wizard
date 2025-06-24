@@ -2,7 +2,7 @@
 import React from 'react';
 import { CollapsibleSection } from '@/components/ui/collapsible-section';
 import { Image } from 'lucide-react';
-import { PosterData, PosterImage } from '@/types/project';
+import { PosterData, PosterImage } from '@/types/poster';
 import ImagesSection from '../poster-form/ImagesSection';
 
 interface ImagesFormSectionProps {
