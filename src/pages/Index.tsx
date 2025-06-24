@@ -47,6 +47,7 @@ const Index = () => {
   
   const designSettings: DesignSettings = currentProject?.designSettings || {
     layout: 'classic',
+    orientation: 'portrait',
     titleFont: 'playfair',
     contentFont: 'roboto',
     headerBgColor: '#4052b6',

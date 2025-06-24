@@ -9,6 +9,7 @@ export const useDesignStyles = (
 ) => {
   const applyStyle = useCallback((style: PosterStyle) => {
     setDesignSettings({
+      ...designSettings, // Preserve existing settings including orientation
       layout: style.layout,
       titleFont: style.titleFont,
       contentFont: style.contentFont,
@@ -20,7 +21,7 @@ export const useDesignStyles = (
       keyPointsBgColor: style.keyPointsBgColor,
       keyPointsTextColor: style.keyPointsTextColor
     });
-  }, [setDesignSettings]);
+  }, [designSettings, setDesignSettings]);
 
   const isStyleSelected = useCallback((style: PosterStyle): boolean => {
     return (
