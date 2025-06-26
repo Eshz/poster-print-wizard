@@ -1,5 +1,6 @@
 
 import { useEffect, useRef } from 'react';
+import { useIsMobile } from './use-mobile';
 
 interface UsePosterScalingProps {
   manualZoom: number;
@@ -20,6 +21,7 @@ export const usePosterScaling = ({
 }: UsePosterScalingProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const posterRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const calculateScale = () => {
@@ -34,8 +36,10 @@ export const usePosterScaling = ({
       const a0ScaleFactor = a0WidthPx / posterUIWidth;
       
       // Calculate fit-to-window scale - ensure poster fits entirely in viewport
-      const availableWidth = containerRect.width - 80; // More padding for safety
-      const availableHeight = containerRect.height - 80; // More padding for safety
+      // Use different padding for mobile vs desktop
+      const padding = isMobile ? 40 : 80;
+      const availableWidth = containerRect.width - padding;
+      const availableHeight = containerRect.height - padding;
       
       // Calculate CSS scale that fits both width and height
       const scaleX = availableWidth / posterUIWidth;
@@ -56,16 +60,20 @@ export const usePosterScaling = ({
       }
     };
 
-    const timer = setTimeout(calculateScale, 100);
+    // Use shorter timeout for mobile for more responsive scaling
+    const timeout = isMobile ? 50 : 100;
+    const timer = setTimeout(calculateScale, timeout);
     
     calculateScale();
     window.addEventListener('resize', calculateScale);
+    window.addEventListener('orientationchange', calculateScale);
     
     return () => {
       clearTimeout(timer);
       window.removeEventListener('resize', calculateScale);
+      window.removeEventListener('orientationchange', calculateScale);
     };
-  }, [manualZoom, onContainerScaleChange, posterUIWidth, posterUIHeight, a0WidthPx, a0HeightPx]);
+  }, [manualZoom, onContainerScaleChange, posterUIWidth, posterUIHeight, a0WidthPx, a0HeightPx, isMobile]);
 
   return { containerRef, posterRef };
 };
