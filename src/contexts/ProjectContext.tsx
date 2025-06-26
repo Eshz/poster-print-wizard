@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect } from 'react';
 import { generateProjectId, getProject, getProjects, saveProject } from '@/utils/projectManager';
 import { toast } from "sonner";
@@ -79,18 +78,19 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
       images: []
     };
     
+    // Updated to use Academic Modern as default
     const defaultDesignSettings: DesignSettings = {
-      layout: 'classic',
+      layout: 'modern',
       orientation: 'portrait',
-      titleFont: 'playfair',
+      titleFont: 'merriweather',
       contentFont: 'roboto',
-      headerBgColor: '#4052b6',
-      headerTextColor: '#FFFFFF',
-      sectionBgColor: '#e6ebff',
-      sectionTitleColor: '#4052b6',
-      sectionTextColor: '#000000',
-      keyPointsBgColor: '#f5f7ff',
-      keyPointsTextColor: '#4052b6',
+      headerBgColor: '#FFFFFF',
+      headerTextColor: '#1E3A8A',
+      sectionBgColor: '#3B82F6',
+      sectionTitleColor: '#FFFFFF',
+      sectionTextColor: '#FFFFFF',
+      keyPointsBgColor: '#EFF6FF',
+      keyPointsTextColor: '#1E3A8A',
     };
 
     const newProject: ProjectData = {

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { exportToPDF } from '@/utils/pdfExport';
 import MobileTopNav from '@/components/layout/MobileTopNav';
@@ -19,7 +18,7 @@ const Index = () => {
   const [manualZoom, setManualZoom] = React.useState<number>(0);
   const [fitZoomLevel, setFitZoomLevel] = React.useState<number>(0);
   
-  // Extract values from the current project with proper defaults
+  // Extract values from the current project with proper defaults (Academic Modern style)
   const posterData: PosterData = currentProject?.posterData || {
     title: "Your Conference Poster Title",
     authors: "Author Name(s)",
@@ -46,18 +45,19 @@ const Index = () => {
     images: []
   };
   
+  // Updated default to Academic Modern style
   const designSettings: DesignSettings = currentProject?.designSettings || {
-    layout: 'classic',
+    layout: 'modern',
     orientation: 'portrait',
-    titleFont: 'playfair',
+    titleFont: 'merriweather',
     contentFont: 'roboto',
-    headerBgColor: '#4052b6',
-    headerTextColor: '#FFFFFF',
-    sectionBgColor: '#e6ebff',
-    sectionTitleColor: '#4052b6',
-    sectionTextColor: '#000000',
-    keyPointsBgColor: '#f5f7ff',
-    keyPointsTextColor: '#4052b6',
+    headerBgColor: '#FFFFFF',
+    headerTextColor: '#1E3A8A',
+    sectionBgColor: '#3B82F6',
+    sectionTitleColor: '#FFFFFF',
+    sectionTextColor: '#FFFFFF',
+    keyPointsBgColor: '#EFF6FF',
+    keyPointsTextColor: '#1E3A8A',
   };
   
   const qrColor: string = currentProject?.qrColor || "#000000";
