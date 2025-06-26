@@ -1,10 +1,9 @@
 
 import React from 'react';
 import { exportToPDF } from '@/utils/pdfExport';
-import MobileTabs from '@/components/layout/MobileTabs';
+import MobileTopNav from '@/components/layout/MobileTopNav';
 import DesktopSidebar from '@/components/layout/DesktopSidebar';
 import PosterPreviewArea from '@/components/layout/PosterPreviewArea';
-import MobileFloatingButton from '@/components/layout/MobileFloatingButton';
 import { useProjects } from '@/contexts/ProjectContext';
 import { PosterData, DesignSettings } from '@/types/project';
 
@@ -17,6 +16,8 @@ const Index = () => {
   } = useProjects();
   
   const [activePanel, setActivePanel] = React.useState<'content' | 'design'>('content');
+  const [manualZoom, setManualZoom] = React.useState<number>(0);
+  const [fitZoomLevel, setFitZoomLevel] = React.useState<number>(0);
   
   // Extract values from the current project with proper defaults
   const posterData: PosterData = currentProject?.posterData || {
@@ -64,53 +65,60 @@ const Index = () => {
   const handleExportPDF = () => {
     exportToPDF('poster-content');
   };
+
+  const handleZoomChange = (zoom: number) => {
+    setManualZoom(zoom);
+  };
+
+  const handleFitZoomLevelChange = (scale: number) => {
+    setFitZoomLevel(scale);
+  };
   
   return (
-    <div className="flex min-h-[calc(100vh-73px)] bg-gray-50 relative">
-      {/* Mobile view tabs */}
-      <MobileTabs 
+    <div className="min-h-screen bg-gray-50">
+      {/* Mobile Top Navigation */}
+      <MobileTopNav 
         posterData={posterData}
         setPosterData={updatePosterData}
         designSettings={designSettings}
         setDesignSettings={updateDesignSettings}
         qrColor={qrColor}
         setQrColor={updateQrColor}
-        activePanel={activePanel}
-        setActivePanel={setActivePanel}
         handleExportPDF={handleExportPDF}
+        currentZoom={manualZoom || fitZoomLevel}
+        onZoomChange={handleZoomChange}
+        fitZoomLevel={fitZoomLevel}
       />
-      
-      {/* Desktop sidebar - fixed width */}
-      <div className="hidden lg:block">
-        <DesktopSidebar 
-          posterData={posterData}
-          setPosterData={updatePosterData}
-          designSettings={designSettings}
-          setDesignSettings={updateDesignSettings}
-          qrColor={qrColor}
-          setQrColor={updateQrColor}
-          activePanel={activePanel}
-          setActivePanel={setActivePanel}
-          handleExportPDF={handleExportPDF}
-        />
+
+      {/* Main content area */}
+      <div className="flex min-h-[calc(100vh-73px)] lg:min-h-[calc(100vh-73px)] pt-16 lg:pt-0">
+        {/* Desktop sidebar - fixed width */}
+        <div className="hidden lg:block">
+          <DesktopSidebar 
+            posterData={posterData}
+            setPosterData={updatePosterData}
+            designSettings={designSettings}
+            setDesignSettings={updateDesignSettings}
+            qrColor={qrColor}
+            setQrColor={updateQrColor}
+            activePanel={activePanel}
+            setActivePanel={setActivePanel}
+            handleExportPDF={handleExportPDF}
+          />
+        </div>
+        
+        {/* Preview Area - takes remaining space */}
+        <div className="flex-1">
+          <PosterPreviewArea 
+            posterData={posterData}
+            qrColor={qrColor}
+            designSettings={designSettings}
+            manualZoom={manualZoom}
+            onZoomChange={handleZoomChange}
+            onContainerScaleChange={handleFitZoomLevelChange}
+          />
+        </div>
       </div>
-      
-      {/* Preview Area - takes remaining space */}
-      <div className="flex-1">
-        <PosterPreviewArea 
-          posterData={posterData}
-          qrColor={qrColor}
-          designSettings={designSettings}
-        />
-      </div>
-      
-      {/* Mobile-only Design Panel in Sheet (sidebar) */}
-      <MobileFloatingButton 
-        designSettings={designSettings}
-        setDesignSettings={updateDesignSettings}
-        qrColor={qrColor}
-        setQrColor={updateQrColor}
-      />
     </div>
   );
 };
