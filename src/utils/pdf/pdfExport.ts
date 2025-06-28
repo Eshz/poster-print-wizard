@@ -153,14 +153,16 @@ export const exportToPDF = async (elementId: string, orientation: 'portrait' | '
     // Compress other images
     compressImages(clonedElement);
     
-    // Scale the element for PDF export using the corrected scaling logic with orientation
-    scaleElementForPdf(clonedElement, orientation);
+    toast.info(`Preparing high-quality A0 PDF export in ${orientation} mode with fonts...`);
     
-    toast.info(`Preparing high-quality A0 PDF export in ${orientation} mode...`);
+    // Scale the element for PDF export using the corrected scaling logic with orientation
+    // This now handles font loading asynchronously
+    await scaleElementForPdf(clonedElement, orientation);
     
     // Create PDF configuration with orientation
     const pdfConfig = createPdfConfig(orientation);
     
+    // Wait a bit longer for fonts to fully load and render
     setTimeout(() => {
       html2pdf().from(clonedElement).set(pdfConfig).outputPdf('blob').then((pdfBlob: Blob) => {
         // Create download link
@@ -184,7 +186,7 @@ export const exportToPDF = async (elementId: string, orientation: 'portrait' | '
         // Clean up
         cleanupTempContainer(tempDiv);
       });
-    }, 500);
+    }, 1500); // Increased timeout to allow for font loading
   } catch (error) {
     console.error("PDF preparation failed:", error);
     toast.error("PDF preparation failed. Please try again.");
