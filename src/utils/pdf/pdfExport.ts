@@ -1,9 +1,11 @@
+
 import { toast } from "sonner";
 import html2pdf from 'html2pdf.js';
 import { compressImages } from './imageCompression';
 import { scaleElementForPdf } from './elementScaling';
 import { createPdfConfig } from './pdfConfig';
 import { getPosterDimensions } from '../posterConstants';
+import { preloadFonts } from './fontLoader';
 
 /**
  * Creates a temporary container for the cloned element with proper isolation
@@ -20,6 +22,7 @@ const createTempContainer = (clonedElement: HTMLElement) => {
   tempDiv.style.backgroundColor = '#ffffff';
   tempDiv.style.margin = '0';
   tempDiv.style.padding = '0';
+  tempDiv.style.visibility = 'hidden'; // Make completely invisible
   document.body.appendChild(tempDiv);
   tempDiv.appendChild(clonedElement);
   return tempDiv;
@@ -123,12 +126,17 @@ const preparePosterForExport = (clonedElement: HTMLElement, orientation: 'portra
 
 /**
  * Exports a DOM element as a high-quality A0-sized PDF
- * Updated to use the original poster dimensions before zoom scaling with proper orientation support
+ * Updated to preload fonts invisibly without affecting the preview
  * @param elementId The ID of the DOM element to export
  * @param orientation The orientation of the poster ('portrait' or 'landscape')
  */
 export const exportToPDF = async (elementId: string, orientation: 'portrait' | 'landscape' = 'portrait') => {
-  // Get the original poster content (before zoom scaling)
+  // Preload fonts silently in the background BEFORE getting the element
+  // This prevents visible font changes during export
+  toast.info(`Preparing fonts for ${orientation} PDF export...`);
+  await preloadFonts();
+  
+  // Get the original poster content (after fonts are loaded)
   const element = getOriginalPosterElement();
   
   if (!element) {
@@ -153,16 +161,16 @@ export const exportToPDF = async (elementId: string, orientation: 'portrait' | '
     // Compress other images
     compressImages(clonedElement);
     
-    toast.info(`Preparing high-quality A0 PDF export in ${orientation} mode with fonts...`);
+    toast.info(`Generating high-quality A0 PDF in ${orientation} mode...`);
     
     // Scale the element for PDF export using the corrected scaling logic with orientation
-    // This now handles font loading asynchronously
+    // This now handles font loading asynchronously but invisibly
     await scaleElementForPdf(clonedElement, orientation);
     
     // Create PDF configuration with orientation
     const pdfConfig = createPdfConfig(orientation);
     
-    // Wait a bit longer for fonts to fully load and render
+    // Generate PDF with proper timeout for font rendering
     setTimeout(() => {
       html2pdf().from(clonedElement).set(pdfConfig).outputPdf('blob').then((pdfBlob: Blob) => {
         // Create download link
@@ -186,7 +194,7 @@ export const exportToPDF = async (elementId: string, orientation: 'portrait' | '
         // Clean up
         cleanupTempContainer(tempDiv);
       });
-    }, 1500); // Increased timeout to allow for font loading
+    }, 1000); // Reduced timeout since fonts are preloaded
   } catch (error) {
     console.error("PDF preparation failed:", error);
     toast.error("PDF preparation failed. Please try again.");
