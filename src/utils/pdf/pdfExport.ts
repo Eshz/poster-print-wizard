@@ -1,9 +1,9 @@
-
 import { toast } from "sonner";
 import html2pdf from 'html2pdf.js';
 import { compressImages } from './imageCompression';
 import { scaleElementForPdf } from './elementScaling';
 import { createPdfConfig } from './pdfConfig';
+import { getPosterDimensions } from '../posterConstants';
 
 /**
  * Creates a temporary container for the cloned element with proper isolation
@@ -77,10 +77,12 @@ const processQrCodeImages = async (clonedElement: HTMLElement) => {
 /**
  * Ensures proper styling for PDF export and removes scrollbars
  */
-const preparePosterForExport = (clonedElement: HTMLElement) => {
+const preparePosterForExport = (clonedElement: HTMLElement, orientation: 'portrait' | 'landscape' = 'portrait') => {
+  const dimensions = getPosterDimensions(orientation);
+  
   // Set exact dimensions to match preview
-  clonedElement.style.width = '800px';
-  clonedElement.style.height = '1131px';
+  clonedElement.style.width = `${dimensions.width}px`;
+  clonedElement.style.height = `${dimensions.height}px`;
   clonedElement.style.position = 'relative';
   clonedElement.style.overflow = 'hidden';
   clonedElement.style.display = 'flex';
@@ -123,8 +125,9 @@ const preparePosterForExport = (clonedElement: HTMLElement) => {
  * Exports a DOM element as a high-quality A0-sized PDF
  * Updated to use the original poster dimensions before zoom scaling
  * @param elementId The ID of the DOM element to export
+ * @param orientation The orientation of the poster ('portrait' or 'landscape')
  */
-export const exportToPDF = async (elementId: string) => {
+export const exportToPDF = async (elementId: string, orientation: 'portrait' | 'landscape' = 'portrait') => {
   // Get the original poster content (before zoom scaling)
   const element = getOriginalPosterElement();
   
@@ -138,8 +141,8 @@ export const exportToPDF = async (elementId: string) => {
   // Create a clean copy of the poster for PDF export
   const clonedElement = element.cloneNode(true) as HTMLElement;
   
-  // Prepare the element for export
-  preparePosterForExport(clonedElement);
+  // Prepare the element for export with the correct orientation
+  preparePosterForExport(clonedElement, orientation);
   
   const tempDiv = createTempContainer(clonedElement);
   
@@ -153,10 +156,10 @@ export const exportToPDF = async (elementId: string) => {
     // Scale the element for PDF export using the corrected scaling logic
     scaleElementForPdf(clonedElement);
     
-    toast.info("Preparing high-quality A0 PDF export...");
+    toast.info(`Preparing high-quality A0 PDF export in ${orientation} mode...`);
     
-    // Create PDF configuration
-    const pdfConfig = createPdfConfig();
+    // Create PDF configuration with orientation
+    const pdfConfig = createPdfConfig(orientation);
     
     setTimeout(() => {
       html2pdf().from(clonedElement).set(pdfConfig).outputPdf('blob').then((pdfBlob: Blob) => {
@@ -164,14 +167,14 @@ export const exportToPDF = async (elementId: string) => {
         const url = URL.createObjectURL(pdfBlob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'conference-poster-A0.pdf';
+        link.download = `conference-poster-A0-${orientation}.pdf`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
         
         const sizeInMB = (pdfBlob.size / (1024 * 1024)).toFixed(2);
-        toast.success(`A0 PDF exported successfully! File size: ${sizeInMB}MB`);
+        toast.success(`A0 PDF exported successfully in ${orientation} mode! File size: ${sizeInMB}MB`);
         
         // Clean up
         cleanupTempContainer(tempDiv);

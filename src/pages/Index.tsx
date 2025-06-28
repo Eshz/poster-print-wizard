@@ -63,7 +63,7 @@ const Index = () => {
   const qrColor: string = currentProject?.qrColor || "#000000";
   
   const handleExportPDF = () => {
-    exportToPDF('poster-content');
+    exportToPDF('poster-content', designSettings.orientation || 'portrait');
   };
 
   const handleZoomChange = (zoom: number) => {

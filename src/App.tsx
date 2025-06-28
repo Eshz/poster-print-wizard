@@ -46,7 +46,7 @@ const App = () => {
   }, []);
   
   const handleExportPDF = () => {
-    exportToPDF('poster-content');
+    exportToPDF('poster-content', 'portrait'); // Default to portrait in global header
     trackPDFExported();
   };
 
