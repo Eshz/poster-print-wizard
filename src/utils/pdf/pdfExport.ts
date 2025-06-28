@@ -75,12 +75,12 @@ const processQrCodeImages = async (clonedElement: HTMLElement) => {
 };
 
 /**
- * Ensures proper styling for PDF export and removes scrollbars
+ * Ensures proper styling for PDF export and removes scrollbars based on orientation
  */
 const preparePosterForExport = (clonedElement: HTMLElement, orientation: 'portrait' | 'landscape' = 'portrait') => {
   const dimensions = getPosterDimensions(orientation);
   
-  // Set exact dimensions to match preview
+  // Set exact dimensions to match preview based on orientation
   clonedElement.style.width = `${dimensions.width}px`;
   clonedElement.style.height = `${dimensions.height}px`;
   clonedElement.style.position = 'relative';
@@ -123,7 +123,7 @@ const preparePosterForExport = (clonedElement: HTMLElement, orientation: 'portra
 
 /**
  * Exports a DOM element as a high-quality A0-sized PDF
- * Updated to use the original poster dimensions before zoom scaling
+ * Updated to use the original poster dimensions before zoom scaling with proper orientation support
  * @param elementId The ID of the DOM element to export
  * @param orientation The orientation of the poster ('portrait' or 'landscape')
  */
@@ -136,7 +136,7 @@ export const exportToPDF = async (elementId: string, orientation: 'portrait' | '
     return;
   }
   
-  console.log("Found original poster content element:", element);
+  console.log(`Found original poster content element for ${orientation} export:`, element);
   
   // Create a clean copy of the poster for PDF export
   const clonedElement = element.cloneNode(true) as HTMLElement;
@@ -153,8 +153,8 @@ export const exportToPDF = async (elementId: string, orientation: 'portrait' | '
     // Compress other images
     compressImages(clonedElement);
     
-    // Scale the element for PDF export using the corrected scaling logic
-    scaleElementForPdf(clonedElement);
+    // Scale the element for PDF export using the corrected scaling logic with orientation
+    scaleElementForPdf(clonedElement, orientation);
     
     toast.info(`Preparing high-quality A0 PDF export in ${orientation} mode...`);
     
