@@ -1,13 +1,13 @@
 
-import { A0_WIDTH_POINTS, A0_HEIGHT_POINTS, PREVIEW_WIDTH, PREVIEW_HEIGHT } from './pdfConfig';
+import { A0_WIDTH_POINTS, A0_HEIGHT_POINTS, PREVIEW_WIDTH_PORTRAIT, PREVIEW_HEIGHT_PORTRAIT } from './pdfConfig';
 
 /**
  * Calculates the scale factor for A0 export at 300 DPI
  */
 export const calculateScaleFactor = () => {
   // Calculate the scale factor needed to go from preview size to A0 300 DPI size
-  const widthRatio = A0_WIDTH_POINTS / PREVIEW_WIDTH; // 2384 / 800 = ~2.98
-  const heightRatio = A0_HEIGHT_POINTS / PREVIEW_HEIGHT; // 3370 / 1131 = ~2.98
+  const widthRatio = A0_WIDTH_POINTS / PREVIEW_WIDTH_PORTRAIT; // 2384 / 800 = ~2.98
+  const heightRatio = A0_HEIGHT_POINTS / PREVIEW_HEIGHT_PORTRAIT; // 3370 / 1131 = ~2.98
   
   // Use the smaller ratio to maintain aspect ratio
   return Math.min(widthRatio, heightRatio);
@@ -22,8 +22,8 @@ export const scaleElementForPdf = (clonedElement: HTMLElement) => {
   clonedElement.style.transformOrigin = 'initial';
   
   // Set dimensions to match preview exactly
-  clonedElement.style.width = `${PREVIEW_WIDTH}px`;
-  clonedElement.style.height = `${PREVIEW_HEIGHT}px`;
+  clonedElement.style.width = `${PREVIEW_WIDTH_PORTRAIT}px`;
+  clonedElement.style.height = `${PREVIEW_HEIGHT_PORTRAIT}px`;
   clonedElement.style.margin = '0';
   clonedElement.style.padding = '0';
   clonedElement.style.overflow = 'visible';
