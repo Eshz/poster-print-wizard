@@ -4,7 +4,7 @@ import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ProjectProvider } from "./contexts/ProjectContext";
+import { ProjectProvider, useProjects } from "./contexts/ProjectContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { Button } from "@/components/ui/button";
@@ -17,9 +17,10 @@ import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
-const App = () => {
+const AppContent = () => {
   const isMobile = useIsMobile();
   const { trackPDFExported, trackEvent } = useAnalytics();
+  const { currentProject } = useProjects();
   
   // Clear all data on page refresh/exit
   useEffect(() => {
@@ -46,7 +47,9 @@ const App = () => {
   }, []);
   
   const handleExportPDF = () => {
-    exportToPDF('poster-content', 'portrait'); // Default to portrait in global header
+    // Use the current project's orientation or default to portrait
+    const orientation = currentProject?.designSettings?.orientation || 'portrait';
+    exportToPDF('poster-content', orientation);
     trackPDFExported();
   };
 
@@ -63,66 +66,72 @@ const App = () => {
   };
 
   return (
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      {/* Desktop header - hidden on mobile */}
+      <header className="hidden lg:block border-b bg-white shadow-sm sticky top-0 z-50">
+        <div className="flex justify-between items-center px-6 py-3">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-6 h-6 bg-black rounded-sm flex items-center justify-center">
+                <span className="text-white font-bold text-sm">P</span>
+              </div>
+              <h1 className="text-lg font-semibold text-gray-900">PosterMaker</h1>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Button 
+                onClick={handleUndo}
+                variant="ghost"
+                size="sm"
+                className="text-gray-600 hover:text-gray-900 flex items-center gap-1"
+              >
+                <Undo className="h-4 w-4" />
+                <span className="text-xs">Undo</span>
+              </Button>
+              <Button 
+                onClick={handleRedo}
+                variant="ghost"
+                size="sm"
+                className="text-gray-600 hover:text-gray-900 flex items-center gap-1"
+              >
+                <Redo className="h-4 w-4" />
+                <span className="text-xs">Redo</span>
+              </Button>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            <ImportExportButtons />
+            <Button 
+              onClick={handleExportPDF}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Export to PDF
+            </Button>
+          </div>
+        </div>
+      </header>
+      <main className="flex-1">
+        <Toaster />
+        <SonnerToaster />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </main>
+    </div>
+  );
+};
+
+const App = () => {
+  return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <ProjectProvider>
-          <div className="flex flex-col min-h-screen bg-gray-50">
-            {/* Desktop header - hidden on mobile */}
-            <header className="hidden lg:block border-b bg-white shadow-sm sticky top-0 z-50">
-              <div className="flex justify-between items-center px-6 py-3">
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-6 h-6 bg-black rounded-sm flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">P</span>
-                    </div>
-                    <h1 className="text-lg font-semibold text-gray-900">PosterMaker</h1>
-                  </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    <Button 
-                      onClick={handleUndo}
-                      variant="ghost"
-                      size="sm"
-                      className="text-gray-600 hover:text-gray-900 flex items-center gap-1"
-                    >
-                      <Undo className="h-4 w-4" />
-                      <span className="text-xs">Undo</span>
-                    </Button>
-                    <Button 
-                      onClick={handleRedo}
-                      variant="ghost"
-                      size="sm"
-                      className="text-gray-600 hover:text-gray-900 flex items-center gap-1"
-                    >
-                      <Redo className="h-4 w-4" />
-                      <span className="text-xs">Redo</span>
-                    </Button>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-4">
-                  <ImportExportButtons />
-                  <Button 
-                    onClick={handleExportPDF}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    Export to PDF
-                  </Button>
-                </div>
-              </div>
-            </header>
-            <main className="flex-1">
-              <Toaster />
-              <SonnerToaster />
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </BrowserRouter>
-            </main>
-          </div>
+          <AppContent />
         </ProjectProvider>
       </TooltipProvider>
     </QueryClientProvider>

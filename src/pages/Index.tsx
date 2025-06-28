@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { exportToPDF } from '@/utils/pdfExport';
 import MobileTopNav from '@/components/layout/MobileTopNav';
@@ -63,6 +64,7 @@ const Index = () => {
   const qrColor: string = currentProject?.qrColor || "#000000";
   
   const handleExportPDF = () => {
+    // Use the current design settings orientation
     exportToPDF('poster-content', designSettings.orientation || 'portrait');
   };
 
