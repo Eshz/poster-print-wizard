@@ -12,13 +12,33 @@ import {
 import { processQrCodeImages } from './qrCodeProcessor';
 import { preparePosterForExport } from './exportPreparation';
 import { generatePdf } from './pdfGenerator';
+import { exportToCanvasPDF } from './canvasExport';
 
 /**
  * Exports a DOM element as a high-quality A0-sized PDF
+ * Now includes canvas-based export option for better font rendering
  * @param elementId The ID of the DOM element to export
  * @param orientation The orientation of the poster ('portrait' or 'landscape')
+ * @param useCanvas Whether to use canvas-based export (recommended for better fonts)
  */
-export const exportToPDF = async (elementId: string, orientation: 'portrait' | 'landscape' = 'portrait') => {
+export const exportToPDF = async (
+  elementId: string, 
+  orientation: 'portrait' | 'landscape' = 'portrait',
+  useCanvas: boolean = true
+) => {
+  // Use canvas-based export by default for better font rendering
+  if (useCanvas) {
+    try {
+      await exportToCanvasPDF(elementId, orientation);
+      return;
+    } catch (error) {
+      console.error("Canvas export failed, falling back to html2pdf:", error);
+      toast.error("Canvas export failed, trying alternative method...");
+      // Fall through to original method
+    }
+  }
+  
+  // Original html2pdf method as fallback
   // Preload fonts silently in the background BEFORE getting the element
   toast.info(`Preparing fonts for ${orientation} PDF export...`);
   await preloadFonts();
