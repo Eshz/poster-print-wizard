@@ -46,7 +46,10 @@ const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = React.memo(({
 
   if (isAcademicModern) {
     return (
-      <div className={containerClasses}>
+      <div 
+        className={containerClasses}
+        data-design-settings={JSON.stringify(enhancedDesignSettings)}
+      >
         <AcademicModernLayout 
           posterData={posterData}
           designSettings={enhancedDesignSettings}
@@ -61,7 +64,10 @@ const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = React.memo(({
   switch(layout) {
     case 'minimalist':
       return (
-        <div className={containerClasses}>
+        <div 
+          className={containerClasses}
+          data-design-settings={JSON.stringify(enhancedDesignSettings)}
+        >
           <MinimalistCleanLayout 
             posterData={posterData}
             designSettings={enhancedDesignSettings}
@@ -73,7 +79,10 @@ const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = React.memo(({
       );
     case 'data-viz':
       return (
-        <div className={containerClasses}>
+        <div 
+          className={containerClasses}
+          data-design-settings={JSON.stringify(enhancedDesignSettings)}
+        >
           <DataVisualizationLayout 
             posterData={posterData}
             designSettings={enhancedDesignSettings}
@@ -85,7 +94,10 @@ const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = React.memo(({
       );
     case 'executive':
       return (
-        <div className={containerClasses}>
+        <div 
+          className={containerClasses}
+          data-design-settings={JSON.stringify(enhancedDesignSettings)}
+        >
           <ExecutiveSummaryLayout 
             posterData={posterData}
             designSettings={enhancedDesignSettings}
@@ -97,7 +109,10 @@ const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = React.memo(({
       );
     case 'modern':
       return (
-        <div className={containerClasses}>
+        <div 
+          className={containerClasses}
+          data-design-settings={JSON.stringify(enhancedDesignSettings)}
+        >
           <ModernLayout 
             posterData={posterData}
             designSettings={enhancedDesignSettings}
@@ -109,7 +124,10 @@ const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = React.memo(({
       );
     case 'focus':
       return (
-        <div className={containerClasses}>
+        <div 
+          className={containerClasses}
+          data-design-settings={JSON.stringify(enhancedDesignSettings)}
+        >
           <FocusLayout 
             posterData={posterData}
             designSettings={enhancedDesignSettings}
@@ -122,7 +140,10 @@ const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = React.memo(({
     case 'classic':
     default:
       return (
-        <div className={containerClasses}>
+        <div 
+          className={containerClasses}
+          data-design-settings={JSON.stringify(enhancedDesignSettings)}
+        >
           <ClassicLayout 
             posterData={posterData}
             designSettings={enhancedDesignSettings}

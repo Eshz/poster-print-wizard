@@ -15,13 +15,11 @@ import { generatePdf } from './pdfGenerator';
 
 /**
  * Exports a DOM element as a high-quality A0-sized PDF
- * Updated to preload fonts invisibly without affecting the preview
  * @param elementId The ID of the DOM element to export
  * @param orientation The orientation of the poster ('portrait' or 'landscape')
  */
 export const exportToPDF = async (elementId: string, orientation: 'portrait' | 'landscape' = 'portrait') => {
   // Preload fonts silently in the background BEFORE getting the element
-  // This prevents visible font changes during export
   toast.info(`Preparing fonts for ${orientation} PDF export...`);
   await preloadFonts();
   
@@ -34,6 +32,10 @@ export const exportToPDF = async (elementId: string, orientation: 'portrait' | '
   }
   
   console.log(`Found original poster content element for ${orientation} export:`, element);
+  
+  // Extract design settings BEFORE cloning to ensure we have the current font settings
+  const designSettings = extractDesignSettings();
+  console.log('Extracted design settings for PDF export:', designSettings);
   
   // Create a clean copy of the poster for PDF export
   const clonedElement = element.cloneNode(true) as HTMLElement;
@@ -51,9 +53,6 @@ export const exportToPDF = async (elementId: string, orientation: 'portrait' | '
     compressImages(clonedElement);
     
     toast.info(`Generating high-quality A0 PDF in ${orientation} mode...`);
-    
-    // Extract design settings from the poster data (if available)
-    const designSettings = extractDesignSettings();
     
     // Scale the element for PDF export using the corrected scaling logic with orientation
     // Pass design settings to ensure proper font application
