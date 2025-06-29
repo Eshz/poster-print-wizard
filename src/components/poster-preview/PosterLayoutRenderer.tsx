@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { PosterData, DesignSettings } from '@/types/project';
 import { getFontClass } from '@/utils/fontUtils';
@@ -44,115 +45,40 @@ const PosterLayoutRenderer: React.FC<PosterLayoutRendererProps> = React.memo(({
                           designSettings.sectionBgColor === "#3B82F6" &&
                           designSettings.keyPointsBgColor === "#EFF6FF";
 
+  // Common container with design settings data attribute for ALL layouts
+  const renderLayout = (LayoutComponent: React.ComponentType<any>) => (
+    <div 
+      className={containerClasses}
+      data-design-settings={JSON.stringify(enhancedDesignSettings)}
+    >
+      <LayoutComponent 
+        posterData={posterData}
+        designSettings={enhancedDesignSettings}
+        qrCodeUrl={qrCodeUrl}
+        showKeypoints={showKeypoints}
+        showQrCode={showQrCode}
+      />
+    </div>
+  );
+
   if (isAcademicModern) {
-    return (
-      <div 
-        className={containerClasses}
-        data-design-settings={JSON.stringify(enhancedDesignSettings)}
-      >
-        <AcademicModernLayout 
-          posterData={posterData}
-          designSettings={enhancedDesignSettings}
-          qrCodeUrl={qrCodeUrl}
-          showKeypoints={showKeypoints}
-          showQrCode={showQrCode}
-        />
-      </div>
-    );
+    return renderLayout(AcademicModernLayout);
   }
 
   switch(layout) {
     case 'minimalist':
-      return (
-        <div 
-          className={containerClasses}
-          data-design-settings={JSON.stringify(enhancedDesignSettings)}
-        >
-          <MinimalistCleanLayout 
-            posterData={posterData}
-            designSettings={enhancedDesignSettings}
-            qrCodeUrl={qrCodeUrl}
-            showKeypoints={showKeypoints}
-            showQrCode={showQrCode}
-          />
-        </div>
-      );
+      return renderLayout(MinimalistCleanLayout);
     case 'data-viz':
-      return (
-        <div 
-          className={containerClasses}
-          data-design-settings={JSON.stringify(enhancedDesignSettings)}
-        >
-          <DataVisualizationLayout 
-            posterData={posterData}
-            designSettings={enhancedDesignSettings}
-            qrCodeUrl={qrCodeUrl}
-            showKeypoints={showKeypoints}
-            showQrCode={showQrCode}
-          />
-        </div>
-      );
+      return renderLayout(DataVisualizationLayout);
     case 'executive':
-      return (
-        <div 
-          className={containerClasses}
-          data-design-settings={JSON.stringify(enhancedDesignSettings)}
-        >
-          <ExecutiveSummaryLayout 
-            posterData={posterData}
-            designSettings={enhancedDesignSettings}
-            qrCodeUrl={qrCodeUrl}
-            showKeypoints={showKeypoints}
-            showQrCode={showQrCode}
-          />
-        </div>
-      );
+      return renderLayout(ExecutiveSummaryLayout);
     case 'modern':
-      return (
-        <div 
-          className={containerClasses}
-          data-design-settings={JSON.stringify(enhancedDesignSettings)}
-        >
-          <ModernLayout 
-            posterData={posterData}
-            designSettings={enhancedDesignSettings}
-            qrCodeUrl={qrCodeUrl}
-            showKeypoints={showKeypoints}
-            showQrCode={showQrCode}
-          />
-        </div>
-      );
+      return renderLayout(ModernLayout);
     case 'focus':
-      return (
-        <div 
-          className={containerClasses}
-          data-design-settings={JSON.stringify(enhancedDesignSettings)}
-        >
-          <FocusLayout 
-            posterData={posterData}
-            designSettings={enhancedDesignSettings}
-            qrCodeUrl={qrCodeUrl}
-            showKeypoints={showKeypoints}
-            showQrCode={showQrCode}
-          />
-        </div>
-      );
+      return renderLayout(FocusLayout);
     case 'classic':
     default:
-      return (
-        <div 
-          className={containerClasses}
-          data-design-settings={JSON.stringify(enhancedDesignSettings)}
-        >
-          <ClassicLayout 
-            posterData={posterData}
-            designSettings={enhancedDesignSettings}
-            qrCodeUrl={qrCodeUrl}
-            showKeypoints={showKeypoints}
-            showQrCode={showQrCode}
-          />
-        </div>
-      );
+      return renderLayout(ClassicLayout);
   }
 });
 

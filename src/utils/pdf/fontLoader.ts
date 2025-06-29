@@ -66,53 +66,7 @@ const getFontFamilyFromKey = (fontKey: string): string => {
 };
 
 /**
- * Injects CSS with resolved font variables into the cloned element
- */
-const injectResolvedFontCSS = (clonedElement: HTMLElement, designSettings?: any) => {
-  const style = document.createElement('style');
-  style.textContent = `
-    :root {
-      --font-playfair: 'Playfair Display', serif;
-      --font-roboto: 'Roboto', sans-serif;
-      --font-merriweather: 'Merriweather', serif;
-      --font-montserrat: 'Montserrat', sans-serif;
-      --font-opensans: 'Open Sans', sans-serif;
-      --font-lora: 'Lora', serif;
-      --font-raleway: 'Raleway', sans-serif;
-      --font-crimsontext: 'Crimson Text', serif;
-      --font-sourceserifpro: 'Source Serif Pro', serif;
-      --font-ebgaramond: 'EB Garamond', serif;
-      --font-inter: 'Inter', sans-serif;
-      --font-librewilson: 'Libre Baskerville', serif;
-      --font-nunito: 'Nunito', sans-serif;
-      --font-cormorantgaramond: 'Cormorant Garamond', serif;
-      --font-worksans: 'Work Sans', sans-serif;
-      --font-oldstandardtt: 'Old Standard TT', serif;
-      --font-karla: 'Karla', sans-serif;
-      --font-spectral: 'Spectral', serif;
-      --font-publicsans: 'Public Sans', sans-serif;
-      --font-vollkorn: 'Vollkorn', serif;
-      --font-firasans: 'Fira Sans', sans-serif;
-    }
-    
-    .poster-title {
-      font-family: var(--font-${designSettings?.titleFont || 'merriweather'}) !important;
-      font-weight: 700 !important;
-    }
-    
-    .poster-body {
-      font-family: var(--font-${designSettings?.contentFont || 'roboto'}) !important;
-      font-weight: 500 !important;
-    }
-  `;
-  
-  // Insert at the beginning of the cloned element
-  clonedElement.insertBefore(style, clonedElement.firstChild);
-  console.log('Injected resolved font CSS into cloned element');
-};
-
-/**
- * Aggressively replaces all CSS variable font references with actual font families
+ * Aggressively replaces ALL CSS variable font references with actual font families
  */
 const replaceAllCSSVariableFonts = (element: HTMLElement, designSettings?: any) => {
   // Replace inline style CSS variables
@@ -122,7 +76,7 @@ const replaceAllCSSVariableFonts = (element: HTMLElement, designSettings?: any) 
       const fontKey = match[1];
       const fontFamily = getFontFamilyFromKey(fontKey);
       element.style.fontFamily = fontFamily;
-      console.log(`Replaced inline CSS variable --font-${fontKey} with ${fontFamily} on element:`, element.tagName);
+      console.log(`Replaced inline CSS variable --font-${fontKey} with ${fontFamily} on element:`, element.tagName, element.className);
     }
   }
   
@@ -134,53 +88,139 @@ const replaceAllCSSVariableFonts = (element: HTMLElement, designSettings?: any) 
       const fontKey = match[1];
       const fontFamily = getFontFamilyFromKey(fontKey);
       element.style.fontFamily = fontFamily;
-      console.log(`Replaced computed CSS variable --font-${fontKey} with ${fontFamily} on element:`, element.tagName);
+      console.log(`Replaced computed CSS variable --font-${fontKey} with ${fontFamily} on element:`, element.tagName, element.className);
     }
+  }
+  
+  // Handle Tailwind font classes by converting them to inline styles
+  const classList = Array.from(element.classList);
+  const fontClass = classList.find(cls => cls.startsWith('font-'));
+  if (fontClass && fontClass !== 'font-bold' && fontClass !== 'font-medium' && fontClass !== 'font-normal') {
+    const fontKey = fontClass.replace('font-', '');
+    const fontFamily = getFontFamilyFromKey(fontKey);
+    element.style.fontFamily = fontFamily;
+    console.log(`Applied font from Tailwind class ${fontClass} -> ${fontFamily} on element:`, element.tagName);
   }
   
   // Handle poster-specific classes with design settings
   if (designSettings) {
-    if (element.classList.contains('poster-title')) {
+    if (element.classList.contains('poster-title') || element.tagName === 'H1' || element.tagName === 'H2') {
       const titleFont = getFontFamilyFromKey(designSettings.titleFont || 'merriweather');
-      element.style.fontFamily = titleFont + ' !important';
+      element.style.fontFamily = titleFont;
       element.style.fontWeight = '700';
-      console.log(`Applied title font ${titleFont} to poster-title element`);
+      console.log(`Applied title font ${titleFont} to ${element.tagName} element with classes:`, element.className);
     }
     
-    if (element.classList.contains('poster-body')) {
-      const contentFont = getFontFamilyFromKey(designSettings.contentFont || 'roboto');
-      element.style.fontFamily = contentFont + ' !important';
-      element.style.fontWeight = '500';
-      console.log(`Applied content font ${contentFont} to poster-body element`);
+    if (element.classList.contains('poster-body') || element.tagName === 'P' || element.tagName === 'DIV') {
+      // Only apply content font to elements that don't already have a specific font
+      if (!element.style.fontFamily || element.style.fontFamily.includes('var(--font-')) {
+        const contentFont = getFontFamilyFromKey(designSettings.contentFont || 'roboto');
+        element.style.fontFamily = contentFont;
+        element.style.fontWeight = '400';
+        console.log(`Applied content font ${contentFont} to ${element.tagName} element with classes:`, element.className);
+      }
     }
   }
 };
 
 /**
- * Ensures fonts are properly loaded and applied for PDF export
+ * Injects comprehensive CSS with all font families resolved
+ */
+const injectResolvedFontCSS = (clonedElement: HTMLElement, designSettings?: any) => {
+  const style = document.createElement('style');
+  const titleFont = getFontFamilyFromKey(designSettings?.titleFont || 'merriweather');
+  const contentFont = getFontFamilyFromKey(designSettings?.contentFont || 'roboto');
+  
+  style.textContent = `
+    /* Resolve all CSS font variables */
+    :root {
+      --font-playfair: 'Playfair Display', serif !important;
+      --font-roboto: 'Roboto', sans-serif !important;
+      --font-merriweather: 'Merriweather', serif !important;
+      --font-montserrat: 'Montserrat', sans-serif !important;
+      --font-opensans: 'Open Sans', sans-serif !important;
+      --font-lora: 'Lora', serif !important;
+      --font-raleway: 'Raleway', sans-serif !important;
+      --font-crimsontext: 'Crimson Text', serif !important;
+      --font-sourceserifpro: 'Source Serif Pro', serif !important;
+      --font-ebgaramond: 'EB Garamond', serif !important;
+      --font-inter: 'Inter', sans-serif !important;
+      --font-librewilson: 'Libre Baskerville', serif !important;
+      --font-nunito: 'Nunito', sans-serif !important;
+      --font-cormorantgaramond: 'Cormorant Garamond', serif !important;
+      --font-worksans: 'Work Sans', sans-serif !important;
+      --font-oldstandardtt: 'Old Standard TT', serif !important;
+      --font-karla: 'Karla', sans-serif !important;
+      --font-spectral: 'Spectral', serif !important;
+      --font-publicsans: 'Public Sans', sans-serif !important;
+      --font-vollkorn: 'Vollkorn', serif !important;
+      --font-firasans: 'Fira Sans', sans-serif !important;
+    }
+    
+    /* Apply fonts to all common elements */
+    .poster-title, h1, h2, h3 {
+      font-family: ${titleFont} !important;
+      font-weight: 700 !important;
+    }
+    
+    .poster-body, p, div:not(.poster-title):not(h1):not(h2):not(h3) {
+      font-family: ${contentFont} !important;
+    }
+    
+    /* Tailwind font classes - force override */
+    .font-playfair { font-family: 'Playfair Display', serif !important; }
+    .font-roboto { font-family: 'Roboto', sans-serif !important; }
+    .font-merriweather { font-family: 'Merriweather', serif !important; }
+    .font-montserrat { font-family: 'Montserrat', sans-serif !important; }
+    .font-opensans { font-family: 'Open Sans', sans-serif !important; }
+    .font-lora { font-family: 'Lora', serif !important; }
+    .font-raleway { font-family: 'Raleway', sans-serif !important; }
+    .font-crimsontext { font-family: 'Crimson Text', serif !important; }
+    .font-sourceserifpro { font-family: 'Source Serif Pro', serif !important; }
+    .font-ebgaramond { font-family: 'EB Garamond', serif !important; }
+    .font-inter { font-family: 'Inter', sans-serif !important; }
+    .font-librewilson { font-family: 'Libre Baskerville', serif !important; }
+    .font-nunito { font-family: 'Nunito', sans-serif !important; }
+    .font-cormorantgaramond { font-family: 'Cormorant Garamond', serif !important; }
+    .font-worksans { font-family: 'Work Sans', sans-serif !important; }
+    .font-oldstandardtt { font-family: 'Old Standard TT', serif !important; }
+    .font-karla { font-family: 'Karla', sans-serif !important; }
+    .font-spectral { font-family: 'Spectral', serif !important; }
+    .font-publicsans { font-family: 'Public Sans', sans-serif !important; }
+    .font-vollkorn { font-family: 'Vollkorn', serif !important; }
+    .font-firasans { font-family: 'Fira Sans', sans-serif !important; }
+  `;
+  
+  // Insert at the beginning of the cloned element
+  clonedElement.insertBefore(style, clonedElement.firstChild);
+  console.log('Injected comprehensive resolved font CSS into cloned element with settings:', designSettings);
+};
+
+/**
+ * Ensures fonts are properly loaded and applied for PDF export across ALL layouts
  */
 export const ensureFontsLoaded = async (clonedElement: HTMLElement, designSettings?: any) => {
   // First preload fonts
   await preloadFonts();
   
-  console.log('Starting comprehensive font application for PDF export...');
+  console.log('Starting comprehensive font application for ALL poster layouts...');
   console.log('Design settings:', designSettings);
   
-  // Inject CSS with resolved font variables
+  // Inject comprehensive CSS with resolved font variables
   injectResolvedFontCSS(clonedElement, designSettings);
   
   // Get all elements including the root element
   const allElements = [clonedElement, ...Array.from(clonedElement.querySelectorAll('*'))];
   
-  // Replace CSS variables in all elements
+  // Replace CSS variables in ALL elements
   allElements.forEach((el) => {
     const htmlElement = el as HTMLElement;
     replaceAllCSSVariableFonts(htmlElement, designSettings);
   });
   
-  console.log(`Processed ${allElements.length} elements for font CSS variable replacement`);
-  console.log('Font application completed');
+  console.log(`Processed ${allElements.length} elements for comprehensive font CSS variable replacement`);
+  console.log('Comprehensive font application completed for all layouts');
   
-  // Wait for font application to take effect
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  // Wait longer for font application to take effect
+  await new Promise(resolve => setTimeout(resolve, 1500));
 };
