@@ -66,10 +66,39 @@ const getFontFamilyFromClass = (className: string): string => {
 };
 
 /**
- * Directly applies font families to elements based on their classes
- * This bypasses CSS variable issues with html2pdf.js
+ * Get font family from font key used in design settings
  */
-const applyDirectFontStyles = (element: HTMLElement) => {
+const getFontFamilyFromKey = (fontKey: string): string => {
+  switch(fontKey) {
+    case 'playfair': return 'Playfair Display, serif';
+    case 'roboto': return 'Roboto, sans-serif';
+    case 'merriweather': return 'Merriweather, serif';
+    case 'montserrat': return 'Montserrat, sans-serif';
+    case 'opensans': return 'Open Sans, sans-serif';
+    case 'lora': return 'Lora, serif';
+    case 'raleway': return 'Raleway, sans-serif';
+    case 'crimsontext': return 'Crimson Text, serif';
+    case 'sourceserifpro': return 'Source Serif Pro, serif';
+    case 'ebgaramond': return 'EB Garamond, serif';
+    case 'inter': return 'Inter, sans-serif';
+    case 'librewilson': return 'Libre Baskerville, serif';
+    case 'nunito': return 'Nunito, sans-serif';
+    case 'cormorantgaramond': return 'Cormorant Garamond, serif';
+    case 'worksans': return 'Work Sans, sans-serif';
+    case 'oldstandardtt': return 'Old Standard TT, serif';
+    case 'karla': return 'Karla, sans-serif';
+    case 'spectral': return 'Spectral, serif';
+    case 'publicsans': return 'Public Sans, sans-serif';
+    case 'vollkorn': return 'Vollkorn, serif';
+    case 'firasans': return 'Fira Sans, sans-serif';
+    default: return 'Roboto, sans-serif';
+  }
+};
+
+/**
+ * Directly applies font families to elements based on their classes and inline styles
+ */
+const applyDirectFontStyles = (element: HTMLElement, designSettings?: any) => {
   // Get all font classes on this element
   const fontClasses = Array.from(element.classList).filter(cls => cls.startsWith('font-'));
   
@@ -81,24 +110,50 @@ const applyDirectFontStyles = (element: HTMLElement) => {
     console.log(`Applied font ${fontFamily} to element with class ${fontClass}`);
   }
   
+  // Handle Academic Modern layout specific font variables
+  if (designSettings && element.style.fontFamily && element.style.fontFamily.includes('var(--font-')) {
+    const match = element.style.fontFamily.match(/var\(--font-([^)]+)\)/);
+    if (match) {
+      const fontKey = match[1];
+      const fontFamily = getFontFamilyFromKey(fontKey);
+      element.style.fontFamily = fontFamily;
+      console.log(`Applied font ${fontFamily} from CSS variable --font-${fontKey}`);
+    }
+  }
+  
+  // Handle elements with computed styles that use CSS variables
+  const computedStyle = window.getComputedStyle(element);
+  if (computedStyle.fontFamily && computedStyle.fontFamily.includes('var(--font-')) {
+    // Extract the font key from the CSS variable
+    const match = computedStyle.fontFamily.match(/var\(--font-([^)]+)\)/);
+    if (match) {
+      const fontKey = match[1];
+      const fontFamily = getFontFamilyFromKey(fontKey);
+      element.style.fontFamily = fontFamily;
+      console.log(`Applied font ${fontFamily} from computed CSS variable --font-${fontKey}`);
+    }
+  }
+  
   // Handle poster-specific classes
   if (element.classList.contains('poster-title')) {
-    element.style.fontFamily = 'Merriweather, serif';
+    const titleFont = designSettings?.titleFont || 'merriweather';
+    element.style.fontFamily = getFontFamilyFromKey(titleFont);
     element.style.fontWeight = '700';
-    console.log('Applied Merriweather to poster-title');
+    console.log(`Applied ${titleFont} to poster-title`);
   }
   
   if (element.classList.contains('poster-body')) {
-    element.style.fontFamily = 'Roboto, sans-serif';
+    const contentFont = designSettings?.contentFont || 'roboto';
+    element.style.fontFamily = getFontFamilyFromKey(contentFont);
     element.style.fontWeight = '500';
-    console.log('Applied Roboto to poster-body');
+    console.log(`Applied ${contentFont} to poster-body`);
   }
 };
 
 /**
  * Ensures fonts are properly loaded and applied for PDF export
  */
-export const ensureFontsLoaded = async (clonedElement: HTMLElement) => {
+export const ensureFontsLoaded = async (clonedElement: HTMLElement, designSettings?: any) => {
   // First preload fonts
   await preloadFonts();
   
@@ -109,7 +164,7 @@ export const ensureFontsLoaded = async (clonedElement: HTMLElement) => {
   
   allElements.forEach((el) => {
     const htmlElement = el as HTMLElement;
-    applyDirectFontStyles(htmlElement);
+    applyDirectFontStyles(htmlElement, designSettings);
   });
   
   console.log('Font application completed');

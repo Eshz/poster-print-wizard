@@ -1,4 +1,3 @@
-
 import { toast } from "sonner";
 import html2pdf from 'html2pdf.js';
 import { compressImages } from './imageCompression';
@@ -163,9 +162,25 @@ export const exportToPDF = async (elementId: string, orientation: 'portrait' | '
     
     toast.info(`Generating high-quality A0 PDF in ${orientation} mode...`);
     
+    // Extract design settings from the poster data (if available)
+    // Try to get design settings from the poster preview component
+    const posterPreview = document.getElementById('poster-preview');
+    let designSettings = null;
+    if (posterPreview) {
+      // Try to extract design settings from data attributes or global state
+      const posterLayoutRenderer = posterPreview.querySelector('[data-design-settings]');
+      if (posterLayoutRenderer) {
+        try {
+          designSettings = JSON.parse(posterLayoutRenderer.getAttribute('data-design-settings') || '{}');
+        } catch (e) {
+          console.warn('Could not parse design settings from data attribute');
+        }
+      }
+    }
+    
     // Scale the element for PDF export using the corrected scaling logic with orientation
-    // This now handles font loading asynchronously but invisibly
-    await scaleElementForPdf(clonedElement, orientation);
+    // Pass design settings to ensure proper font application
+    await scaleElementForPdf(clonedElement, orientation, designSettings);
     
     // Create PDF configuration with orientation
     const pdfConfig = createPdfConfig(orientation);
