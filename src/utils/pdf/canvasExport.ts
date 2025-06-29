@@ -54,13 +54,24 @@ const renderPosterToCanvas = async (element: HTMLElement, orientation: 'portrait
   
   toast.info('Rendering poster content to high-resolution canvas...');
   
+  // Get the poster element's bounding rect
+  const posterRect = element.getBoundingClientRect();
+  
   // Calculate scale factor from DOM to canvas
-  const { scaleX, scaleY, domRect } = calculateScaleFactors(element, canvasDimensions);
+  const scaleX = canvasDimensions.width / posterRect.width;
+  const scaleY = canvasDimensions.height / posterRect.height;
   
-  console.log(`Scale factors: ${scaleX}x${scaleY}, DOM size: ${domRect.width}x${domRect.height}`);
+  console.log(`Scale factors: ${scaleX}x${scaleY}, Poster size: ${posterRect.width}x${posterRect.height}`);
+  console.log(`Poster position: ${posterRect.left}, ${posterRect.top}`);
   
-  // Render all elements recursively
-  await renderElementToCanvas(ctx, element, 0, 0, scaleX, scaleY, designSettings);
+  // Calculate offset to center content and remove the poster's viewport offset
+  const offsetX = -posterRect.left * scaleX;
+  const offsetY = -posterRect.top * scaleY;
+  
+  console.log(`Canvas offsets: ${offsetX}, ${offsetY}`);
+  
+  // Render all elements recursively with proper centering
+  await renderElementToCanvas(ctx, element, offsetX, offsetY, scaleX, scaleY, designSettings);
   
   return canvas;
 };

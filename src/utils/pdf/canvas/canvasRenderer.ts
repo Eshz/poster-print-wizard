@@ -20,6 +20,7 @@ export const renderElementToCanvas = async (
   const rect = element.getBoundingClientRect();
   const computedStyle = window.getComputedStyle(element);
   
+  // Calculate position relative to the poster content, not the viewport
   const x = offsetX + (rect.left * scaleX);
   const y = offsetY + (rect.top * scaleY);
   const width = rect.width * scaleX;
