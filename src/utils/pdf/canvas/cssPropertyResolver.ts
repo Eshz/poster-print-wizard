@@ -50,6 +50,9 @@ export const resolveCSSProperties = (
   // Resolve font family (handle CSS variables and design settings)
   const fontFamily = resolveFontFamily(element, computedStyle, designSettings);
   
+  // Resolve font weight with enhanced detection
+  const fontWeight = resolveFontWeight(element, computedStyle);
+  
   // Parse borders for each side
   const borders = {
     top: parseBorder(computedStyle.borderTopWidth, computedStyle.borderTopColor, computedStyle.borderTopStyle, scaleY),
@@ -73,10 +76,10 @@ export const resolveCSSProperties = (
     left: parseFloat(computedStyle.marginLeft) || 0
   };
   
-  return {
+  const resolved = {
     fontFamily,
     fontSize: parseFloat(computedStyle.fontSize) || 16,
-    fontWeight: computedStyle.fontWeight || '400',
+    fontWeight,
     color: computedStyle.color || '#000000',
     textAlign: computedStyle.textAlign || 'left',
     backgroundColor: computedStyle.backgroundColor || 'transparent',
@@ -88,10 +91,22 @@ export const resolveCSSProperties = (
     alignItems: computedStyle.alignItems || 'stretch',
     textBaseline: computedStyle.verticalAlign || 'baseline'
   };
+  
+  console.log(`Resolved styles for ${element.tagName}.${element.className}:`, {
+    fontFamily: resolved.fontFamily,
+    fontWeight: resolved.fontWeight,
+    fontSize: resolved.fontSize,
+    textAlign: resolved.textAlign,
+    display: resolved.display,
+    alignItems: resolved.alignItems,
+    justifyContent: resolved.justifyContent
+  });
+  
+  return resolved;
 };
 
 /**
- * Resolves font family from various sources
+ * Enhanced font family resolution with better CSS variable handling
  */
 const resolveFontFamily = (
   element: HTMLElement,
@@ -100,15 +115,34 @@ const resolveFontFamily = (
 ): string => {
   // Check inline style first
   if (element.style.fontFamily && !element.style.fontFamily.includes('var(')) {
+    console.log(`Using inline font family: ${element.style.fontFamily}`);
     return element.style.fontFamily;
   }
   
-  // Check for CSS custom properties
+  // Enhanced CSS custom property resolution
   if (computedStyle.fontFamily && computedStyle.fontFamily.includes('var(--font-')) {
     const match = computedStyle.fontFamily.match(/var\(--font-([^)]+)\)/);
     if (match) {
       const fontKey = match[1];
-      return getFontFamilyFromKey(fontKey);
+      const resolvedFont = getFontFamilyFromKey(fontKey);
+      console.log(`Resolved CSS variable --font-${fontKey} to: ${resolvedFont}`);
+      return resolvedFont;
+    }
+  }
+  
+  // Handle dynamic CSS variables with design settings
+  if (element.style.fontFamily && element.style.fontFamily.includes('var(--font-')) {
+    // Extract the variable pattern like var(--font-${designSettings.titleFont})
+    if (designSettings && element.style.fontFamily.includes('titleFont')) {
+      const titleFont = getFontFamilyFromKey(designSettings.titleFont || 'merriweather');
+      console.log(`Resolved dynamic titleFont variable to: ${titleFont} for element:`, element.className);
+      return titleFont;
+    }
+    
+    if (designSettings && element.style.fontFamily.includes('contentFont')) {
+      const contentFont = getFontFamilyFromKey(designSettings.contentFont || 'roboto');
+      console.log(`Resolved dynamic contentFont variable to: ${contentFont} for element:`, element.className);
+      return contentFont;
     }
   }
   
@@ -119,22 +153,70 @@ const resolveFontFamily = (
   
   if (fontClass) {
     const fontKey = fontClass.replace('font-', '');
-    return getFontFamilyFromKey(fontKey);
+    const resolvedFont = getFontFamilyFromKey(fontKey);
+    console.log(`Resolved Tailwind class ${fontClass} to: ${resolvedFont}`);
+    return resolvedFont;
   }
   
-  // Use design settings based on element type
+  // Use design settings based on element type and context
   if (designSettings) {
-    if (element.classList.contains('poster-title') || element.tagName.match(/^H[1-6]$/)) {
-      return getFontFamilyFromKey(designSettings.titleFont || 'merriweather');
+    // Check if this is in the poster header (authors line)
+    const isInHeader = element.closest('[style*="backgroundColor"]') !== null;
+    const hasHeaderText = element.textContent && (
+      element.textContent.includes('@') || // likely contact info
+      element.textContent.toLowerCase().includes('author') ||
+      element.textContent.toLowerCase().includes('university') ||
+      element.textContent.toLowerCase().includes('school')
+    );
+    
+    if (isInHeader || hasHeaderText || element.classList.contains('poster-title') || element.tagName.match(/^H[1-6]$/)) {
+      const titleFont = getFontFamilyFromKey(designSettings.titleFont || 'merriweather');
+      console.log(`Applied titleFont (${titleFont}) to header/title element:`, element.className);
+      return titleFont;
     }
     
     if (element.classList.contains('poster-body') || ['P', 'DIV', 'SPAN'].includes(element.tagName)) {
-      return getFontFamilyFromKey(designSettings.contentFont || 'roboto');
+      const contentFont = getFontFamilyFromKey(designSettings.contentFont || 'roboto');
+      console.log(`Applied contentFont (${contentFont}) to body element:`, element.className);
+      return contentFont;
     }
   }
   
   // Fallback to computed style
-  return computedStyle.fontFamily || 'Arial, sans-serif';
+  const fallback = computedStyle.fontFamily || 'Arial, sans-serif';
+  console.log(`Using fallback font: ${fallback}`);
+  return fallback;
+};
+
+/**
+ * Enhanced font weight resolution
+ */
+const resolveFontWeight = (
+  element: HTMLElement,
+  computedStyle: CSSStyleDeclaration
+): string => {
+  // Check Tailwind font weight classes
+  const classList = Array.from(element.classList);
+  const weightClass = classList.find(cls => 
+    ['font-thin', 'font-light', 'font-normal', 'font-medium', 'font-semibold', 'font-bold', 'font-black'].includes(cls)
+  );
+  
+  if (weightClass) {
+    const weightMap: { [key: string]: string } = {
+      'font-thin': '100',
+      'font-light': '300',
+      'font-normal': '400',
+      'font-medium': '500',
+      'font-semibold': '600',
+      'font-bold': '700',
+      'font-black': '900'
+    };
+    const weight = weightMap[weightClass] || '400';
+    console.log(`Resolved Tailwind weight class ${weightClass} to: ${weight}`);
+    return weight;
+  }
+  
+  return computedStyle.fontWeight || '400';
 };
 
 /**

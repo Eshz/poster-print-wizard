@@ -1,4 +1,3 @@
-
 /**
  * Text rendering utilities for canvas export
  */
@@ -49,25 +48,41 @@ export const renderTextToCanvas = async (
       textX = x + (resolvedStyles.padding?.left || 0) * scaleX;
   }
   
-  // Handle vertical alignment
+  // Enhanced vertical alignment with better flexbox support
+  let textY = y;
   ctx.textBaseline = 'top';
-  let textY = y + (resolvedStyles.padding?.top || 0) * scaleY;
   
   // Check if this is flexbox centered content
   if (resolvedStyles.display === 'flex') {
     if (resolvedStyles.alignItems === 'center') {
+      // For flexbox center alignment, account for padding and use middle baseline
+      const paddingTop = (resolvedStyles.padding?.top || 0) * scaleY;
+      const paddingBottom = (resolvedStyles.padding?.bottom || 0) * scaleY;
+      const availableHeight = height - paddingTop - paddingBottom;
+      
       ctx.textBaseline = 'middle';
-      textY = y + height / 2;
+      textY = y + paddingTop + (availableHeight / 2);
+      
+      // Fine-tune for better visual centering (account for font metrics)
+      const fontSizeAdjustment = fontSize * 0.1; // Small adjustment based on font size
+      textY += fontSizeAdjustment;
+    } else {
+      textY = y + (resolvedStyles.padding?.top || 0) * scaleY;
     }
     
     if (resolvedStyles.justifyContent === 'center' && textAlign !== 'center') {
       ctx.textAlign = 'center';
       textX = x + width / 2;
     }
+  } else {
+    // Regular block element positioning
+    textY = y + (resolvedStyles.padding?.top || 0) * scaleY;
   }
   
   // Handle text wrapping for long text
-  const availableWidth = width - (resolvedStyles.padding?.left || 0) * scaleX - (resolvedStyles.padding?.right || 0) * scaleX;
+  const paddingLeft = (resolvedStyles.padding?.left || 0) * scaleX;
+  const paddingRight = (resolvedStyles.padding?.right || 0) * scaleX;
+  const availableWidth = width - paddingLeft - paddingRight;
   const lines = wrapText(ctx, text, availableWidth);
   
   // Draw text lines with proper line height
@@ -77,7 +92,7 @@ export const renderTextToCanvas = async (
     ctx.fillText(line, textX, lineY);
   });
   
-  console.log(`Rendered text "${text}" with font ${fontFamily} at ${textX}, ${textY}, align: ${textAlign}`);
+  console.log(`Rendered text "${text}" with font ${fontFamily} ${fontWeight} at ${textX}, ${textY}, align: ${textAlign}, baseline: ${ctx.textBaseline}`);
 };
 
 /**
