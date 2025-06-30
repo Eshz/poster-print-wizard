@@ -4,6 +4,7 @@
  */
 
 import { renderTextToCanvas } from './canvasTextRenderer';
+import { resolveCSSProperties } from './cssPropertyResolver';
 
 /**
  * Recursively renders DOM elements to canvas
@@ -18,7 +19,7 @@ export const renderElementToCanvas = async (
   designSettings: any
 ) => {
   const rect = element.getBoundingClientRect();
-  const computedStyle = window.getComputedStyle(element);
+  const resolvedStyles = resolveCSSProperties(element, designSettings, scaleX, scaleY);
   
   // Calculate position relative to the poster content, not the viewport
   const x = offsetX + (rect.left * scaleX);
@@ -27,19 +28,30 @@ export const renderElementToCanvas = async (
   const height = rect.height * scaleY;
   
   // Render background
-  await renderBackground(ctx, computedStyle, x, y, width, height);
+  await renderBackground(ctx, resolvedStyles, x, y, width, height);
   
-  // Render borders
-  renderBorders(ctx, computedStyle, x, y, width, height, scaleX);
+  // Render borders with individual side support
+  renderBorders(ctx, resolvedStyles, x, y, width, height);
   
   // Handle images with CORS support
   if (element.tagName === 'IMG') {
     await renderImageSafely(ctx, element as HTMLImageElement, x, y, width, height);
   }
   
-  // Handle text content
+  // Handle text content with enhanced positioning
   if (element.textContent && element.children.length === 0) {
-    await renderTextToCanvas(ctx, element, x, y, width, height, scaleX, scaleY, designSettings);
+    await renderTextToCanvas(
+      ctx, 
+      element, 
+      x, 
+      y, 
+      width, 
+      height, 
+      scaleX, 
+      scaleY, 
+      resolvedStyles,
+      designSettings
+    );
   }
   
   // Render children
@@ -53,13 +65,13 @@ export const renderElementToCanvas = async (
  */
 const renderBackground = async (
   ctx: CanvasRenderingContext2D,
-  computedStyle: CSSStyleDeclaration,
+  resolvedStyles: any,
   x: number,
   y: number,
   width: number,
   height: number
 ) => {
-  const bgColor = computedStyle.backgroundColor;
+  const bgColor = resolvedStyles.backgroundColor;
   if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
     ctx.fillStyle = bgColor;
     ctx.fillRect(x, y, width, height);
@@ -67,22 +79,56 @@ const renderBackground = async (
 };
 
 /**
- * Renders element borders
+ * Renders element borders with individual side support
  */
 const renderBorders = (
   ctx: CanvasRenderingContext2D,
-  computedStyle: CSSStyleDeclaration,
+  resolvedStyles: any,
   x: number,
   y: number,
   width: number,
-  height: number,
-  scaleX: number
+  height: number
 ) => {
-  const borderWidth = parseFloat(computedStyle.borderWidth) || 0;
-  if (borderWidth > 0) {
-    ctx.strokeStyle = computedStyle.borderColor || '#000000';
-    ctx.lineWidth = borderWidth * scaleX;
-    ctx.strokeRect(x, y, width, height);
+  const { borders } = resolvedStyles;
+  
+  // Top border
+  if (borders.top.width > 0) {
+    ctx.strokeStyle = borders.top.color;
+    ctx.lineWidth = borders.top.width;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + width, y);
+    ctx.stroke();
+  }
+  
+  // Right border
+  if (borders.right.width > 0) {
+    ctx.strokeStyle = borders.right.color;
+    ctx.lineWidth = borders.right.width;
+    ctx.beginPath();
+    ctx.moveTo(x + width, y);
+    ctx.lineTo(x + width, y + height);
+    ctx.stroke();
+  }
+  
+  // Bottom border
+  if (borders.bottom.width > 0) {
+    ctx.strokeStyle = borders.bottom.color;
+    ctx.lineWidth = borders.bottom.width;
+    ctx.beginPath();
+    ctx.moveTo(x, y + height);
+    ctx.lineTo(x + width, y + height);
+    ctx.stroke();
+  }
+  
+  // Left border
+  if (borders.left.width > 0) {
+    ctx.strokeStyle = borders.left.color;
+    ctx.lineWidth = borders.left.width;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x, y + height);
+    ctx.stroke();
   }
 };
 
