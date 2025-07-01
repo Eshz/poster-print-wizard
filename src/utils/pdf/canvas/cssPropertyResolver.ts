@@ -192,13 +192,13 @@ const resolveFontFamily = (
 };
 
 /**
- * Enhanced font weight resolution
+ * Enhanced font weight resolution with better bold detection
  */
 const resolveFontWeight = (
   element: HTMLElement,
   computedStyle: CSSStyleDeclaration
 ): string => {
-  // Check Tailwind font weight classes
+  // Check Tailwind font weight classes first
   const classList = Array.from(element.classList);
   const weightClass = classList.find(cls => 
     ['font-thin', 'font-light', 'font-normal', 'font-medium', 'font-semibold', 'font-bold', 'font-black'].includes(cls)
@@ -219,7 +219,47 @@ const resolveFontWeight = (
     return weight;
   }
   
-  return computedStyle.fontWeight || '400';
+  // Check for specific element types that should be bold by default
+  if (element.tagName === 'H1') {
+    console.log(`Applied bold weight to H1 element`);
+    return '700';
+  }
+  
+  if (element.tagName === 'H2') {
+    console.log(`Applied semibold weight to H2 element`);
+    return '600';
+  }
+  
+  // Check for inline font-weight style
+  if (element.style.fontWeight) {
+    const inlineWeight = element.style.fontWeight;
+    // Convert named weights to numeric
+    const namedWeights: { [key: string]: string } = {
+      'normal': '400',
+      'bold': '700',
+      'lighter': '300',
+      'bolder': '700'
+    };
+    const weight = namedWeights[inlineWeight] || inlineWeight;
+    console.log(`Using inline font weight: ${weight}`);
+    return weight;
+  }
+  
+  // Use computed font weight with better conversion
+  const computedWeight = computedStyle.fontWeight || '400';
+  
+  // Convert named weights to numeric values
+  const namedToNumeric: { [key: string]: string } = {
+    'normal': '400',
+    'bold': '700',
+    'lighter': '300',
+    'bolder': '700'
+  };
+  
+  const finalWeight = namedToNumeric[computedWeight] || computedWeight;
+  console.log(`Resolved font weight from computed style: ${computedWeight} -> ${finalWeight}`);
+  
+  return finalWeight;
 };
 
 /**
