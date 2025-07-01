@@ -1,6 +1,12 @@
+
 /**
  * Text rendering utilities for canvas export
  */
+
+import { applyTextTransform, setCanvasFont } from './text/textTransformation';
+import { calculateHorizontalPosition, calculateVerticalPosition, setCanvasTextAlignment } from './text/textPositioning';
+import { getTextLines } from './text/textWrapping';
+import { renderTextLines } from './text/lineRenderer';
 
 /**
  * Renders text content to canvas with proper font handling and alignment
@@ -21,186 +27,30 @@ export const renderTextToCanvas = async (
   
   if (!text) return;
   
-  // Apply text transformation based on CSS text-transform property
-  switch (resolvedStyles.textTransform) {
-    case 'uppercase':
-      text = text.toUpperCase();
-      break;
-    case 'lowercase':
-      text = text.toLowerCase();
-      break;
-    case 'capitalize':
-      text = text.split(' ').map(word => 
-        word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-      ).join(' ');
-      break;
-    // 'none' or default - keep original text
-  }
+  // Apply text transformation
+  text = applyTextTransform(text, resolvedStyles.textTransform);
   
   // Apply resolved font properties
   const fontSize = resolvedStyles.fontSize * scaleY;
-  const fontWeight = resolvedStyles.fontWeight;
-  const fontFamily = resolvedStyles.fontFamily;
+  setCanvasFont(ctx, fontSize, resolvedStyles.fontWeight, resolvedStyles.fontFamily, resolvedStyles.color);
   
-  // Set font with proper formatting
-  ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
-  ctx.fillStyle = resolvedStyles.color;
-  
-  // Handle text alignment
+  // Calculate horizontal positioning
   const textAlign = resolvedStyles.textAlign;
-  let textX = x;
+  const textX = calculateHorizontalPosition(x, width, textAlign, resolvedStyles, scaleX);
+  setCanvasTextAlignment(ctx, textAlign, resolvedStyles);
   
-  switch (textAlign) {
-    case 'center':
-      ctx.textAlign = 'center';
-      textX = x + width / 2;
-      break;
-    case 'right':
-      ctx.textAlign = 'right';
-      textX = x + width - (resolvedStyles.padding?.right || 0) * scaleX;
-      break;
-    default:
-      ctx.textAlign = 'left';
-      textX = x + (resolvedStyles.padding?.left || 0) * scaleX;
-  }
+  // Calculate vertical positioning
+  const textY = calculateVerticalPosition(y, height, fontSize, resolvedStyles, scaleY);
   
-  // Calculate vertical positioning to match browser rendering exactly
-  let textY = y;
-  const paddingTop = (resolvedStyles.padding?.top || 0) * scaleY;
-  const paddingBottom = (resolvedStyles.padding?.bottom || 0) * scaleY;
-  const availableHeight = height - paddingTop - paddingBottom;
-  
-  // Use consistent baseline for all text
-  ctx.textBaseline = 'top';
-  
-  // Check if this is flexbox centered content
-  if (resolvedStyles.display === 'flex' && resolvedStyles.alignItems === 'center') {
-    // For flexbox center alignment, position at the visual center
-    textY = y + paddingTop + (availableHeight - fontSize) / 2;
-    
-    console.log(`Flexbox center alignment for "${text}":`, {
-      containerY: y,
-      containerHeight: height,
-      paddingTop,
-      paddingBottom,
-      availableHeight,
-      finalTextY: textY,
-      fontSize,
-      baseline: 'top'
-    });
-  } else if (resolvedStyles.display === 'flex') {
-    // Other flex alignments
-    if (resolvedStyles.alignItems === 'flex-end') {
-      textY = y + height - paddingBottom - fontSize;
-    } else {
-      // flex-start or default
-      textY = y + paddingTop;
-    }
-  } else {
-    // Regular block element positioning
-    textY = y + paddingTop;
-  }
-  
-  // Handle horizontal flexbox centering
-  if (resolvedStyles.display === 'flex' && resolvedStyles.justifyContent === 'center' && textAlign !== 'center') {
-    ctx.textAlign = 'center';
-    textX = x + width / 2;
-  }
-  
-  // Enhanced text wrapping logic with whitespace handling
+  // Handle text wrapping
   const paddingLeft = (resolvedStyles.padding?.left || 0) * scaleX;
   const paddingRight = (resolvedStyles.padding?.right || 0) * scaleX;
   const availableWidth = width - paddingLeft - paddingRight;
   
-  // Check if text wrapping should be prevented
-  const shouldPreventWrapping = resolvedStyles.whiteSpace === 'nowrap' || 
-                               resolvedStyles.whiteSpace === 'pre' ||
-                               isShortTextThatShouldntWrap(text, availableWidth, ctx);
+  const lines = getTextLines(ctx, text, availableWidth, resolvedStyles.whiteSpace);
   
-  let lines: string[];
-  if (shouldPreventWrapping) {
-    lines = [text]; // Keep as single line
-    console.log(`Preventing text wrapping for "${text}" due to whitespace: ${resolvedStyles.whiteSpace}`);
-  } else {
-    lines = wrapText(ctx, text, availableWidth);
-  }
+  // Render text lines
+  renderTextLines(ctx, lines, textX, textY, fontSize, resolvedStyles, y, height, scaleY);
   
-  // For multi-line text in flexbox center, adjust starting position
-  if (lines.length > 1 && resolvedStyles.display === 'flex' && resolvedStyles.alignItems === 'center') {
-    const lineHeight = fontSize * 1.2;
-    const totalTextHeight = lines.length * lineHeight;
-    const startY = y + paddingTop + (availableHeight - totalTextHeight) / 2;
-    
-    lines.forEach((line, index) => {
-      const lineY = startY + (index * lineHeight);
-      ctx.fillText(line, textX, lineY);
-    });
-  } else {
-    // Draw text lines with consistent line height
-    const lineHeight = fontSize * 1.2;
-    lines.forEach((line, index) => {
-      const lineY = textY + (index * lineHeight);
-      ctx.fillText(line, textX, lineY);
-    });
-  }
-  
-  console.log(`Rendered text "${text}" with font ${fontFamily} ${fontWeight} at ${textX}, ${textY}, align: ${textAlign}, baseline: ${ctx.textBaseline}, transform: ${resolvedStyles.textTransform}, whitespace: ${resolvedStyles.whiteSpace}`);
-};
-
-/**
- * Determines if short text should not be wrapped based on context
- */
-const isShortTextThatShouldntWrap = (text: string, availableWidth: number, ctx: CanvasRenderingContext2D): boolean => {
-  // Don't wrap very short text (less than 20 characters)
-  if (text.length <= 20) {
-    return true;
-  }
-  
-  // Don't wrap single words
-  if (!text.includes(' ')) {
-    return true;
-  }
-  
-  // Check if the text actually fits in one line
-  const textWidth = ctx.measureText(text).width;
-  if (textWidth <= availableWidth) {
-    return true;
-  }
-  
-  // For very narrow containers (like max-w-24 = 96px), be more conservative about wrapping
-  if (availableWidth < 100) {
-    // Only wrap if it's significantly longer than the available width
-    return textWidth < availableWidth * 1.5;
-  }
-  
-  return false;
-};
-
-/**
- * Wraps text to fit within the specified width
- */
-const wrapText = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] => {
-  if (maxWidth <= 0) return [text];
-  
-  const words = text.split(' ');
-  const lines: string[] = [];
-  let currentLine = '';
-  
-  for (const word of words) {
-    const testLine = currentLine + (currentLine ? ' ' : '') + word;
-    const metrics = ctx.measureText(testLine);
-    
-    if (metrics.width > maxWidth && currentLine) {
-      lines.push(currentLine);
-      currentLine = word;
-    } else {
-      currentLine = testLine;
-    }
-  }
-  
-  if (currentLine) {
-    lines.push(currentLine);
-  }
-  
-  return lines;
+  console.log(`Rendered text "${text}" with font ${resolvedStyles.fontFamily} ${resolvedStyles.fontWeight} at ${textX}, ${textY}, align: ${textAlign}, baseline: ${ctx.textBaseline}, transform: ${resolvedStyles.textTransform}, whitespace: ${resolvedStyles.whiteSpace}`);
 };
