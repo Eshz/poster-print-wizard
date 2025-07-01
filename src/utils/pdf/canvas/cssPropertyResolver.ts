@@ -11,6 +11,7 @@ export interface ResolvedStyles {
   fontWeight: string;
   color: string;
   textAlign: string;
+  textTransform: string;
   backgroundColor: string;
   borders: {
     top: { width: number; color: string; style: string };
@@ -82,6 +83,7 @@ export const resolveCSSProperties = (
     fontWeight,
     color: computedStyle.color || '#000000',
     textAlign: computedStyle.textAlign || 'left',
+    textTransform: computedStyle.textTransform || 'none',
     backgroundColor: computedStyle.backgroundColor || 'transparent',
     borders,
     padding,
@@ -97,6 +99,7 @@ export const resolveCSSProperties = (
     fontWeight: resolved.fontWeight,
     fontSize: resolved.fontSize,
     textAlign: resolved.textAlign,
+    textTransform: resolved.textTransform,
     display: resolved.display,
     alignItems: resolved.alignItems,
     justifyContent: resolved.justifyContent

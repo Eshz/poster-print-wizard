@@ -17,9 +17,25 @@ export const renderTextToCanvas = async (
   resolvedStyles: any,
   designSettings?: any
 ) => {
-  const text = element.textContent?.trim();
+  let text = element.textContent?.trim();
   
   if (!text) return;
+  
+  // Apply text transformation based on CSS text-transform property
+  switch (resolvedStyles.textTransform) {
+    case 'uppercase':
+      text = text.toUpperCase();
+      break;
+    case 'lowercase':
+      text = text.toLowerCase();
+      break;
+    case 'capitalize':
+      text = text.split(' ').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+      ).join(' ');
+      break;
+    // 'none' or default - keep original text
+  }
   
   // Apply resolved font properties
   const fontSize = resolvedStyles.fontSize * scaleY;
@@ -122,7 +138,7 @@ export const renderTextToCanvas = async (
     });
   }
   
-  console.log(`Rendered text "${text}" with font ${fontFamily} ${fontWeight} at ${textX}, ${textY}, align: ${textAlign}, baseline: ${ctx.textBaseline}`);
+  console.log(`Rendered text "${text}" with font ${fontFamily} ${fontWeight} at ${textX}, ${textY}, align: ${textAlign}, baseline: ${ctx.textBaseline}, transform: ${resolvedStyles.textTransform}`);
 };
 
 /**
