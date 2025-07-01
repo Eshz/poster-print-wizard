@@ -64,24 +64,19 @@ export const renderTextToCanvas = async (
       textX = x + (resolvedStyles.padding?.left || 0) * scaleX;
   }
   
-  // Calculate vertical positioning with improved baseline handling
+  // Calculate vertical positioning to match browser rendering exactly
   let textY = y;
   const paddingTop = (resolvedStyles.padding?.top || 0) * scaleY;
   const paddingBottom = (resolvedStyles.padding?.bottom || 0) * scaleY;
   const availableHeight = height - paddingTop - paddingBottom;
   
+  // Use consistent baseline for all text
+  ctx.textBaseline = 'top';
+  
   // Check if this is flexbox centered content
   if (resolvedStyles.display === 'flex' && resolvedStyles.alignItems === 'center') {
-    // For flexbox center alignment, use alphabetic baseline for consistent positioning
-    ctx.textBaseline = 'alphabetic';
-    
-    // Calculate the center position accounting for font descenders
-    const fontMetrics = ctx.measureText('Mg'); // Use characters with ascenders and descenders
-    const approximateDescender = fontSize * 0.2; // Estimate descender height
-    const textCenterOffset = fontSize * 0.3; // Offset to visually center text
-    
-    // Position text so it appears visually centered in the container
-    textY = y + paddingTop + (availableHeight / 2) + textCenterOffset;
+    // For flexbox center alignment, position at the visual center
+    textY = y + paddingTop + (availableHeight - fontSize) / 2;
     
     console.log(`Flexbox center alignment for "${text}":`, {
       containerY: y,
@@ -91,22 +86,19 @@ export const renderTextToCanvas = async (
       availableHeight,
       finalTextY: textY,
       fontSize,
-      baseline: 'alphabetic',
-      textCenterOffset
+      baseline: 'top'
     });
   } else if (resolvedStyles.display === 'flex') {
     // Other flex alignments
-    ctx.textBaseline = 'alphabetic';
     if (resolvedStyles.alignItems === 'flex-end') {
-      textY = y + height - paddingBottom - (fontSize * 0.2); // Account for descenders
+      textY = y + height - paddingBottom - fontSize;
     } else {
       // flex-start or default
-      textY = y + paddingTop + (fontSize * 0.8); // Position for alphabetic baseline
+      textY = y + paddingTop;
     }
   } else {
-    // Regular block element positioning with improved baseline
-    ctx.textBaseline = 'alphabetic';
-    textY = y + paddingTop + (fontSize * 0.8); // Better positioning for alphabetic baseline
+    // Regular block element positioning
+    textY = y + paddingTop;
   }
   
   // Handle horizontal flexbox centering
@@ -137,14 +129,14 @@ export const renderTextToCanvas = async (
   if (lines.length > 1 && resolvedStyles.display === 'flex' && resolvedStyles.alignItems === 'center') {
     const lineHeight = fontSize * 1.2;
     const totalTextHeight = lines.length * lineHeight;
-    const startY = y + paddingTop + (availableHeight - totalTextHeight) / 2 + (fontSize * 0.8);
+    const startY = y + paddingTop + (availableHeight - totalTextHeight) / 2;
     
     lines.forEach((line, index) => {
       const lineY = startY + (index * lineHeight);
       ctx.fillText(line, textX, lineY);
     });
   } else {
-    // Draw text lines with proper line height and baseline
+    // Draw text lines with consistent line height
     const lineHeight = fontSize * 1.2;
     lines.forEach((line, index) => {
       const lineY = textY + (index * lineHeight);
