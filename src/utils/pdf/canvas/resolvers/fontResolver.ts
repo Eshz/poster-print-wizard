@@ -87,8 +87,34 @@ export const resolveFontFamily = (
     return resolvedFont;
   }
   
-  // Enhanced context-based font detection
+  // Enhanced context-based font detection with design settings
   if (designSettings) {
+    // Enhanced number detection for key takeaways (numbered items 1, 2, 3, 4)
+    const isNumberedElement = element.textContent?.match(/^\d+$/) || 
+                             element.hasAttribute('data-circle-number') ||
+                             (element.textContent?.trim().length === 1 && /^\d$/.test(element.textContent.trim()));
+    
+    if (isNumberedElement) {
+      const titleFont = getFontFamilyFromKey(designSettings.titleFont || 'merriweather');
+      console.log(`Applied titleFont (${titleFont}) to numbered element:`, element.textContent, element.className);
+      return titleFont;
+    }
+    
+    // Enhanced institution/header detection
+    const isInstitutionName = element.textContent?.toLowerCase().includes('institution') ||
+                             element.textContent?.toLowerCase().includes('university') ||
+                             element.textContent?.toLowerCase().includes('school') ||
+                             element.textContent?.toLowerCase().includes('college') ||
+                             element.textContent?.toLowerCase().includes('department') ||
+                             element.closest('[style*="borderTop"]') ||
+                             element.closest('[style*="borderBottom"]');
+    
+    if (isInstitutionName) {
+      const titleFont = getFontFamilyFromKey(designSettings.titleFont || 'merriweather');
+      console.log(`Applied titleFont (${titleFont}) to institution/header element:`, element.textContent?.substring(0, 50));
+      return titleFont;
+    }
+    
     // Check for QR caption specifically - Enhanced detection
     const isQrCaption = (element.classList.contains('text-xs') || element.classList.contains('text-sm')) && 
                        (element.closest('[class*="qr"]') || 
@@ -101,17 +127,6 @@ export const resolveFontFamily = (
       const contentFont = getFontFamilyFromKey(designSettings.contentFont || 'roboto');
       console.log(`Applied contentFont (${contentFont}) to QR caption element:`, element.className);
       return contentFont;
-    }
-    
-    // Check for key takeaway numbers (elements with data-circle-number attribute or in key takeaway context)
-    const isKeyTakeawayNumber = element.hasAttribute('data-circle-number') || 
-                               element.closest('[class*="key"]') ||
-                               element.textContent?.match(/^\d+$/) && element.className.includes('font-bold');
-    
-    if (isKeyTakeawayNumber) {
-      const titleFont = getFontFamilyFromKey(designSettings.titleFont || 'merriweather');
-      console.log(`Applied titleFont (${titleFont}) to key takeaway number element:`, element.className);
-      return titleFont;
     }
     
     // Check if this is in the poster header (including institution/school/contact info)
@@ -137,11 +152,15 @@ export const resolveFontFamily = (
       return titleFont;
     }
     
-    // Check for section titles and key takeaway titles
+    // Enhanced section title detection including bold elements
     const isSectionTitle = element.tagName.match(/^H[2-6]$/) ||
                           element.className.includes('font-bold') ||
                           element.className.includes('font-black') ||
-                          (element.closest('[class*="section"]') && element.className.includes('font'));
+                          element.className.includes('font-semibold') ||
+                          (element.closest('[class*="section"]') && element.className.includes('font')) ||
+                          // Check if parent has strong/bold styling
+                          (element.parentElement?.className.includes('font-bold')) ||
+                          (element.parentElement?.className.includes('font-semibold'));
     
     if (isSectionTitle) {
       const titleFont = getFontFamilyFromKey(designSettings.titleFont || 'merriweather');
@@ -149,6 +168,23 @@ export const resolveFontFamily = (
       return titleFont;
     }
     
+    // Enhanced key takeaway detection - look for elements that are part of key takeaway structures
+    const isKeyTakeawayRelated = element.closest('[class*="key"]') ||
+                                element.closest('[data-testid*="takeaway"]') ||
+                                element.closest('[class*="takeaway"]') ||
+                                // Check if it's a circle number or similar structure
+                                (element.className.includes('bg-') && element.className.includes('text-white')) ||
+                                // Check if parent is a key takeaway container
+                                (element.parentElement?.className.includes('key') || 
+                                 element.parentElement?.closest('[class*="key"]'));
+    
+    if (isKeyTakeawayRelated && !element.classList.contains('poster-body')) {
+      const titleFont = getFontFamilyFromKey(designSettings.titleFont || 'merriweather');
+      console.log(`Applied titleFont (${titleFont}) to key takeaway related element:`, element.className);
+      return titleFont;
+    }
+    
+    // Default to content font for body elements
     if (element.classList.contains('poster-body') || ['P', 'DIV', 'SPAN'].includes(element.tagName)) {
       const contentFont = getFontFamilyFromKey(designSettings.contentFont || 'roboto');
       console.log(`Applied contentFont (${contentFont}) to body element:`, element.className);
