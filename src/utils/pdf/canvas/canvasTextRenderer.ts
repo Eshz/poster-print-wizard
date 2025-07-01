@@ -48,35 +48,53 @@ export const renderTextToCanvas = async (
       textX = x + (resolvedStyles.padding?.left || 0) * scaleX;
   }
   
-  // Enhanced vertical alignment with better flexbox support
+  // Calculate vertical positioning with improved flexbox alignment
   let textY = y;
-  ctx.textBaseline = 'top';
+  const paddingTop = (resolvedStyles.padding?.top || 0) * scaleY;
+  const paddingBottom = (resolvedStyles.padding?.bottom || 0) * scaleY;
+  const availableHeight = height - paddingTop - paddingBottom;
   
   // Check if this is flexbox centered content
-  if (resolvedStyles.display === 'flex') {
-    if (resolvedStyles.alignItems === 'center') {
-      // For flexbox center alignment, account for padding and use middle baseline
-      const paddingTop = (resolvedStyles.padding?.top || 0) * scaleY;
-      const paddingBottom = (resolvedStyles.padding?.bottom || 0) * scaleY;
-      const availableHeight = height - paddingTop - paddingBottom;
-      
-      ctx.textBaseline = 'middle';
-      textY = y + paddingTop + (availableHeight / 2);
-      
-      // Fine-tune for better visual centering (account for font metrics)
-      const fontSizeAdjustment = fontSize * 0.1; // Small adjustment based on font size
-      textY += fontSizeAdjustment;
-    } else {
-      textY = y + (resolvedStyles.padding?.top || 0) * scaleY;
-    }
+  if (resolvedStyles.display === 'flex' && resolvedStyles.alignItems === 'center') {
+    // For flexbox center alignment, use middle baseline and calculate true center
+    ctx.textBaseline = 'middle';
     
-    if (resolvedStyles.justifyContent === 'center' && textAlign !== 'center') {
-      ctx.textAlign = 'center';
-      textX = x + width / 2;
+    // Calculate the true visual center accounting for font metrics
+    const textMetrics = ctx.measureText(text.charAt(0)); // Sample character for height estimation
+    const approximateTextHeight = fontSize; // Use font size as approximate text height
+    
+    // Position at the visual center of the available space
+    textY = y + paddingTop + (availableHeight / 2);
+    
+    console.log(`Flexbox center alignment for "${text}":`, {
+      containerY: y,
+      containerHeight: height,
+      paddingTop,
+      paddingBottom,
+      availableHeight,
+      finalTextY: textY,
+      fontSize,
+      baseline: 'middle'
+    });
+  } else if (resolvedStyles.display === 'flex') {
+    // Other flex alignments
+    ctx.textBaseline = 'top';
+    if (resolvedStyles.alignItems === 'flex-end') {
+      textY = y + height - paddingBottom - fontSize;
+    } else {
+      // flex-start or default
+      textY = y + paddingTop;
     }
   } else {
     // Regular block element positioning
-    textY = y + (resolvedStyles.padding?.top || 0) * scaleY;
+    ctx.textBaseline = 'top';
+    textY = y + paddingTop;
+  }
+  
+  // Handle horizontal flexbox centering
+  if (resolvedStyles.display === 'flex' && resolvedStyles.justifyContent === 'center' && textAlign !== 'center') {
+    ctx.textAlign = 'center';
+    textX = x + width / 2;
   }
   
   // Handle text wrapping for long text
@@ -85,12 +103,24 @@ export const renderTextToCanvas = async (
   const availableWidth = width - paddingLeft - paddingRight;
   const lines = wrapText(ctx, text, availableWidth);
   
-  // Draw text lines with proper line height
-  const lineHeight = fontSize * 1.2;
-  lines.forEach((line, index) => {
-    const lineY = textY + (index * lineHeight);
-    ctx.fillText(line, textX, lineY);
-  });
+  // For multi-line text in flexbox center, adjust starting position
+  if (lines.length > 1 && resolvedStyles.display === 'flex' && resolvedStyles.alignItems === 'center') {
+    const lineHeight = fontSize * 1.2;
+    const totalTextHeight = lines.length * lineHeight;
+    const startY = y + paddingTop + (availableHeight - totalTextHeight) / 2;
+    
+    lines.forEach((line, index) => {
+      const lineY = startY + (index * lineHeight) + (lineHeight / 2); // Add half line height for middle baseline
+      ctx.fillText(line, textX, lineY);
+    });
+  } else {
+    // Draw text lines with proper line height
+    const lineHeight = fontSize * 1.2;
+    lines.forEach((line, index) => {
+      const lineY = textY + (index * lineHeight);
+      ctx.fillText(line, textX, lineY);
+    });
+  }
   
   console.log(`Rendered text "${text}" with font ${fontFamily} ${fontWeight} at ${textX}, ${textY}, align: ${textAlign}, baseline: ${ctx.textBaseline}`);
 };
