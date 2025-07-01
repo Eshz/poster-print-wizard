@@ -161,20 +161,51 @@ const resolveFontFamily = (
     return resolvedFont;
   }
   
-  // Use design settings based on element type and context
+  // Enhanced context-based font detection
   if (designSettings) {
-    // Check if this is in the poster header (authors line)
-    const isInHeader = element.closest('[style*="backgroundColor"]') !== null;
+    // Check for key takeaway numbers (elements with data-circle-number attribute or in key takeaway context)
+    const isKeyTakeawayNumber = element.hasAttribute('data-circle-number') || 
+                               element.closest('[class*="key"]') ||
+                               element.textContent?.match(/^\d+$/) && element.className.includes('font-bold');
+    
+    if (isKeyTakeawayNumber) {
+      const titleFont = getFontFamilyFromKey(designSettings.titleFont || 'merriweather');
+      console.log(`Applied titleFont (${titleFont}) to key takeaway number element:`, element.className);
+      return titleFont;
+    }
+    
+    // Check if this is in the poster header (including institution/school/contact info)
+    const isInHeader = element.closest('[style*="backgroundColor"]') !== null ||
+                       element.closest('.poster-header') !== null;
     const hasHeaderText = element.textContent && (
       element.textContent.includes('@') || // likely contact info
       element.textContent.toLowerCase().includes('author') ||
       element.textContent.toLowerCase().includes('university') ||
-      element.textContent.toLowerCase().includes('school')
+      element.textContent.toLowerCase().includes('school') ||
+      element.textContent.toLowerCase().includes('institution') ||
+      element.textContent.toLowerCase().includes('college') ||
+      element.textContent.toLowerCase().includes('department')
     );
     
-    if (isInHeader || hasHeaderText || element.classList.contains('poster-title') || element.tagName.match(/^H[1-6]$/)) {
+    // Check if element is in the author info section (has border styling)
+    const isInAuthorSection = element.closest('[style*="border"]') !== null && 
+                              element.closest('[style*="backgroundColor"]') !== null;
+    
+    if (isInHeader || hasHeaderText || isInAuthorSection || element.classList.contains('poster-title') || element.tagName.match(/^H[1-6]$/)) {
       const titleFont = getFontFamilyFromKey(designSettings.titleFont || 'merriweather');
-      console.log(`Applied titleFont (${titleFont}) to header/title element:`, element.className);
+      console.log(`Applied titleFont (${titleFont}) to header/title element:`, element.className, element.textContent?.substring(0, 50));
+      return titleFont;
+    }
+    
+    // Check for section titles and key takeaway titles
+    const isSectionTitle = element.tagName.match(/^H[2-6]$/) ||
+                          element.className.includes('font-bold') ||
+                          element.className.includes('font-black') ||
+                          (element.closest('[class*="section"]') && element.className.includes('font'));
+    
+    if (isSectionTitle) {
+      const titleFont = getFontFamilyFromKey(designSettings.titleFont || 'merriweather');
+      console.log(`Applied titleFont (${titleFont}) to section title element:`, element.className);
       return titleFont;
     }
     
