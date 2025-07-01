@@ -1,3 +1,4 @@
+
 /**
  * Text rendering utilities for canvas export
  */
@@ -113,11 +114,23 @@ export const renderTextToCanvas = async (
     textX = x + width / 2;
   }
   
-  // Handle text wrapping for long text
+  // Enhanced text wrapping logic with whitespace handling
   const paddingLeft = (resolvedStyles.padding?.left || 0) * scaleX;
   const paddingRight = (resolvedStyles.padding?.right || 0) * scaleX;
   const availableWidth = width - paddingLeft - paddingRight;
-  const lines = wrapText(ctx, text, availableWidth);
+  
+  // Check if text wrapping should be prevented
+  const shouldPreventWrapping = resolvedStyles.whiteSpace === 'nowrap' || 
+                               resolvedStyles.whiteSpace === 'pre' ||
+                               isShortTextThatShouldntWrap(text, availableWidth, ctx);
+  
+  let lines: string[];
+  if (shouldPreventWrapping) {
+    lines = [text]; // Keep as single line
+    console.log(`Preventing text wrapping for "${text}" due to whitespace: ${resolvedStyles.whiteSpace}`);
+  } else {
+    lines = wrapText(ctx, text, availableWidth);
+  }
   
   // For multi-line text in flexbox center, adjust starting position
   if (lines.length > 1 && resolvedStyles.display === 'flex' && resolvedStyles.alignItems === 'center') {
@@ -138,7 +151,36 @@ export const renderTextToCanvas = async (
     });
   }
   
-  console.log(`Rendered text "${text}" with font ${fontFamily} ${fontWeight} at ${textX}, ${textY}, align: ${textAlign}, baseline: ${ctx.textBaseline}, transform: ${resolvedStyles.textTransform}`);
+  console.log(`Rendered text "${text}" with font ${fontFamily} ${fontWeight} at ${textX}, ${textY}, align: ${textAlign}, baseline: ${ctx.textBaseline}, transform: ${resolvedStyles.textTransform}, whitespace: ${resolvedStyles.whiteSpace}`);
+};
+
+/**
+ * Determines if short text should not be wrapped based on context
+ */
+const isShortTextThatShouldntWrap = (text: string, availableWidth: number, ctx: CanvasRenderingContext2D): boolean => {
+  // Don't wrap very short text (less than 20 characters)
+  if (text.length <= 20) {
+    return true;
+  }
+  
+  // Don't wrap single words
+  if (!text.includes(' ')) {
+    return true;
+  }
+  
+  // Check if the text actually fits in one line
+  const textWidth = ctx.measureText(text).width;
+  if (textWidth <= availableWidth) {
+    return true;
+  }
+  
+  // For very narrow containers (like max-w-24 = 96px), be more conservative about wrapping
+  if (availableWidth < 100) {
+    // Only wrap if it's significantly longer than the available width
+    return textWidth < availableWidth * 1.5;
+  }
+  
+  return false;
 };
 
 /**

@@ -1,4 +1,3 @@
-
 /**
  * CSS property resolver for canvas rendering
  */
@@ -13,6 +12,7 @@ export interface ResolvedStyles {
   textAlign: string;
   textTransform: string;
   backgroundColor: string;
+  whiteSpace: string;
   borders: {
     top: { width: number; color: string; style: string };
     right: { width: number; color: string; style: string };
@@ -54,6 +54,9 @@ export const resolveCSSProperties = (
   // Resolve font weight with enhanced detection
   const fontWeight = resolveFontWeight(element, computedStyle);
   
+  // Resolve whitespace handling
+  const whiteSpace = resolveWhiteSpace(element, computedStyle);
+  
   // Parse borders for each side
   const borders = {
     top: parseBorder(computedStyle.borderTopWidth, computedStyle.borderTopColor, computedStyle.borderTopStyle, scaleY),
@@ -85,6 +88,7 @@ export const resolveCSSProperties = (
     textAlign: computedStyle.textAlign || 'left',
     textTransform: computedStyle.textTransform || 'none',
     backgroundColor: computedStyle.backgroundColor || 'transparent',
+    whiteSpace,
     borders,
     padding,
     margin,
@@ -100,6 +104,7 @@ export const resolveCSSProperties = (
     fontSize: resolved.fontSize,
     textAlign: resolved.textAlign,
     textTransform: resolved.textTransform,
+    whiteSpace: resolved.whiteSpace,
     display: resolved.display,
     alignItems: resolved.alignItems,
     justifyContent: resolved.justifyContent
@@ -133,19 +138,35 @@ const resolveFontFamily = (
     }
   }
   
-  // Handle dynamic CSS variables with design settings
+  // Handle dynamic CSS variables with design settings - Enhanced for template literals
   if (element.style.fontFamily && element.style.fontFamily.includes('var(--font-')) {
-    // Extract the variable pattern like var(--font-${designSettings.titleFont})
-    if (designSettings && element.style.fontFamily.includes('titleFont')) {
-      const titleFont = getFontFamilyFromKey(designSettings.titleFont || 'merriweather');
-      console.log(`Resolved dynamic titleFont variable to: ${titleFont} for element:`, element.className);
-      return titleFont;
-    }
-    
-    if (designSettings && element.style.fontFamily.includes('contentFont')) {
-      const contentFont = getFontFamilyFromKey(designSettings.contentFont || 'roboto');
-      console.log(`Resolved dynamic contentFont variable to: ${contentFont} for element:`, element.className);
-      return contentFont;
+    // Handle template literal patterns like var(--font-${designSettings.titleFont})
+    if (designSettings) {
+      // Extract variable content between var(--font- and )
+      const varMatch = element.style.fontFamily.match(/var\(--font-([^)]+)\)/);
+      if (varMatch) {
+        const varContent = varMatch[1];
+        
+        // Check if it contains template literal patterns
+        if (varContent.includes('titleFont') || varContent === designSettings.titleFont) {
+          const titleFont = getFontFamilyFromKey(designSettings.titleFont || 'merriweather');
+          console.log(`Resolved dynamic titleFont variable to: ${titleFont} for element:`, element.className);
+          return titleFont;
+        }
+        
+        if (varContent.includes('contentFont') || varContent === designSettings.contentFont) {
+          const contentFont = getFontFamilyFromKey(designSettings.contentFont || 'roboto');
+          console.log(`Resolved dynamic contentFont variable to: ${contentFont} for element:`, element.className);
+          return contentFont;
+        }
+        
+        // Try to resolve the variable content directly as a font key
+        const directFont = getFontFamilyFromKey(varContent);
+        if (directFont !== varContent) { // If it was successfully mapped
+          console.log(`Resolved CSS variable --font-${varContent} to: ${directFont}`);
+          return directFont;
+        }
+      }
     }
   }
   
@@ -163,6 +184,18 @@ const resolveFontFamily = (
   
   // Enhanced context-based font detection
   if (designSettings) {
+    // Check for QR caption specifically
+    const isQrCaption = element.classList.contains('text-xs') && 
+                       (element.closest('[class*="qr"]') || 
+                        element.textContent?.toLowerCase().includes('scan') ||
+                        element.textContent?.toLowerCase().includes('qr'));
+    
+    if (isQrCaption) {
+      const contentFont = getFontFamilyFromKey(designSettings.contentFont || 'roboto');
+      console.log(`Applied contentFont (${contentFont}) to QR caption element:`, element.className);
+      return contentFont;
+    }
+    
     // Check for key takeaway numbers (elements with data-circle-number attribute or in key takeaway context)
     const isKeyTakeawayNumber = element.hasAttribute('data-circle-number') || 
                                element.closest('[class*="key"]') ||
@@ -220,6 +253,38 @@ const resolveFontFamily = (
   const fallback = computedStyle.fontFamily || 'Arial, sans-serif';
   console.log(`Using fallback font: ${fallback}`);
   return fallback;
+};
+
+/**
+ * Resolves whitespace handling properties
+ */
+const resolveWhiteSpace = (
+  element: HTMLElement,
+  computedStyle: CSSStyleDeclaration
+): string => {
+  // Check for Tailwind whitespace classes
+  const classList = Array.from(element.classList);
+  if (classList.includes('whitespace-nowrap')) {
+    console.log(`Found whitespace-nowrap class on element:`, element.className);
+    return 'nowrap';
+  }
+  
+  if (classList.includes('whitespace-pre')) {
+    return 'pre';
+  }
+  
+  if (classList.includes('whitespace-pre-wrap')) {
+    return 'pre-wrap';
+  }
+  
+  if (classList.includes('whitespace-pre-line')) {
+    return 'pre-line';
+  }
+  
+  // Check computed style
+  const whiteSpace = computedStyle.whiteSpace || 'normal';
+  console.log(`Resolved whitespace: ${whiteSpace} for element:`, element.className);
+  return whiteSpace;
 };
 
 /**
