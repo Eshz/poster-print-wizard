@@ -1,16 +1,14 @@
 
 import React from 'react';
 
-interface KeyTakeawayColors {
-  bg: string;
-  textColor: string;
-}
-
 interface KeyTakeawaysColumnProps {
   posterData: any;
   designSettings: any;
   showKeypoints: boolean;
-  keyTakeawayColors: KeyTakeawayColors[];
+  keyTakeawayColors: Array<{
+    bg: string;
+    textColor: string;
+  }>;
 }
 
 const KeyTakeawaysColumn: React.FC<KeyTakeawaysColumnProps> = ({
@@ -19,17 +17,18 @@ const KeyTakeawaysColumn: React.FC<KeyTakeawaysColumnProps> = ({
   showKeypoints,
   keyTakeawayColors
 }) => {
+  // Hide the entire column if keypoints are disabled or empty
   if (!showKeypoints || !posterData.keypoints || !posterData.keypoints.some((point: string) => point?.trim())) {
-    return <div className="space-y-2 overflow-auto flex flex-col h-full"></div>;
+    return <div className="h-full flex flex-col"></div>;
   }
 
   return (
-    <div className="space-y-2 overflow-auto flex flex-col h-full">
+    <div className="h-full flex flex-col">
       {/* Key Takeaways Title with lines */}
-      <div className="flex items-center gap-2 pb-1">
+      <div className="flex items-center gap-2 pb-3 flex-shrink-0">
         <div className="flex-1 h-0.5 bg-gray-800"></div>
         <h2 
-          className="text-sm font-bold text-center whitespace-nowrap"
+          className="text-sm font-bold text-center whitespace-nowrap px-2"
           style={{ 
             color: "#202B5B",
             fontFamily: `var(--font-${designSettings.titleFont})`
@@ -40,8 +39,8 @@ const KeyTakeawaysColumn: React.FC<KeyTakeawaysColumnProps> = ({
         <div className="flex-1 h-0.5 bg-gray-800"></div>
       </div>
       
-      {/* Key Takeaways Items */}
-      <div className="space-y-2 flex-1">
+      {/* Key Takeaways Items - stretches to fill remaining space */}
+      <div className="flex-1 space-y-2 overflow-auto min-h-0">
         {posterData.keypoints.map((point: string, index: number) => {
           const isVisible = posterData.keyVisibility?.[index] !== false;
           if (!point?.trim() || !isVisible) return null;
@@ -56,7 +55,7 @@ const KeyTakeawaysColumn: React.FC<KeyTakeawaysColumnProps> = ({
                 style={{ backgroundColor: colors.bg }}
               >
                 <span 
-                  className="text-xl font-bold"
+                  className="text-lg font-bold"
                   style={{ 
                     color: colors.textColor,
                     fontFamily: `var(--font-${designSettings.titleFont})`
@@ -66,9 +65,9 @@ const KeyTakeawaysColumn: React.FC<KeyTakeawaysColumnProps> = ({
                 </span>
               </div>
               
-              {/* Content - adaptive height */}
+              {/* Content */}
               <div 
-                className="flex-1 p-3 flex flex-col justify-center gap-1"
+                className="flex-1 p-2 flex flex-col justify-center gap-1"
                 style={{ backgroundColor: "#F2F2F2" }}
               >
                 <h3 

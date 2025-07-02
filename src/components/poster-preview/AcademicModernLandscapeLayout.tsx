@@ -65,28 +65,34 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
 
   return (
     <div className="grid grid-cols-4 gap-2 h-full p-2">
-      {/* Column 1: Balanced sections */}
+      {/* Column 1: Balanced sections - full height */}
       <div className="h-full flex flex-col">
-        <SectionColumn
-          sections={column1Sections}
-          designSettings={designSettings}
-        />
+        <div className="flex-1 min-h-0">
+          <SectionColumn
+            sections={column1Sections}
+            designSettings={designSettings}
+          />
+        </div>
       </div>
 
-      {/* Column 2: Remaining sections and Images */}
+      {/* Column 2: Remaining sections and Images - full height */}
       <div className="h-full flex flex-col gap-2">
-        <div className="flex-1">
+        {/* Sections part - takes most of the space */}
+        <div className="flex-1 min-h-0">
           <SectionColumn
             sections={column2Sections}
             designSettings={designSettings}
           />
         </div>
         
-        {/* Images section if present - fixed height to prevent overflow */}
+        {/* Images section if present - fixed height but flexible */}
         {hasImages && (
           <div 
-            className="p-3 rounded-lg flex-shrink-0 max-h-48 overflow-hidden"
-            style={{ backgroundColor: "#F2F2F2" }}
+            className="p-3 rounded-lg flex-shrink-0"
+            style={{ 
+              backgroundColor: "#F2F2F2",
+              height: column2Sections.length > 0 ? "200px" : "auto"
+            }}
           >
             <ImagesDisplay 
               images={posterData.images} 
@@ -97,21 +103,25 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
       </div>
 
       {/* Column 3: Key Takeaways - full height */}
-      <div className="h-full">
-        <KeyTakeawaysColumn
-          posterData={posterData}
-          designSettings={designSettings}
-          showKeypoints={showKeypoints}
-          keyTakeawayColors={keyTakeawayColors}
-        />
+      <div className="h-full flex flex-col">
+        <div className="flex-1 min-h-0">
+          <KeyTakeawaysColumn
+            posterData={posterData}
+            designSettings={designSettings}
+            showKeypoints={showKeypoints}
+            keyTakeawayColors={keyTakeawayColors}
+          />
+        </div>
       </div>
 
       {/* Column 4: References - full height */}
-      <div className="h-full">
-        <ReferencesColumn
-          posterData={posterData}
-          designSettings={designSettings}
-        />
+      <div className="h-full flex flex-col">
+        <div className="flex-1 min-h-0">
+          <ReferencesColumn
+            posterData={posterData}
+            designSettings={designSettings}
+          />
+        </div>
       </div>
     </div>
   );
