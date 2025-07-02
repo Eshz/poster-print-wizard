@@ -22,21 +22,18 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
   showQrCode,
   qrCodeCaption
 }) => {
-  // Calculate relative widths based on content length - with safe defaults
-  const authorsLength = (authors || '').length;
-  const schoolLength = (school || '').length;
-  const contactLength = (contact || '').length;
-  const totalLength = authorsLength + schoolLength + contactLength;
-  
-  // Calculate flex basis percentages, with minimum 25% and maximum 50% per element
-  const getFlexBasis = (length: number) => {
-    const percentage = (length / totalLength) * 100;
-    return Math.max(25, Math.min(50, percentage));
-  };
-  
-  const authorsFlex = getFlexBasis(authorsLength);
-  const schoolFlex = getFlexBasis(schoolLength);
-  const contactFlex = getFlexBasis(contactLength);
+  // Filter out empty fields and create array of visible fields
+  const visibleFields = [
+    { content: authors?.trim(), label: 'Authors' },
+    { content: school?.trim(), label: 'Institution' },
+    { content: contact?.trim(), label: 'Contact' }
+  ].filter(field => field.content);
+
+  // Check if authors row should be hidden (all fields empty)
+  const shouldHideAuthorsRow = visibleFields.length === 0;
+
+  // Calculate equal flex basis for visible fields
+  const flexBasis = visibleFields.length > 0 ? `${100 / visibleFields.length}%` : '100%';
 
   return (
     <>
@@ -89,43 +86,36 @@ const PosterHeader: React.FC<PosterHeaderProps> = ({
         </div>
       </div>
       
-      {/* Author info with top and bottom borders */}
-      <div 
-        className="w-full text-center py-2"
-        style={{
-          borderTop: '1px solid #202b5b',
-          borderBottom: '1px solid #202b5b',
-          backgroundColor: designSettings.headerBgColor,
-        }}
-      >
+      {/* Author info with top and bottom borders - only render if there are visible fields */}
+      {!shouldHideAuthorsRow && (
         <div 
-          className="flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4 px-2 mx-auto text-xs md:text-sm overflow-hidden"
-          style={{ 
-            color: designSettings.headerTextColor,
-            fontFamily: `var(--font-${designSettings.titleFont})`,
-            maxWidth: '98%'
+          className="w-full text-center py-2"
+          style={{
+            borderTop: '1px solid #202b5b',
+            borderBottom: '1px solid #202b5b',
+            backgroundColor: designSettings.headerBgColor,
           }}
         >
           <div 
-            className="mb-1 md:mb-0 font-semibold min-w-0 break-words"
-            style={{ flexBasis: `${authorsFlex}%` }}
+            className="flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4 px-2 mx-auto text-xs md:text-sm overflow-hidden"
+            style={{ 
+              color: designSettings.headerTextColor,
+              fontFamily: `var(--font-${designSettings.titleFont})`,
+              maxWidth: '98%'
+            }}
           >
-            {authors || 'Authors'}
-          </div>
-          <div 
-            className="mb-1 md:mb-0 font-semibold min-w-0 break-words"
-            style={{ flexBasis: `${schoolFlex}%` }}
-          >
-            {school || 'Institution'}
-          </div>
-          <div 
-            className="font-semibold min-w-0 break-words"
-            style={{ flexBasis: `${contactFlex}%` }}
-          >
-            {contact || 'Contact'}
+            {visibleFields.map((field, index) => (
+              <div 
+                key={index}
+                className="mb-1 md:mb-0 font-semibold min-w-0 break-words"
+                style={{ flexBasis }}
+              >
+                {field.content}
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 };
