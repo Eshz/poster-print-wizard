@@ -76,19 +76,25 @@ const DesignPanel: React.FC<DesignPanelProps> = React.memo(({
           </RadioGroup>
         </div>
 
-        {/* Style Thumbnails */}
+        {/* Style Thumbnails - Masonry Grid */}
         <div>
           <Label className="text-sm font-medium text-gray-700 mb-3 block">
             Style Templates
           </Label>
-          <div className="grid grid-cols-2 gap-4">
+          <div 
+            className="columns-2 gap-4 space-y-4"
+            style={{
+              columnFill: 'balance'
+            }}
+          >
             {stylesData.map((style) => (
-              <StyleThumbnail 
-                key={style.id} 
-                style={style}
-                isSelected={isStyleSelected(style)}
-                onApplyStyle={handleApplyStyle}
-              />
+              <div key={style.id} className="break-inside-avoid mb-4">
+                <StyleThumbnail 
+                  style={style}
+                  isSelected={isStyleSelected(style)}
+                  onApplyStyle={handleApplyStyle}
+                />
+              </div>
             ))}
           </div>
         </div>
