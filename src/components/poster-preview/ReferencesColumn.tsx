@@ -10,7 +10,8 @@ const ReferencesColumn: React.FC<ReferencesColumnProps> = ({
   posterData,
   designSettings
 }) => {
-  if (!posterData.references?.trim()) {
+  // Hide the entire column if references are disabled or empty
+  if (posterData.showReferences === false || !posterData.references?.trim()) {
     return <div className="space-y-2 overflow-auto flex flex-col h-full"></div>;
   }
 

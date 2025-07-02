@@ -1,7 +1,7 @@
 
 import React from 'react';
 import BasicInfoSection from './BasicInfoSection';
-import { ChevronDown, ChevronUp, User } from "lucide-react";
+import { ChevronDown, ChevronUp, Info } from "lucide-react";
 
 interface ContactInfoSectionProps {
   posterData: any;
@@ -26,9 +26,9 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
       >
         <div className="flex items-center gap-3">
           <div className="w-6 h-6 bg-blue-50 rounded-md flex items-center justify-center">
-            <User className="h-3 w-3 text-blue-600" />
+            <Info className="h-3 w-3 text-blue-600" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900">General info</h3>
+          <h3 className="text-lg font-semibold text-gray-900">General Details</h3>
         </div>
         {isOpen ? (
           <ChevronUp className="h-4 w-4 text-gray-500" />
