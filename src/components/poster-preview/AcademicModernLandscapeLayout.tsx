@@ -34,6 +34,32 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
   const totalSections = activeSections.length;
   const hasImages = posterData.images && posterData.images.length > 0;
   
+  // Check if references should be shown
+  const showReferences = posterData.showReferences !== false && posterData.references?.trim();
+  
+  // Check if key takeaways should be shown
+  const hasKeyTakeaways = showKeypoints && posterData.keypoints && posterData.keypoints.some((point: string) => point?.trim());
+  
+  // Dynamic grid configuration based on visible columns
+  let gridCols = 'grid-cols-2'; // Base: sections columns
+  let columnsCount = 2;
+  
+  if (hasKeyTakeaways) {
+    columnsCount++;
+  }
+  if (showReferences) {
+    columnsCount++;
+  }
+  
+  // Set appropriate grid class
+  if (columnsCount === 2) {
+    gridCols = 'grid-cols-2';
+  } else if (columnsCount === 3) {
+    gridCols = 'grid-cols-3';
+  } else if (columnsCount === 4) {
+    gridCols = 'grid-cols-4';
+  }
+  
   // Distribute sections across columns based on content length
   const sectionsWithLength = activeSections.map((section, index) => ({
     ...section,
@@ -64,7 +90,7 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
   column2Sections.sort((a, b) => a.index - b.index);
 
   return (
-    <div className="grid grid-cols-4 gap-2 h-full p-2">
+    <div className={`${gridCols} gap-2 h-full p-2 grid`}>
       {/* Column 1: Balanced sections - full height */}
       <div className="h-full flex flex-col">
         <div className="flex-1 min-h-0">
@@ -102,27 +128,31 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
         )}
       </div>
 
-      {/* Column 3: Key Takeaways - full height */}
-      <div className="h-full flex flex-col">
-        <div className="flex-1 min-h-0">
-          <KeyTakeawaysColumn
-            posterData={posterData}
-            designSettings={designSettings}
-            showKeypoints={showKeypoints}
-            keyTakeawayColors={keyTakeawayColors}
-          />
+      {/* Column 3: Key Takeaways - full height - only if visible */}
+      {hasKeyTakeaways && (
+        <div className="h-full flex flex-col">
+          <div className="flex-1 min-h-0">
+            <KeyTakeawaysColumn
+              posterData={posterData}
+              designSettings={designSettings}
+              showKeypoints={showKeypoints}
+              keyTakeawayColors={keyTakeawayColors}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Column 4: References - full height */}
-      <div className="h-full flex flex-col">
-        <div className="flex-1 min-h-0">
-          <ReferencesColumn
-            posterData={posterData}
-            designSettings={designSettings}
-          />
+      {/* Column 4: References - full height - only if visible */}
+      {showReferences && (
+        <div className="h-full flex flex-col">
+          <div className="flex-1 min-h-0">
+            <ReferencesColumn
+              posterData={posterData}
+              designSettings={designSettings}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
