@@ -181,9 +181,9 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
           </div>
         )}
 
-        {/* References Section */}
+        {/* References Section - always stretch to fill remaining space */}
         {posterData.references?.trim() && (
-          <div className={`flex flex-col ${!shouldLeftStretch ? 'flex-1' : ''}`}>
+          <div className="flex flex-col flex-1">
             {/* References Header */}
             <div 
               className="px-4 py-3 border-b-2 border-white"
@@ -203,9 +203,9 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
               </h2>
             </div>
             
-            {/* References Content with hanging indent */}
+            {/* References Content with hanging indent - stretch to fill remaining space */}
             <div 
-              className={`p-4 ${!shouldLeftStretch ? 'flex-1' : ''}`}
+              className="p-4 flex-1"
               style={{ backgroundColor: "#3E3C72" }}
             >
               <div 
