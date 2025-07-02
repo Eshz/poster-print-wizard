@@ -31,54 +31,66 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
 }) => {
   // Check if there are any visible images
   const hasVisibleImages = posterData.images && posterData.images.filter((img: any) => img.visible).length > 0;
+  
+  // Calculate if we need to redistribute content due to overflow
+  const totalContentLength = activeSections.reduce((acc, section) => acc + (section.content?.length || 0), 0);
+  const shouldRedistribute = totalContentLength > 2000; // Threshold for content redistribution
 
   return (
     <div className="flex gap-3 h-full p-3">
-      {/* Left Column - Main Sections */}
-      <div className="w-1/2 space-y-3 overflow-auto flex flex-col h-full">
-        {activeSections.map((section, index) => (
-          <div key={index} className={`flex flex-col ${shouldLeftStretch && index === activeSections.length - 1 ? 'flex-1' : ''}`}>
-            {/* Section Header */}
+      {/* Left Column - Main Sections with height stretching */}
+      <div className="w-1/2 h-full flex flex-col gap-3">
+        {activeSections.map((section, index) => {
+          const isLast = index === activeSections.length - 1;
+          const shouldStretch = shouldLeftStretch && isLast;
+          
+          return (
             <div 
-              className="px-4 py-3 border-b-2 border-white"
-              style={{ 
-                backgroundColor: section.headerBg,
-                borderBottomColor: section.headerTextColor === "#FFFFFF" ? "#FFFFFF" : "#202B5B"
-              }}
+              key={index} 
+              className={`flex flex-col ${shouldStretch ? 'flex-1' : ''} ${shouldRedistribute && section.content && section.content.length > 800 ? 'flex-1' : ''}`}
             >
-              <h2 
-                className="text-lg font-bold"
+              {/* Section Header */}
+              <div 
+                className="px-4 py-3 border-b-2 border-white flex-shrink-0"
                 style={{ 
-                  color: section.headerTextColor,
-                  fontFamily: `var(--font-${designSettings.titleFont})`
+                  backgroundColor: section.headerBg,
+                  borderBottomColor: section.headerTextColor === "#FFFFFF" ? "#FFFFFF" : "#202B5B"
                 }}
               >
-                {section.title}
-              </h2>
-            </div>
-            
-            {/* Section Content */}
-            <div 
-              className={`p-4 ${shouldLeftStretch && index === activeSections.length - 1 ? 'flex-1' : ''}`}
-              style={{ backgroundColor: section.contentBg }}
-            >
-              <p 
-                className="text-sm leading-relaxed"
-                style={{ 
-                  color: section.contentTextColor,
-                  fontFamily: `var(--font-${designSettings.contentFont})`
-                }}
+                <h2 
+                  className="text-lg font-bold"
+                  style={{ 
+                    color: section.headerTextColor,
+                    fontFamily: `var(--font-${designSettings.titleFont})`
+                  }}
+                >
+                  {section.title}
+                </h2>
+              </div>
+              
+              {/* Section Content - stretches to fill available space */}
+              <div 
+                className={`p-4 flex-1 overflow-auto ${shouldStretch ? 'min-h-0' : ''}`}
+                style={{ backgroundColor: section.contentBg }}
               >
-                {section.content}
-              </p>
+                <p 
+                  className="text-sm leading-relaxed"
+                  style={{ 
+                    color: section.contentTextColor,
+                    fontFamily: `var(--font-${designSettings.contentFont})`
+                  }}
+                >
+                  {section.content}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         
-        {/* Images section if present - only render if there are visible images */}
+        {/* Images section if present - flexible height */}
         {hasVisibleImages && (
           <div 
-            className={`p-4 rounded-lg ${shouldLeftStretch && !activeSections.length ? 'flex-1' : ''}`}
+            className={`p-4 rounded-lg flex-shrink-0 ${!activeSections.length ? 'flex-1' : 'max-h-64 overflow-hidden'}`}
             style={{ backgroundColor: "#F2F2F2" }}
           >
             <ImagesDisplay 
@@ -89,13 +101,13 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
         )}
       </div>
 
-      {/* Right Column - Key Takeaways and References */}
-      <div className="w-1/2 space-y-3 overflow-auto flex flex-col h-full">
+      {/* Right Column - Key Takeaways and References with height stretching */}
+      <div className="w-1/2 h-full flex flex-col gap-3">
         {/* Key Takeaways Header */}
         {showKeypoints && posterData.keypoints && posterData.keypoints.some((point: string) => point?.trim()) && (
-          <div className="space-y-3">
+          <div className="flex-1 flex flex-col">
             {/* Key Takeaways Title with lines */}
-            <div className="flex items-center gap-4 pb-2">
+            <div className="flex items-center gap-4 pb-2 flex-shrink-0">
               <div className="flex-1 h-0.5 bg-gray-800"></div>
               <h2 
                 className="text-lg font-bold text-center whitespace-nowrap"
@@ -109,8 +121,8 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
               <div className="flex-1 h-0.5 bg-gray-800"></div>
             </div>
             
-            {/* Key Takeaways Items */}
-            <div className="space-y-3">
+            {/* Key Takeaways Items - flexible height */}
+            <div className="flex-1 space-y-3 overflow-auto">
               {posterData.keypoints.map((point: string, index: number) => {
                 const isVisible = posterData.keyVisibility?.[index] !== false;
                 if (!point?.trim() || !isVisible) return null;
@@ -168,25 +180,25 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
           </div>
         )}
 
-        {/* Additional Images in sidebar if present - only render if there are visible images */}
+        {/* Additional Images in sidebar if present */}
         {hasVisibleImages && posterData.images.length > 1 && (
           <div 
-            className="p-4 rounded-lg"
+            className="p-4 rounded-lg flex-shrink-0 max-h-48 overflow-hidden"
             style={{ backgroundColor: "#F2F2F2" }}
           >
             <ImagesDisplay 
-              images={posterData.images.slice(1)} // Show additional images in sidebar
+              images={posterData.images.slice(1)}
               designSettings={designSettings}
             />
           </div>
         )}
 
-        {/* References Section - always stretch to fill remaining space */}
+        {/* References Section - stretches to fill remaining space */}
         {posterData.references?.trim() && (
-          <div className="flex flex-col flex-1">
+          <div className="flex flex-col flex-1 min-h-0">
             {/* References Header */}
             <div 
-              className="px-4 py-3 border-b-2 border-white"
+              className="px-4 py-3 border-b-2 border-white flex-shrink-0"
               style={{ 
                 backgroundColor: "#3E3C72",
                 borderBottomColor: "#FFFFFF"
@@ -203,9 +215,9 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
               </h2>
             </div>
             
-            {/* References Content with consistent left alignment - stretch to fill remaining space */}
+            {/* References Content - stretches to fill remaining space */}
             <div 
-              className="p-4 flex-1"
+              className="p-4 flex-1 overflow-auto"
               style={{ backgroundColor: "#3E3C72" }}
             >
               <div 

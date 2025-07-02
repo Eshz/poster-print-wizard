@@ -12,15 +12,15 @@ const ReferencesColumn: React.FC<ReferencesColumnProps> = ({
 }) => {
   // Hide the entire column if references are disabled or empty
   if (posterData.showReferences === false || !posterData.references?.trim()) {
-    return <div className="space-y-2 overflow-auto flex flex-col h-full"></div>;
+    return <div className="h-full flex flex-col"></div>;
   }
 
   return (
-    <div className="space-y-2 overflow-auto flex flex-col h-full">
-      <div className="flex flex-col flex-1">
+    <div className="h-full flex flex-col">
+      <div className="flex flex-col h-full">
         {/* References Header */}
         <div 
-          className="px-3 py-2 border-b-2 border-white"
+          className="px-3 py-2 border-b-2 border-white flex-shrink-0"
           style={{ 
             backgroundColor: "#3E3C72",
             borderBottomColor: "#FFFFFF"
@@ -37,13 +37,13 @@ const ReferencesColumn: React.FC<ReferencesColumnProps> = ({
           </h2>
         </div>
         
-        {/* References Content with consistent left alignment */}
+        {/* References Content - stretches to fill remaining space */}
         <div 
-          className="p-3 flex-1"
+          className="p-3 flex-1 overflow-auto"
           style={{ backgroundColor: "#3E3C72" }}
         >
           <div 
-            className="text-xs leading-relaxed whitespace-pre-line"
+            className="text-xs leading-relaxed whitespace-pre-line h-full"
             style={{ 
               color: "#FFFFFF",
               fontFamily: `var(--font-${designSettings.contentFont})`,
