@@ -91,12 +91,11 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
               style={{ 
                 lineHeight: '1.6', 
                 fontFamily: 'monospace',
-                paddingLeft: '1rem',
-                textIndent: '-1rem'
+                paddingLeft: '0.75rem'
               }}
             />
             <p className="text-xs text-gray-500">
-              Use asterisk (*) at the start of each line to create bullet points with hanging indent
+              Use asterisk (*) at the start of each line to create bullet points with consistent left alignment
             </p>
           </div>
         </div>
