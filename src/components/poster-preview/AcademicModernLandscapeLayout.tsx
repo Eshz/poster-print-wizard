@@ -60,63 +60,71 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
     gridCols = 'grid-cols-4';
   }
   
-  // Smart column distribution to fill empty spaces
+  // Smart column distribution with references always at bottom-right
   const distributeColumns = () => {
+    // Base distribution logic
     if (totalSections <= 2) {
-      // If we have 2 or fewer sections, distribute them across available columns
       if (totalSections === 1) {
         return {
           column1: [activeSections[0]],
-          column2: [],
-          column3: []
+          column2: []
         };
       } else {
         return {
           column1: [activeSections[0]],
-          column2: [activeSections[1]],
-          column3: []
+          column2: [activeSections[1]]
         };
       }
     } else if (totalSections === 3) {
-      // With 3 sections, distribute more evenly if we have key takeaways
-      if (hasKeyTakeaways && columnsCount >= 3) {
+      // Distribute based on available space, considering key takeaways
+      if (hasKeyTakeaways && !showReferences) {
+        // 3 columns: spread sections more evenly
         return {
           column1: [activeSections[0]],
           column2: [activeSections[1]],
           column3: [activeSections[2]]
         };
+      } else if (hasKeyTakeaways && showReferences) {
+        // 4 columns: balance sections across first two columns
+        return {
+          column1: [activeSections[0], activeSections[1]],
+          column2: [activeSections[2]]
+        };
       } else {
+        // 2 columns: distribute sections
+        return {
+          column1: [activeSections[0]],
+          column2: [activeSections[1], activeSections[2]]
+        };
+      }
+    } else if (totalSections === 4) {
+      if (hasKeyTakeaways && showReferences) {
+        // 4 columns: distribute sections across first two columns
+        return {
+          column1: [activeSections[0], activeSections[1]],
+          column2: [activeSections[2], activeSections[3]]
+        };
+      } else if (hasKeyTakeaways && !showReferences) {
+        // 3 columns: balance sections
         return {
           column1: [activeSections[0], activeSections[1]],
           column2: [activeSections[2]],
-          column3: []
+          column3: [activeSections[3]]
+        };
+      } else {
+        // 2 columns: split evenly
+        return {
+          column1: [activeSections[0], activeSections[1]],
+          column2: [activeSections[2], activeSections[3]]
         };
       }
     } else {
-      // 4 sections - distribute based on available columns
-      if (hasKeyTakeaways && columnsCount >= 4) {
-        // If we have 4 columns, spread sections more evenly
-        return {
-          column1: [activeSections[0]],
-          column2: [activeSections[1]],
-          column3: [activeSections[2]],
-          column4: [activeSections[3]]
-        };
-      } else if (hasKeyTakeaways && columnsCount === 3) {
-        // 3 columns with key takeaways - balance content
-        return {
-          column1: [activeSections[0]],
-          column2: [activeSections[1]],
-          column3: [activeSections[2], activeSections[3]]
-        };
-      } else {
-        // 2 columns - split evenly
-        return {
-          column1: [activeSections[0], activeSections[1]],
-          column2: [activeSections[2], activeSections[3]],
-          column3: []
-        };
-      }
+      // 5+ sections: distribute as evenly as possible
+      const sectionsPerColumn = Math.ceil(totalSections / Math.max(2, columnsCount - (showReferences ? 1 : 0)));
+      return {
+        column1: activeSections.slice(0, sectionsPerColumn),
+        column2: activeSections.slice(sectionsPerColumn, sectionsPerColumn * 2)
+      };
     }
   };
   
@@ -161,11 +169,10 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
         )}
       </div>
 
-      {/* Column 3: Key Takeaways and potentially additional sections - full height - only if visible */}
-      {hasKeyTakeaways && (
+      {/* Column 3: Key Takeaways - full height - only if visible and not the rightmost column */}
+      {hasKeyTakeaways && !showReferences && (
         <div className="h-full flex flex-col gap-2">
-          {/* Key Takeaways - flexible height */}
-          <div className="flex-shrink-0">
+          <div className="flex-1 min-h-0">
             <KeyTakeawaysColumn
               posterData={posterData}
               designSettings={designSettings}
@@ -186,26 +193,40 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
         </div>
       )}
 
-      {/* Column 4: References and potentially additional sections - full height - only if visible */}
+      {/* Column 3: Key Takeaways when References are also shown - full height */}
+      {hasKeyTakeaways && showReferences && (
+        <div className="h-full flex flex-col">
+          <div className="flex-1 min-h-0">
+            <KeyTakeawaysColumn
+              posterData={posterData}
+              designSettings={designSettings}
+              showKeypoints={showKeypoints}
+              keyTakeawayColors={keyTakeawayColors}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Column 4 (or rightmost): References always at bottom - full height - only if visible */}
       {showReferences && (
         <div className="h-full flex flex-col gap-2">
-          {/* References - flexible height */}
-          <div className="flex-shrink-0">
+          {/* Additional sections if distributed to this column - only when References is not in a 3-column layout */}
+          {!hasKeyTakeaways && columnDistribution.column3 && columnDistribution.column3.length > 0 && (
+            <div className="flex-1 min-h-0">
+              <SectionColumn
+                sections={columnDistribution.column3}
+                designSettings={designSettings}
+              />
+            </div>
+          )}
+          
+          {/* References - always at the bottom */}
+          <div className="flex-1 min-h-0">
             <ReferencesColumn
               posterData={posterData}
               designSettings={designSettings}
             />
           </div>
-          
-          {/* Additional sections if distributed to this column */}
-          {columnDistribution.column4 && columnDistribution.column4.length > 0 && (
-            <div className="flex-1 min-h-0">
-              <SectionColumn
-                sections={columnDistribution.column4}
-                designSettings={designSettings}
-              />
-            </div>
-          )}
         </div>
       )}
     </div>
