@@ -203,7 +203,7 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
               </h2>
             </div>
             
-            {/* References Content with hanging indent - stretch to fill remaining space */}
+            {/* References Content with consistent left alignment - stretch to fill remaining space */}
             <div 
               className="p-4 flex-1"
               style={{ backgroundColor: "#3E3C72" }}
@@ -213,8 +213,7 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
                 style={{ 
                   color: "#FFFFFF",
                   fontFamily: `var(--font-${designSettings.contentFont})`,
-                  textIndent: '-1.5em',
-                  paddingLeft: '1.5em'
+                  paddingLeft: '0.75rem'
                 }}
                 dangerouslySetInnerHTML={{
                   __html: posterData.references.replace(/\n/g, '<br>')

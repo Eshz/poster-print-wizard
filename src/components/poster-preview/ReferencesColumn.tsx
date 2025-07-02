@@ -36,7 +36,7 @@ const ReferencesColumn: React.FC<ReferencesColumnProps> = ({
           </h2>
         </div>
         
-        {/* References Content with hanging indent */}
+        {/* References Content with consistent left alignment */}
         <div 
           className="p-3 flex-1"
           style={{ backgroundColor: "#3E3C72" }}
@@ -46,8 +46,7 @@ const ReferencesColumn: React.FC<ReferencesColumnProps> = ({
             style={{ 
               color: "#FFFFFF",
               fontFamily: `var(--font-${designSettings.contentFont})`,
-              textIndent: '-1em',
-              paddingLeft: '1em'
+              paddingLeft: '0.5rem'
             }}
             dangerouslySetInnerHTML={{
               __html: posterData.references.replace(/\n/g, '<br>')
