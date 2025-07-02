@@ -24,17 +24,16 @@ const ImagesDisplay: React.FC<ImagesDisplayProps> = ({
           key={index}
           className="flex flex-col items-center space-y-1 w-full"
           style={{ 
-            backgroundColor: designSettings.sectionBgColor,
             borderRadius: '0.375rem',
             padding: '0.5rem'
           }}
         >
-          {/* Upper Caption with title font and authors size */}
+          {/* Upper Caption with title font and key takeaways color */}
           {image.upperCaption && (
             <p 
               className="text-xs font-semibold text-left px-2 py-1 w-full"
               style={{ 
-                color: designSettings.sectionTitleColor,
+                color: designSettings.keyPointsTextColor,
                 fontFamily: `var(--font-${designSettings.titleFont})`
               }}
             >
@@ -50,12 +49,12 @@ const ImagesDisplay: React.FC<ImagesDisplayProps> = ({
             />
           </div>
           
-          {/* Caption below the image with content font */}
+          {/* Caption below the image with content font and key takeaways color */}
           {image.caption && (
             <p 
               className="text-xs text-left px-2 py-1 w-full"
               style={{ 
-                color: designSettings.sectionTextColor,
+                color: designSettings.keyPointsTextColor,
                 fontFamily: `var(--font-${designSettings.contentFont})`
               }}
             >
