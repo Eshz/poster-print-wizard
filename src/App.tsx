@@ -72,10 +72,10 @@ const AppContent = () => {
         <div className="flex justify-between items-center px-6 py-3">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-3">
-              <div className="w-6 h-6 bg-black rounded-sm flex items-center justify-center">
-                <MousePointerClick className="text-white h-4 w-4" />
+              <div className="w-6 h-6 bg-white border border-black rounded-sm flex items-center justify-center">
+                <MousePointerClick className="text-black h-4 w-4" />
               </div>
-              <h1 className="text-lg font-semibold text-gray-900">PosterSubmit</h1>
+              <h1 className="text-lg font-semibold text-gray-900 font-merriweather">Poster.Submit</h1>
             </div>
             
             <div className="flex items-center space-x-2">
