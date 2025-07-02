@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,6 +13,7 @@ import ImportExportButtons from "./components/ImportExportButtons";
 import { useIsMobile } from "./hooks/use-mobile";
 import { useAnalytics } from "./hooks/useAnalytics";
 import { useEffect } from "react";
+import { MousePointerClick } from "lucide-react";
 
 const queryClient = new QueryClient();
 
@@ -73,9 +73,9 @@ const AppContent = () => {
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-3">
               <div className="w-6 h-6 bg-black rounded-sm flex items-center justify-center">
-                <span className="text-white font-bold text-sm">P</span>
+                <MousePointerClick className="text-white h-4 w-4" />
               </div>
-              <h1 className="text-lg font-semibold text-gray-900">PosterMaker</h1>
+              <h1 className="text-lg font-semibold text-gray-900">PosterSubmit</h1>
             </div>
             
             <div className="flex items-center space-x-2">
