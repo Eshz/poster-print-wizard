@@ -42,7 +42,7 @@ const DesignPanel: React.FC<DesignPanelProps> = React.memo(({
   };
 
   return (
-    <div className="h-full flex flex-col bg-gray-50">
+    <div className="h-full flex flex-col">
       <div className="p-6 border-b bg-white">
         <h2 className="text-xl font-semibold text-gray-900 mb-1">Design Styles</h2>
         <p className="text-sm text-gray-600">Choose from pre-designed poster styles</p>
