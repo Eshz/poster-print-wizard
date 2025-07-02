@@ -60,38 +60,24 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
     gridCols = 'grid-cols-4';
   }
   
-  // Distribute sections across columns based on content length
-  const sectionsWithLength = activeSections.map((section, index) => ({
-    ...section,
-    index,
-    length: section.content?.length || 0
-  }));
-  
-  // Sort by length and distribute to balance columns
-  const sortedSections = [...sectionsWithLength].sort((a, b) => b.length - a.length);
+  // Distribute sections in order across two columns (instead of balancing by length)
   const column1Sections = [];
   const column2Sections = [];
   
-  let column1Length = 0;
-  let column2Length = 0;
+  // Split sections evenly but in order: first half to column1, second half to column2
+  const midPoint = Math.ceil(activeSections.length / 2);
   
-  sortedSections.forEach(section => {
-    if (column1Length <= column2Length) {
-      column1Sections.push(section);
-      column1Length += section.length;
+  for (let i = 0; i < activeSections.length; i++) {
+    if (i < midPoint) {
+      column1Sections.push(activeSections[i]);
     } else {
-      column2Sections.push(section);
-      column2Length += section.length;
+      column2Sections.push(activeSections[i]);
     }
-  });
-  
-  // Sort back by original index to maintain order
-  column1Sections.sort((a, b) => a.index - b.index);
-  column2Sections.sort((a, b) => a.index - b.index);
+  }
 
   return (
     <div className={`${gridCols} gap-2 h-full p-2 grid`}>
-      {/* Column 1: Balanced sections - full height */}
+      {/* Column 1: First half of sections - full height */}
       <div className="h-full flex flex-col">
         <div className="flex-1 min-h-0">
           <SectionColumn
@@ -101,7 +87,7 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
         </div>
       </div>
 
-      {/* Column 2: Remaining sections and Images - full height */}
+      {/* Column 2: Second half of sections and Images - full height */}
       <div className="h-full flex flex-col gap-2">
         {/* Sections part - takes most of the space */}
         <div className="flex-1 min-h-0">
