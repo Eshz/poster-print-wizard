@@ -28,8 +28,8 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
   setActivePanel
 }) => {
   return (
-    <div className="w-96 min-w-96 max-w-96 p-4 h-screen overflow-y-auto">
-      <div className="p-4 bg-white rounded-lg shadow">
+    <div className="w-[500px] min-w-[500px] max-w-[500px] p-4 h-screen overflow-y-auto">
+      <div className="p-4 bg-white">
         <Tabs defaultValue={activePanel} className="w-full" onValueChange={(value) => setActivePanel(value as 'content' | 'design')}>
           <TabsList className="grid w-full grid-cols-2 mb-4">
             <TabsTrigger value="content">
