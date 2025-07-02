@@ -29,6 +29,9 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
   keyTakeawayColors,
   shouldLeftStretch
 }) => {
+  // Check if there are any visible images
+  const hasVisibleImages = posterData.images && posterData.images.filter((img: any) => img.visible).length > 0;
+
   return (
     <div className="flex gap-3 h-full p-3">
       {/* Left Column - Main Sections */}
@@ -72,8 +75,8 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
           </div>
         ))}
         
-        {/* Images section if present */}
-        {posterData.images && posterData.images.length > 0 && (
+        {/* Images section if present - only render if there are visible images */}
+        {hasVisibleImages && (
           <div 
             className={`p-4 rounded-lg ${shouldLeftStretch && !activeSections.length ? 'flex-1' : ''}`}
             style={{ backgroundColor: "#F2F2F2" }}
@@ -165,8 +168,8 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
           </div>
         )}
 
-        {/* Additional Images in sidebar if present */}
-        {posterData.images && posterData.images.length > 0 && (
+        {/* Additional Images in sidebar if present - only render if there are visible images */}
+        {hasVisibleImages && posterData.images.length > 1 && (
           <div 
             className="p-4 rounded-lg"
             style={{ backgroundColor: "#F2F2F2" }}
