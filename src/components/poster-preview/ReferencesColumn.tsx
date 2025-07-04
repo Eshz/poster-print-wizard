@@ -15,6 +15,23 @@ const ReferencesColumn: React.FC<ReferencesColumnProps> = ({
     return <div className="h-full flex flex-col"></div>;
   }
 
+  // Convert plain text references to list items
+  const formatReferences = (text: string) => {
+    // Split by lines and filter out empty lines
+    const lines = text.split('\n').filter(line => line.trim());
+    
+    return lines.map((line, index) => (
+      <li key={index} className="mb-1">
+        <p className="text-xs leading-relaxed" style={{ 
+          color: "#FFFFFF",
+          fontFamily: `var(--font-${designSettings.contentFont})`
+        }}>
+          {line.trim()}
+        </p>
+      </li>
+    ));
+  };
+
   return (
     <div className="h-full flex flex-col">
       <div className="flex flex-col h-full">
@@ -42,18 +59,9 @@ const ReferencesColumn: React.FC<ReferencesColumnProps> = ({
           className="p-3 flex-1 overflow-auto"
           style={{ backgroundColor: "#3E3C72" }}
         >
-          <div 
-            className="text-xs leading-relaxed h-full"
-            style={{ 
-              color: "#FFFFFF",
-              fontFamily: `var(--font-${designSettings.contentFont})`,
-              whiteSpace: 'pre-line',
-              marginLeft: '1rem',
-              textIndent: '-1rem'
-            }}
-          >
-            {posterData.references}
-          </div>
+          <ul className="paragraph-list list-disc pl-4 space-y-1">
+            {formatReferences(posterData.references)}
+          </ul>
         </div>
       </div>
     </div>
