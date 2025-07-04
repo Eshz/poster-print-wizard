@@ -47,7 +47,9 @@ const ReferencesColumn: React.FC<ReferencesColumnProps> = ({
             style={{ 
               color: "#FFFFFF",
               fontFamily: `var(--font-${designSettings.contentFont})`,
-              whiteSpace: 'pre-line'
+              whiteSpace: 'pre-line',
+              marginLeft: '1rem',
+              textIndent: '-1rem'
             }}
           >
             {posterData.references}
