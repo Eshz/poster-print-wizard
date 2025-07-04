@@ -26,8 +26,8 @@ const ReferencesColumn: React.FC<ReferencesColumnProps> = ({
         processedLines.push(line);
       } else if (line.trim() && processedLines.length > 0) {
         // This is a continuation line - add proper indentation
-        // Add spaces to align with the text portion after the bullet
-        const indentedLine = '  ' + line.trim(); // Two spaces to align with bullet text
+        // Add enough spaces to align with the text portion after the bullet (• )
+        const indentedLine = '  ' + line.trim(); // Indent to align with bullet text
         processedLines.push(indentedLine);
       } else {
         // Empty line or other content
@@ -73,8 +73,8 @@ const ReferencesColumn: React.FC<ReferencesColumnProps> = ({
               color: "#FFFFFF",
               fontFamily: `var(--font-${designSettings.contentFont})`,
               whiteSpace: 'pre-line',
-              textIndent: '0',
-              paddingLeft: '0.5rem'
+              textIndent: '-1rem',
+              paddingLeft: '1rem'
             }}
           >
             {formattedReferences}
