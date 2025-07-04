@@ -15,31 +15,6 @@ const ReferencesColumn: React.FC<ReferencesColumnProps> = ({
     return <div className="h-full flex flex-col"></div>;
   }
 
-  // Process references to handle proper bullet point indentation
-  const processReferences = (text: string) => {
-    const lines = text.split('\n');
-    const processedLines: string[] = [];
-    
-    lines.forEach(line => {
-      if (line.trim().startsWith('• ')) {
-        // This is a bullet point line
-        processedLines.push(line);
-      } else if (line.trim() && processedLines.length > 0) {
-        // This is a continuation line - add proper indentation
-        // Add enough spaces to align with the text portion after the bullet (• )
-        const indentedLine = '  ' + line.trim(); // Indent to align with bullet text
-        processedLines.push(indentedLine);
-      } else {
-        // Empty line or other content
-        processedLines.push(line);
-      }
-    });
-    
-    return processedLines.join('\n');
-  };
-
-  const formattedReferences = processReferences(posterData.references);
-
   return (
     <div className="h-full flex flex-col">
       <div className="flex flex-col h-full">
@@ -72,12 +47,10 @@ const ReferencesColumn: React.FC<ReferencesColumnProps> = ({
             style={{ 
               color: "#FFFFFF",
               fontFamily: `var(--font-${designSettings.contentFont})`,
-              whiteSpace: 'pre-line',
-              textIndent: '-1rem',
-              paddingLeft: '1rem'
+              whiteSpace: 'pre-line'
             }}
           >
-            {formattedReferences}
+            {posterData.references}
           </div>
         </div>
       </div>
