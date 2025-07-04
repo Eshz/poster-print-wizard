@@ -59,7 +59,13 @@ const ReferencesColumn: React.FC<ReferencesColumnProps> = ({
           className="p-3 flex-1 overflow-auto"
           style={{ backgroundColor: "#3E3C72" }}
         >
-          <ul className="paragraph-list list-disc pl-4 space-y-1">
+          <ul 
+            className="paragraph-list list-disc pl-4 space-y-1"
+            style={{
+              color: "#FFFFFF",
+              fontFamily: `var(--font-${designSettings.contentFont})`
+            }}
+          >
             {formatReferences(posterData.references)}
           </ul>
         </div>

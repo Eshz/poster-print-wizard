@@ -25,26 +25,7 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
   };
 
   const handleReferencesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    let value = e.target.value;
-    
-    // Auto-format with bullets: replace * at start of lines with •
-    value = value.replace(/^\* /gm, '• ');
-    
-    // Remove excessive spacing while maintaining structure
-    const lines = value.split('\n');
-    const formattedLines = lines.map(line => {
-      // For bullet points, ensure consistent spacing
-      if (line.startsWith('• ')) {
-        return line.replace(/^• +/, '• ');
-      }
-      // For asterisk lines, convert to bullets with proper spacing
-      if (line.startsWith('*')) {
-        return line.replace(/^\*\s*/, '• ');
-      }
-      return line;
-    });
-    value = formattedLines.join('\n');
-    
+    const value = e.target.value;
     handleChange({ target: { name: 'references', value } } as any);
   };
 
@@ -87,7 +68,7 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
               onChange={handleReferencesChange}
               rows={6}
               className="border-gray-200 focus:border-blue-400 rounded-md text-sm leading-relaxed"
-              placeholder="Enter references in bullet format:&#10;* Reference 1&#10;* Reference 2&#10;* Reference 3"
+              placeholder="Enter references, one per line:&#10;Reference 1&#10;Reference 2&#10;Reference 3"
               style={{ 
                 lineHeight: '1.6', 
                 fontFamily: 'monospace',
@@ -95,7 +76,7 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
               }}
             />
             <p className="text-xs text-gray-500">
-              Use asterisk (*) at the start of each line to create bullet points with consistent left alignment
+              Enter each reference on a new line - bullets will be added automatically
             </p>
           </div>
         </div>
