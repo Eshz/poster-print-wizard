@@ -30,25 +30,27 @@ export const exportToPDF = async (
   posterData?: PosterData,
   designSettings?: DesignSettings
 ) => {
-  // If no poster data provided, extract from DOM (fallback for legacy calls)
-  const actualPosterData = posterData || extractPosterDataFromDOM();
-  const actualDesignSettings = designSettings || extractDesignSettings();
+  // Require real poster data for proper export
+  if (!posterData || !designSettings) {
+    toast.error("Missing poster data for export. Please ensure the project is loaded properly.");
+    return;
+  }
   
   // Generate QR code URL if needed
-  const qrCodeUrl = actualPosterData.qrCodeUrl && actualPosterData.showQrCode !== false
-    ? `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(actualPosterData.qrCodeUrl)}&color=${(actualPosterData.qrCodeColor || '#000000').replace('#', '')}`
+  const qrCodeUrl = posterData.qrCodeUrl && posterData.showQrCode !== false
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(posterData.qrCodeUrl)}&color=${(posterData.qrCodeColor || '#000000').replace('#', '')}`
     : undefined;
 
   try {
     switch (method) {
       case 'react-pdf':
         // Best quality - vector-based PDF generation with real data
-        await exportToReactPDF(actualPosterData, actualDesignSettings, qrCodeUrl);
+        await exportToReactPDF(posterData, designSettings, qrCodeUrl);
         break;
         
       case 'svg':
         // High quality - SVG-based approach
-        await exportToSVGPDF(elementId, actualPosterData, actualDesignSettings, orientation);
+        await exportToSVGPDF(elementId, posterData, designSettings, orientation);
         break;
         
       case 'canvas':
@@ -73,34 +75,6 @@ export const exportToPDF = async (
       toast.error("All PDF export methods failed. Please try again.");
     }
   }
-};
-
-/**
- * Extract poster data from DOM for fallback compatibility
- */
-const extractPosterDataFromDOM = (): PosterData => {
-  // This is a fallback - in practice, real data should be passed as parameters
-  return {
-    title: "Conference Poster Title",
-    authors: "Author Names",
-    school: "Institution",
-    contact: "contact@example.com",
-    introduction: "Introduction content...",
-    methods: "Methods content...",
-    findings: "Findings content...",
-    conclusions: "Conclusions content...",
-    references: "References...",
-    keypoints: ["Key Point 1", "Key Point 2", "Key Point 3"],
-    keyDescriptions: ["Description 1", "Description 2", "Description 3"],
-    sectionTitles: ["1. Introduction", "2. Methods", "3. Findings", "4. Conclusions", "5. References"],
-    qrCodeUrl: "https://example.com",
-    qrCodeColor: "#000000",
-    showKeypoints: true,
-    showQrCode: true,
-    showReferences: true,
-    keyVisibility: [true, true, true],
-    images: []
-  };
 };
 
 /**
