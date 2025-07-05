@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Document, Page, View, Text, Image, StyleSheet, Font } from '@react-pdf/renderer';
 import { PosterData, DesignSettings } from '@/types/project';
@@ -22,11 +21,11 @@ Font.register({
   family: 'Merriweather',
   fonts: [
     { 
-      src: '/fonts/Merriweather-Regular.ttf',
+      src: '/fonts/Merriweather_24pt-Regular.ttf',
       fontWeight: 'normal'
     },
     { 
-      src: '/fonts/Merriweather-Bold.ttf', 
+      src: '/fonts/Merriweather_24pt-Bold.ttf', 
       fontWeight: 'bold' 
     }
   ]
