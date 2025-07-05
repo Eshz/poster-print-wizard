@@ -15,37 +15,40 @@ import { generatePdf } from './pdfGenerator';
 import { exportToCanvasPDF } from './canvasExport';
 import { exportToReactPDF } from './react-pdf/reactPdfExport';
 import { exportToSVGPDF } from './svgExport';
+import { PosterData, DesignSettings } from '@/types/project';
 
 export type ExportMethod = 'react-pdf' | 'canvas' | 'svg' | 'html2pdf';
 
 /**
- * Exports a DOM element as a high-quality A0-sized PDF
- * Now supports multiple export methods for best quality
+ * Exports a poster as a high-quality A0-sized PDF
+ * Now supports multiple export methods with real poster data
  */
 export const exportToPDF = async (
   elementId: string, 
   orientation: 'portrait' | 'landscape' = 'portrait',
-  method: ExportMethod = 'react-pdf'
+  method: ExportMethod = 'react-pdf',
+  posterData?: PosterData,
+  designSettings?: DesignSettings
 ) => {
-  // Get poster data for react-pdf method
-  const posterData = extractPosterDataFromDOM();
-  const designSettings = extractDesignSettings();
+  // If no poster data provided, extract from DOM (fallback for legacy calls)
+  const actualPosterData = posterData || extractPosterDataFromDOM();
+  const actualDesignSettings = designSettings || extractDesignSettings();
   
   // Generate QR code URL if needed
-  const qrCodeUrl = posterData.qrCodeUrl && posterData.showQrCode !== false
-    ? `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(posterData.qrCodeUrl)}&color=${(posterData.qrCodeColor || '#000000').replace('#', '')}`
+  const qrCodeUrl = actualPosterData.qrCodeUrl && actualPosterData.showQrCode !== false
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(actualPosterData.qrCodeUrl)}&color=${(actualPosterData.qrCodeColor || '#000000').replace('#', '')}`
     : undefined;
 
   try {
     switch (method) {
       case 'react-pdf':
-        // Best quality - vector-based PDF generation
-        await exportToReactPDF(posterData, designSettings, qrCodeUrl);
+        // Best quality - vector-based PDF generation with real data
+        await exportToReactPDF(actualPosterData, actualDesignSettings, qrCodeUrl);
         break;
         
       case 'svg':
         // High quality - SVG-based approach
-        await exportToSVGPDF(elementId, posterData, designSettings, orientation);
+        await exportToSVGPDF(elementId, actualPosterData, actualDesignSettings, orientation);
         break;
         
       case 'canvas':
@@ -65,7 +68,7 @@ export const exportToPDF = async (
     // Try fallback method
     if (method !== 'html2pdf') {
       toast.error(`${method} export failed, trying fallback method...`);
-      await exportToPDF(elementId, orientation, 'html2pdf');
+      await exportToPDF(elementId, orientation, 'html2pdf', posterData, designSettings);
     } else {
       toast.error("All PDF export methods failed. Please try again.");
     }
@@ -73,11 +76,10 @@ export const exportToPDF = async (
 };
 
 /**
- * Extract poster data from DOM for react-pdf
+ * Extract poster data from DOM for fallback compatibility
  */
-const extractPosterDataFromDOM = () => {
-  // This would need to extract actual data from the current poster state
-  // For now, return a basic structure - this should be connected to the actual poster data
+const extractPosterDataFromDOM = (): PosterData => {
+  // This is a fallback - in practice, real data should be passed as parameters
   return {
     title: "Conference Poster Title",
     authors: "Author Names",
