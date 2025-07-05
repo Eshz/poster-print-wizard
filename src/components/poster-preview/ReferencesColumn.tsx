@@ -32,9 +32,21 @@ const ReferencesColumn: React.FC<ReferencesColumnProps> = ({
     ));
   };
 
+  // Generate unique CSS for this component instance
+  const uniqueId = `references-${Math.random().toString(36).substr(2, 9)}`;
+
   return (
     <div className="h-full flex flex-col">
-      <div className="flex flex-col h-full">
+      <style>
+        {`
+          .${uniqueId} ul.paragraph-list li::marker {
+            color: #FFFFFF;
+            font-family: var(--font-${designSettings.contentFont});
+            font-weight: normal;
+          }
+        `}
+      </style>
+      <div className={`flex flex-col h-full ${uniqueId}`}>
         {/* References Header */}
         <div 
           className="px-3 py-2 border-b-2 border-white flex-shrink-0"
