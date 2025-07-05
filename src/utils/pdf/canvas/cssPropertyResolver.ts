@@ -39,6 +39,8 @@ export interface ResolvedStyles {
   justifyContent: string;
   alignItems: string;
   textBaseline: string;
+  listStyleType: string;
+  listStylePosition: string;
 }
 
 /**
@@ -62,6 +64,16 @@ export const resolveCSSProperties = (
   const padding = resolvePadding(computedStyle);
   const margin = resolveMargin(computedStyle);
   
+  // Special handling for list items to reduce spacing
+  let adjustedPadding = padding;
+  if (element.tagName === 'LI') {
+    adjustedPadding = {
+      ...padding,
+      top: Math.min(padding.top, 2), // Reduce top padding for list items
+      bottom: Math.min(padding.bottom, 2) // Reduce bottom padding for list items
+    };
+  }
+  
   const resolved = {
     fontFamily,
     fontSize: parseFloat(computedStyle.fontSize) || 16,
@@ -72,12 +84,14 @@ export const resolveCSSProperties = (
     backgroundColor: computedStyle.backgroundColor || 'transparent',
     whiteSpace,
     borders,
-    padding,
+    padding: adjustedPadding,
     margin,
     display: computedStyle.display || 'block',
     justifyContent: computedStyle.justifyContent || 'flex-start',
     alignItems: computedStyle.alignItems || 'stretch',
-    textBaseline: computedStyle.verticalAlign || 'baseline'
+    textBaseline: computedStyle.verticalAlign || 'baseline',
+    listStyleType: computedStyle.listStyleType || 'disc',
+    listStylePosition: computedStyle.listStylePosition || 'outside'
   };
   
   console.log(`Resolved styles for ${element.tagName}.${element.className}:`, {
@@ -85,11 +99,8 @@ export const resolveCSSProperties = (
     fontWeight: resolved.fontWeight,
     fontSize: resolved.fontSize,
     textAlign: resolved.textAlign,
-    textTransform: resolved.textTransform,
-    whiteSpace: resolved.whiteSpace,
-    display: resolved.display,
-    alignItems: resolved.alignItems,
-    justifyContent: resolved.justifyContent
+    listStyleType: resolved.listStyleType,
+    adjustedPadding: element.tagName === 'LI' ? 'yes' : 'no'
   });
   
   return resolved;
