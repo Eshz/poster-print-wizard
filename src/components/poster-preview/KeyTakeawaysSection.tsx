@@ -21,8 +21,17 @@ const KeyTakeawaysSection: React.FC<KeyTakeawaysSectionProps> = ({
     return null;
   }
 
+  // Filter visible key points
+  const visibleKeyPoints = posterData.keypoints
+    .map((point: string, index: number) => ({ point, index }))
+    .filter(({ point, index }) => point?.trim() && posterData.keyVisibility?.[index] !== false);
+
+  if (visibleKeyPoints.length === 0) {
+    return null;
+  }
+
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex flex-col h-full">
       {/* Key Takeaways Title with lines */}
       <div className="flex items-center gap-4 pb-2 flex-shrink-0">
         <div className="flex-1 h-0.5 bg-gray-800"></div>
@@ -38,12 +47,9 @@ const KeyTakeawaysSection: React.FC<KeyTakeawaysSectionProps> = ({
         <div className="flex-1 h-0.5 bg-gray-800"></div>
       </div>
       
-      {/* Key Takeaways Items - flexible height */}
-      <div className="flex-1 space-y-3 overflow-auto">
-        {posterData.keypoints.map((point: string, index: number) => {
-          const isVisible = posterData.keyVisibility?.[index] !== false;
-          if (!point?.trim() || !isVisible) return null;
-          
+      {/* Key Takeaways Items - flexible height with better spacing */}
+      <div className="flex-1 space-y-3 overflow-auto min-h-0">
+        {visibleKeyPoints.map(({ point, index }) => {
           const colors = keyTakeawayColors[index] || keyTakeawayColors[0];
           
           return (
@@ -60,7 +66,7 @@ const KeyTakeawaysSection: React.FC<KeyTakeawaysSectionProps> = ({
                     fontFamily: `var(--font-${designSettings.titleFont})`
                   }}
                 >
-                  {index + 1}
+                  {visibleKeyPoints.findIndex(item => item.index === index) + 1}
                 </span>
               </div>
               

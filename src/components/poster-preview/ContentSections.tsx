@@ -27,10 +27,15 @@ const ContentSections: React.FC<ContentSectionsProps> = ({
         const isLast = index === activeSections.length - 1;
         const shouldStretch = shouldLeftStretch && isLast;
         
+        // Determine if this section should expand based on content length
+        const isLongContent = section.content && section.content.length > 800;
+        const shouldExpandForContent = shouldRedistribute && isLongContent;
+        
         return (
           <div 
             key={index} 
-            className={`flex flex-col ${shouldStretch ? 'flex-1' : ''} ${shouldRedistribute && section.content && section.content.length > 800 ? 'flex-1' : ''}`}
+            className={`flex flex-col ${shouldStretch || shouldExpandForContent ? 'flex-1' : 'flex-shrink-0'}`}
+            style={{ minHeight: shouldExpandForContent ? '200px' : 'auto' }}
           >
             {/* Section Header */}
             <div 
@@ -53,7 +58,7 @@ const ContentSections: React.FC<ContentSectionsProps> = ({
             
             {/* Section Content - stretches to fill available space */}
             <div 
-              className={`p-4 flex-1 overflow-auto ${shouldStretch ? 'min-h-0' : ''}`}
+              className={`p-4 flex-1 overflow-auto ${shouldStretch || shouldExpandForContent ? 'min-h-0' : ''}`}
               style={{ backgroundColor: section.contentBg }}
             >
               <p 
