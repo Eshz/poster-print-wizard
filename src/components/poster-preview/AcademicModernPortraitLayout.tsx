@@ -43,10 +43,10 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
   // Calculate if References should expand (when key takeaways are minimal or hidden)
   const shouldReferencesExpand = !showKeypoints || visibleKeyTakeaways.length <= 2;
 
-  // Create grid items for masonry layout
+  // Create grid items for masonry layout in proper order
   const gridItems = [];
   
-  // Add content sections as individual grid items with size hints
+  // 1. Add content sections first
   activeSections.forEach((section, index) => {
     const contentLength = section.content?.length || 0;
     const isLargeContent = contentLength > 400;
@@ -56,6 +56,7 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
         key={`section-${index}`}
         className="flex flex-col h-full"
         data-size={isLargeContent ? 'large' : 'normal'}
+        data-order={index + 1}
       >
         {/* Section Header */}
         <div 
@@ -95,7 +96,7 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
     );
   });
 
-  // Add images if present
+  // 2. Add images after sections
   if (hasVisibleImages) {
     gridItems.push(
       <div 
@@ -103,6 +104,7 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
         className="p-4 rounded-lg"
         style={{ backgroundColor: "#F2F2F2" }}
         data-size="normal"
+        data-order={activeSections.length + 1}
       >
         <ImagesDisplay 
           images={posterData.images} 
@@ -112,12 +114,13 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
     );
   }
 
-  // Add key takeaways
+  // 3. Add key takeaways second to last
   if (showKeypoints && visibleKeyTakeaways.length > 0) {
     gridItems.push(
       <div 
         key="keytakeaways"
         data-size={shouldReferencesExpand ? 'small' : 'normal'}
+        data-order={98} // High order to ensure it comes before references
       >
         <KeyTakeawaysSection
           posterData={posterData}
@@ -129,11 +132,12 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
     );
   }
 
-  // Add references
+  // 4. Add references last (always)
   gridItems.push(
     <div 
       key="references"
       data-size={shouldReferencesExpand ? 'large' : 'normal'}
+      data-order={99} // Highest order to ensure it's always last
     >
       <ReferencesFormatter
         references={posterData.references}

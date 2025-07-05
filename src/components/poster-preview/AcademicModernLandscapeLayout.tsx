@@ -40,10 +40,10 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
   // Check if there are visible images
   const hasImages = posterData.images && posterData.images.filter((img: any) => img.visible).length > 0;
   
-  // Create grid items for masonry layout
+  // Create grid items for masonry layout in proper order
   const gridItems = [];
   
-  // Distribute sections into grid items with size hints
+  // 1. Distribute sections into grid items with size hints first
   activeSections.forEach((section, index) => {
     const contentLength = section.content?.length || 0;
     const isLargeContent = contentLength > 600;
@@ -53,6 +53,7 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
         key={`section-${index}`}
         className="flex flex-col h-full"
         data-size={isLargeContent ? 'large' : 'normal'}
+        data-order={index + 1}
       >
         <SectionColumn
           sections={[section]}
@@ -62,7 +63,7 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
     );
   });
 
-  // Add images if present
+  // 2. Add images after sections
   if (hasImages) {
     gridItems.push(
       <div 
@@ -70,6 +71,7 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
         className="p-3 rounded-lg"
         style={{ backgroundColor: "#F2F2F2" }}
         data-size="normal"
+        data-order={activeSections.length + 1}
       >
         <ImagesDisplay 
           images={posterData.images} 
@@ -79,10 +81,14 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
     );
   }
 
-  // Add key takeaways
+  // 3. Add key takeaways second to last
   if (hasKeyTakeaways) {
     gridItems.push(
-      <div key="keytakeaways" data-size="normal">
+      <div 
+        key="keytakeaways" 
+        data-size="normal"
+        data-order={98} // High order to ensure it comes before references
+      >
         <KeyTakeawaysColumn
           posterData={posterData}
           designSettings={designSettings}
@@ -93,10 +99,14 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
     );
   }
 
-  // Add references
+  // 4. Add references last (always)
   if (showReferences) {
     gridItems.push(
-      <div key="references" data-size="normal">
+      <div 
+        key="references" 
+        data-size="normal"
+        data-order={99} // Highest order to ensure it's always last
+      >
         <ReferencesColumn
           posterData={posterData}
           designSettings={designSettings}
