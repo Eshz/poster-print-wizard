@@ -17,7 +17,9 @@ export const renderTextLines = (
   height: number,
   scaleY: number
 ): void => {
-  const lineHeight = fontSize * 1.2;
+  // Improved line height calculation to prevent overlap
+  // Use a more conservative line height multiplier
+  const lineHeight = fontSize * 1.15; // Reduced from 1.2 to 1.15 to reduce spacing
   
   // For multi-line text in flexbox center, adjust starting position
   if (lines.length > 1 && resolvedStyles.display === 'flex' && resolvedStyles.alignItems === 'center') {
@@ -38,4 +40,6 @@ export const renderTextLines = (
       ctx.fillText(line, textX, lineY);
     });
   }
+  
+  console.log(`Rendered ${lines.length} lines with line height: ${lineHeight}, fontSize: ${fontSize}`);
 };

@@ -32,9 +32,12 @@ export const renderTextToCanvas = async (
   // Apply text transformation
   text = applyTextTransform(text, resolvedStyles.textTransform);
   
-  // Apply resolved font properties
-  const fontSize = resolvedStyles.fontSize * scaleY;
-  setCanvasFont(ctx, fontSize, resolvedStyles.fontWeight, resolvedStyles.fontFamily, resolvedStyles.color);
+  // Apply resolved font properties with better scaling
+  // Reduce font scaling to prevent oversized text in PDF
+  const baseFontSize = resolvedStyles.fontSize;
+  const scaledFontSize = baseFontSize * Math.min(scaleY, 1.2); // Cap scaling to prevent huge text
+  
+  setCanvasFont(ctx, scaledFontSize, resolvedStyles.fontWeight, resolvedStyles.fontFamily, resolvedStyles.color);
   
   // Calculate horizontal positioning with list adjustments
   const textAlign = resolvedStyles.textAlign;
@@ -47,8 +50,8 @@ export const renderTextToCanvas = async (
   
   setCanvasTextAlignment(ctx, textAlign, resolvedStyles);
   
-  // Calculate vertical positioning
-  const textY = calculateVerticalPosition(y, height, fontSize, resolvedStyles, scaleY);
+  // Calculate vertical positioning with improved spacing
+  const textY = calculateVerticalPosition(y, height, scaledFontSize, resolvedStyles, scaleY);
   
   // Handle text wrapping with list adjustments
   const paddingLeft = (resolvedStyles.padding?.left || 0) * scaleX;
@@ -62,8 +65,8 @@ export const renderTextToCanvas = async (
   
   const lines = getTextLines(ctx, text, availableWidth, resolvedStyles.whiteSpace);
   
-  // Render text lines
-  renderTextLines(ctx, lines, textX, textY, fontSize, resolvedStyles, y, height, scaleY);
+  // Render text lines with improved scaling
+  renderTextLines(ctx, lines, textX, textY, scaledFontSize, resolvedStyles, y, height, scaleY);
   
-  console.log(`Rendered ${listContext?.isListItem ? 'list item' : 'text'} "${text}" with font ${resolvedStyles.fontFamily} ${resolvedStyles.fontWeight} at ${textX}, ${textY}`);
+  console.log(`Rendered ${listContext?.isListItem ? 'list item' : 'text'} "${text}" with font ${resolvedStyles.fontFamily} ${resolvedStyles.fontWeight} at ${textX}, ${textY}, scaled font size: ${scaledFontSize}`);
 };

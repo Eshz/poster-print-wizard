@@ -37,7 +37,8 @@ export const getListContext = (element: HTMLElement): ListRenderingContext => {
   }
   
   const listType = parentList.tagName === 'UL' ? 'disc' : 'decimal';
-  const bulletWidth = listType === 'disc' ? 20 : 30; // Space for bullet/number
+  // Reduced bullet width to prevent excessive spacing
+  const bulletWidth = listType === 'disc' ? 15 : 25; // Reduced from 20/30 to 15/25
   
   return {
     isListItem: true,
@@ -62,15 +63,20 @@ export const renderBullet = (
   ctx.fillStyle = color;
   ctx.textBaseline = 'top';
   
+  // Use slightly smaller font size for bullets to match browser rendering
+  const bulletFontSize = fontSize * 0.9;
+  
   if (listType === 'disc') {
     // Draw bullet point (•)
-    ctx.font = `normal ${fontSize}px Arial, sans-serif`;
+    ctx.font = `normal ${bulletFontSize}px Arial, sans-serif`;
     ctx.fillText('•', x, y);
   } else if (listType === 'decimal' && itemIndex !== undefined) {
     // Draw number
-    ctx.font = `normal ${fontSize}px Arial, sans-serif`;
+    ctx.font = `normal ${bulletFontSize}px Arial, sans-serif`;
     ctx.fillText(`${itemIndex + 1}.`, x, y);
   }
+  
+  console.log(`Rendered ${listType} bullet at ${x}, ${y} with font size: ${bulletFontSize}`);
 };
 
 /**
@@ -85,10 +91,10 @@ export const calculateListTextPosition = (
     return originalX;
   }
   
-  // Add space for bullet and proper indentation
-  const baseIndent = 16 * scaleX; // Base list padding
+  // Reduced spacing to match browser rendering more closely
+  const baseIndent = 12 * scaleX; // Reduced from 16 to 12
   const bulletSpace = listContext.bulletWidth * scaleX;
-  const levelIndent = (listContext.indentLevel - 1) * 20 * scaleX;
+  const levelIndent = (listContext.indentLevel - 1) * 15 * scaleX; // Reduced from 20 to 15
   
   return originalX + baseIndent + bulletSpace + levelIndent;
 };
@@ -105,8 +111,8 @@ export const getBulletPosition = (
     return containerX;
   }
   
-  const baseIndent = 16 * scaleX;
-  const levelIndent = (listContext.indentLevel - 1) * 20 * scaleX;
+  const baseIndent = 12 * scaleX; // Reduced from 16 to 12
+  const levelIndent = (listContext.indentLevel - 1) * 15 * scaleX; // Reduced from 20 to 15
   
   return containerX + baseIndent + levelIndent;
 };

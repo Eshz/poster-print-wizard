@@ -44,16 +44,16 @@ export const calculateVerticalPosition = (
   const paddingBottom = (resolvedStyles.padding?.bottom || 0) * scaleY;
   const availableHeight = height - paddingTop - paddingBottom;
   
-  // Calculate baseline offset for better visual alignment
-  // Canvas 'top' baseline doesn't match browser's visual centering
-  const baselineOffset = fontSize * 0.15; // Approximate offset for visual centering
+  // Improved baseline offset for better visual alignment
+  // Reduce baseline offset to prevent text from being positioned too low
+  const baselineOffset = fontSize * 0.1; // Reduced from 0.15 to 0.1
   
   // Check if this is flexbox centered content
   if (resolvedStyles.display === 'flex' && resolvedStyles.alignItems === 'center') {
     // For flexbox center alignment, position at the visual center with baseline compensation
     textY = y + paddingTop + (availableHeight - fontSize) / 2 + baselineOffset;
     
-    console.log(`Flexbox center alignment positioning with baseline offset:`, {
+    console.log(`Flexbox center alignment positioning with reduced baseline offset:`, {
       containerY: y,
       containerHeight: height,
       paddingTop,
@@ -72,7 +72,7 @@ export const calculateVerticalPosition = (
       textY = y + paddingTop + baselineOffset;
     }
   } else {
-    // Regular block element positioning with baseline adjustment
+    // Regular block element positioning with reduced baseline adjustment
     textY = y + paddingTop + baselineOffset;
   }
   
