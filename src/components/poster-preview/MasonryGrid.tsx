@@ -84,17 +84,25 @@ const MasonryGrid: React.FC<MasonryGridProps> = ({
       child.key !== 'keytakeaways'
     );
     
-    // Fill columns top-to-bottom: distribute items per column first, then fill column by column
-    const baseItemsPerColumn = Math.floor(regularItems.length / columns);
-    const extraItems = regularItems.length % columns;
-    
-    let itemIndex = 0;
-    for (let col = 0; col < columns; col++) {
-      const itemsInThisColumn = baseItemsPerColumn + (col < extraItems ? 1 : 0);
+    // Fill columns left-to-right: squeeze as many items as possible in each column before moving to next
+    let currentColumn = 0;
+    for (let i = 0; i < regularItems.length; i++) {
+      columnArrays[currentColumn].push(regularItems[i]);
       
-      for (let i = 0; i < itemsInThisColumn && itemIndex < regularItems.length; i++) {
-        columnArrays[col].push(regularItems[itemIndex]);
-        itemIndex++;
+      // Only move to next column if current column has enough items and we have more columns available
+      // This creates a more aggressive packing strategy
+      const itemsInCurrentColumn = columnArrays[currentColumn].length;
+      const remainingItems = regularItems.length - i - 1;
+      const remainingColumns = columns - currentColumn - 1;
+      
+      // Move to next column only if we have remaining columns and the remaining items 
+      // would leave other columns with at least 1 item each
+      if (remainingColumns > 0 && remainingItems >= remainingColumns) {
+        // Check if current column is getting too full compared to what's left
+        const avgItemsPerRemainingColumn = Math.ceil(remainingItems / remainingColumns);
+        if (itemsInCurrentColumn >= avgItemsPerRemainingColumn + 1) {
+          currentColumn++;
+        }
       }
     }
     
