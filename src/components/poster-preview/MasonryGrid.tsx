@@ -38,11 +38,9 @@ const MasonryGrid: React.FC<MasonryGridProps> = ({
     const { totalContentLength, itemCount } = calculateContentDensity();
     const avgContentLength = itemCount > 0 ? totalContentLength / itemCount : 0;
     
-    // More liberal column determination - allow more content before expanding
-    let optimalCols = 1;
-    if (itemCount <= 3) {
-      optimalCols = 1;
-    } else if (itemCount <= 6 && avgContentLength < 800) {
+    // Always start from 2 columns - no 1 column layout
+    let optimalCols = 2;
+    if (itemCount <= 6 && avgContentLength < 800) {
       optimalCols = 2;
     } else if (itemCount <= 9 && avgContentLength < 1200) {
       optimalCols = Math.min(3, maxColumns);
@@ -50,8 +48,8 @@ const MasonryGrid: React.FC<MasonryGridProps> = ({
       optimalCols = maxColumns;
     }
     
-    // Ensure we don't have more columns than items
-    const columns = Math.min(optimalCols, itemCount, maxColumns);
+    // Ensure we don't have more columns than items, but minimum 2
+    const columns = Math.max(2, Math.min(optimalCols, itemCount, maxColumns));
     
     const columnArrays: React.ReactNode[][] = Array.from({ length: columns }, () => []);
     
@@ -86,19 +84,11 @@ const MasonryGrid: React.FC<MasonryGridProps> = ({
       child.key !== 'keytakeaways'
     );
     
-    // Calculate items per column for even distribution
-    const baseItemsPerColumn = Math.floor(regularItems.length / columns);
-    const extraItems = regularItems.length % columns;
-    
-    // Distribute regular items column by column (top to bottom, then left to right)
-    let itemIndex = 0;
-    for (let col = 0; col < columns; col++) {
-      const itemsInThisColumn = baseItemsPerColumn + (col < extraItems ? 1 : 0);
-      
-      for (let i = 0; i < itemsInThisColumn && itemIndex < regularItems.length; i++) {
-        columnArrays[col].push(regularItems[itemIndex]);
-        itemIndex++;
-      }
+    // Fill columns sequentially (top to bottom, then left to right)
+    let currentColumn = 0;
+    for (let i = 0; i < regularItems.length; i++) {
+      columnArrays[currentColumn].push(regularItems[i]);
+      currentColumn = (currentColumn + 1) % columns;
     }
     
     // Place Key Takeaways in the rightmost column (but not at the very end)
