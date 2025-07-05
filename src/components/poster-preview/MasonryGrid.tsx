@@ -1,5 +1,5 @@
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useEffect, useState } from 'react';
 
 interface MasonryGridProps {
   children: React.ReactNode[];
@@ -14,6 +14,21 @@ const MasonryGrid: React.FC<MasonryGridProps> = ({
   gap = 12,
   className = ''
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    };
+
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+
   const { columnWrappers, optimalColumns } = useMemo(() => {
     // Calculate content density to determine optimal columns
     const calculateContentDensity = () => {
@@ -46,6 +61,20 @@ const MasonryGrid: React.FC<MasonryGridProps> = ({
       optimalCols = Math.min(3, maxColumns);
     } else {
       optimalCols = maxColumns;
+    }
+    
+    // Check if columns would be too wide (over 400px) and adjust accordingly
+    if (containerWidth > 0) {
+      const availableWidth = containerWidth - (gap * (optimalCols - 1));
+      const columnWidth = availableWidth / optimalCols;
+      
+      // If column width exceeds 400px, increase columns
+      while (columnWidth > 400 && optimalCols < maxColumns) {
+        optimalCols++;
+        const newAvailableWidth = containerWidth - (gap * (optimalCols - 1));
+        const newColumnWidth = newAvailableWidth / optimalCols;
+        if (newColumnWidth <= 400) break;
+      }
     }
     
     // Ensure we don't have more columns than items, but minimum 2
@@ -119,10 +148,11 @@ const MasonryGrid: React.FC<MasonryGridProps> = ({
     }
     
     return { columnWrappers: columnArrays, optimalColumns: columns };
-  }, [children, maxColumns]);
+  }, [children, maxColumns, containerWidth, gap]);
 
   return (
     <div 
+      ref={containerRef}
       className={`flex ${className}`}
       style={{ gap: `${gap}px` }}
     >
