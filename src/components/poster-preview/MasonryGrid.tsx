@@ -38,13 +38,13 @@ const MasonryGrid: React.FC<MasonryGridProps> = ({
     const { totalContentLength, itemCount } = calculateContentDensity();
     const avgContentLength = itemCount > 0 ? totalContentLength / itemCount : 0;
     
-    // Determine optimal number of columns based on content
+    // More liberal column determination - allow more content before expanding
     let optimalCols = 1;
-    if (itemCount <= 2) {
+    if (itemCount <= 3) {
       optimalCols = 1;
-    } else if (itemCount <= 4 && avgContentLength < 300) {
+    } else if (itemCount <= 6 && avgContentLength < 800) {
       optimalCols = 2;
-    } else if (itemCount <= 6 && avgContentLength < 500) {
+    } else if (itemCount <= 9 && avgContentLength < 1200) {
       optimalCols = Math.min(3, maxColumns);
     } else {
       optimalCols = maxColumns;
