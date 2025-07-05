@@ -54,6 +54,7 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
         className="flex flex-col h-full"
         data-size={isLargeContent ? 'large' : 'normal'}
         data-order={index + 1}
+        content={section.content} // Add content prop for density calculation
       >
         <SectionColumn
           sections={[section]}
@@ -118,7 +119,7 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
   return (
     <div className="h-full p-2">
       <MasonryGrid
-        columns={Math.min(4, gridItems.length)} // Max 4 columns for landscape
+        maxColumns={4} // Max 4 columns for landscape
         gap={8}
         className="h-full"
       >

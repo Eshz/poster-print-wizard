@@ -57,6 +57,7 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
         className="flex flex-col h-full"
         data-size={isLargeContent ? 'large' : 'normal'}
         data-order={index + 1}
+        content={section.content} // Add content prop for density calculation
       >
         {/* Section Header */}
         <div 
@@ -150,7 +151,7 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
   return (
     <div className="h-full p-3">
       <MasonryGrid
-        columns={Math.min(3, gridItems.length)} // Max 3 columns for portrait
+        maxColumns={3} // Max 3 columns for portrait
         gap={12}
         className="h-full"
       >

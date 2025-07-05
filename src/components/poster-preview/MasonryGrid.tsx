@@ -3,18 +3,56 @@ import React, { useMemo } from 'react';
 
 interface MasonryGridProps {
   children: React.ReactNode[];
-  columns?: number;
+  maxColumns?: number;
   gap?: number;
   className?: string;
 }
 
 const MasonryGrid: React.FC<MasonryGridProps> = ({
   children,
-  columns = 2,
+  maxColumns = 3,
   gap = 12,
   className = ''
 }) => {
-  const { columnWrappers } = useMemo(() => {
+  const { columnWrappers, optimalColumns } = useMemo(() => {
+    // Calculate content density to determine optimal columns
+    const calculateContentDensity = () => {
+      let totalContentLength = 0;
+      let itemCount = 0;
+      
+      children.forEach(child => {
+        if (React.isValidElement(child)) {
+          const props = child.props as any;
+          // Check for content length in various props
+          const content = props.content || props.children || '';
+          if (typeof content === 'string') {
+            totalContentLength += content.length;
+          }
+          itemCount++;
+        }
+      });
+      
+      return { totalContentLength, itemCount };
+    };
+    
+    const { totalContentLength, itemCount } = calculateContentDensity();
+    const avgContentLength = itemCount > 0 ? totalContentLength / itemCount : 0;
+    
+    // Determine optimal number of columns based on content
+    let optimalCols = 1;
+    if (itemCount <= 2) {
+      optimalCols = 1;
+    } else if (itemCount <= 4 && avgContentLength < 300) {
+      optimalCols = 2;
+    } else if (itemCount <= 6 && avgContentLength < 500) {
+      optimalCols = Math.min(3, maxColumns);
+    } else {
+      optimalCols = maxColumns;
+    }
+    
+    // Ensure we don't have more columns than items
+    const columns = Math.min(optimalCols, itemCount, maxColumns);
+    
     const columnArrays: React.ReactNode[][] = Array.from({ length: columns }, () => []);
     
     // Get item order for proper sequencing
@@ -75,8 +113,8 @@ const MasonryGrid: React.FC<MasonryGridProps> = ({
       columnArrays[rightmostColumnIndex].push(referencesItem);
     }
     
-    return { columnWrappers: columnArrays };
-  }, [children, columns]);
+    return { columnWrappers: columnArrays, optimalColumns: columns };
+  }, [children, maxColumns]);
 
   return (
     <div 
