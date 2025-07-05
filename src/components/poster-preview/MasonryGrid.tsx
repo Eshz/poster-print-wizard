@@ -48,14 +48,22 @@ const MasonryGrid: React.FC<MasonryGridProps> = ({
       child.key !== 'keytakeaways'
     );
     
-    // Distribute regular items column by column (left to right, top to bottom)
-    let currentColumn = 0;
-    regularItems.forEach((child) => {
-      columnArrays[currentColumn].push(child);
-      currentColumn = (currentColumn + 1) % columns;
-    });
+    // Calculate items per column for even distribution
+    const baseItemsPerColumn = Math.floor(regularItems.length / columns);
+    const extraItems = regularItems.length % columns;
     
-    // Place Key Takeaways in the rightmost column
+    // Distribute regular items column by column (top to bottom, then left to right)
+    let itemIndex = 0;
+    for (let col = 0; col < columns; col++) {
+      const itemsInThisColumn = baseItemsPerColumn + (col < extraItems ? 1 : 0);
+      
+      for (let i = 0; i < itemsInThisColumn && itemIndex < regularItems.length; i++) {
+        columnArrays[col].push(regularItems[itemIndex]);
+        itemIndex++;
+      }
+    }
+    
+    // Place Key Takeaways in the rightmost column (but not at the very end)
     if (keyTakeawaysItem) {
       const rightmostColumnIndex = columns - 1;
       columnArrays[rightmostColumnIndex].push(keyTakeawaysItem);
