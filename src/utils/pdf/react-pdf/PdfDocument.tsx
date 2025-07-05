@@ -2,32 +2,20 @@ import React from 'react';
 import { Document, Page, View, Text, Image, StyleSheet, Font } from '@react-pdf/renderer';
 import { PosterData, DesignSettings } from '@/types/project';
 
-// Register fonts for react-pdf using locally hosted files
+// Register fonts for react-pdf
 Font.register({
   family: 'Roboto',
   fonts: [
-    { 
-      src: '/fonts/Roboto-Regular.ttf',
-      fontWeight: 'normal'
-    },
-    { 
-      src: '/fonts/Roboto-Bold.ttf', 
-      fontWeight: 'bold' 
-    }
+    { src: 'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff2' },
+    { src: 'https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfBBc4.woff2', fontWeight: 'bold' }
   ]
 });
 
 Font.register({
   family: 'Merriweather',
   fonts: [
-    { 
-      src: '/fonts/Merriweather_24pt-Regular.ttf',
-      fontWeight: 'normal'
-    },
-    { 
-      src: '/fonts/Merriweather_24pt-Bold.ttf', 
-      fontWeight: 'bold' 
-    }
+    { src: 'https://fonts.gstatic.com/s/merriweather/v30/u-440qyriQwlOrhSvowK_l5-fCZM.woff2' },
+    { src: 'https://fonts.gstatic.com/s/merriweather/v30/u-4n0qyriQwlOrhSvowK_l521wRZVcf6lvA.woff2', fontWeight: 'bold' }
   ]
 });
 

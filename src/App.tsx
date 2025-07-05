@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,6 +23,7 @@ const AppContent = () => {
   const { trackPDFExported, trackEvent } = useAnalytics();
   const { currentProject } = useProjects();
   
+  // Clear all data on page refresh/exit
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
@@ -46,18 +48,9 @@ const AppContent = () => {
   }, []);
   
   const handleExportPDF = () => {
-    // Use the current project's data for export
+    // Use the current project's orientation or default to portrait
     const orientation = currentProject?.designSettings?.orientation || 'portrait';
-    const posterData = currentProject?.posterData;
-    const designSettings = currentProject?.designSettings;
-    
-    exportToPDF(
-      'poster-content', 
-      orientation, 
-      'react-pdf',
-      posterData,
-      designSettings
-    );
+    exportToPDF('poster-content', orientation);
     trackPDFExported();
   };
 
