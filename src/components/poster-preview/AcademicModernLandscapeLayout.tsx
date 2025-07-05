@@ -2,8 +2,8 @@
 import React from 'react';
 import ImagesDisplay from './ImagesDisplay';
 import SectionColumn from './SectionColumn';
-import KeyTakeawaysColumn from './KeyTakeawaysColumn';
-import ReferencesColumn from './ReferencesColumn';
+import KeyTakeawaysTile from './KeyTakeawaysTile';
+import ReferencesTile from './ReferencesTile';
 import MasonryGrid from './MasonryGrid';
 
 interface AcademicModernLandscapeLayoutProps {
@@ -90,11 +90,12 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
         data-size="normal"
         data-order={98} // High order to ensure it comes before references
       >
-        <KeyTakeawaysColumn
+        <KeyTakeawaysTile
           posterData={posterData}
           designSettings={designSettings}
           showKeypoints={showKeypoints}
           keyTakeawayColors={keyTakeawayColors}
+          isCompact={true} // Use compact mode for landscape
         />
       </div>
     );
@@ -108,9 +109,10 @@ const AcademicModernLandscapeLayout: React.FC<AcademicModernLandscapeLayoutProps
         data-size="normal"
         data-order={99} // Highest order to ensure it's always last
       >
-        <ReferencesColumn
+        <ReferencesTile
           posterData={posterData}
           designSettings={designSettings}
+          isCompact={true} // Use compact mode for landscape
         />
       </div>
     );

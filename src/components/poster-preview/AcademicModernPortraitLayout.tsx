@@ -1,8 +1,8 @@
 
 import React from 'react';
 import ImagesDisplay from './ImagesDisplay';
-import KeyTakeawaysSection from './KeyTakeawaysSection';
-import ReferencesFormatter from './ReferencesFormatter';
+import KeyTakeawaysTile from './KeyTakeawaysTile';
+import ReferencesTile from './ReferencesTile';
 import MasonryGrid from './MasonryGrid';
 
 interface AcademicModernPortraitLayoutProps {
@@ -123,11 +123,12 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
         data-size={shouldReferencesExpand ? 'small' : 'normal'}
         data-order={98} // High order to ensure it comes before references
       >
-        <KeyTakeawaysSection
+        <KeyTakeawaysTile
           posterData={posterData}
           designSettings={designSettings}
-          keyTakeawayColors={keyTakeawayColors}
           showKeypoints={showKeypoints}
+          keyTakeawayColors={keyTakeawayColors}
+          isCompact={false} // Use full mode for portrait
         />
       </div>
     );
@@ -140,10 +141,10 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
       data-size={shouldReferencesExpand ? 'large' : 'normal'}
       data-order={99} // Highest order to ensure it's always last
     >
-      <ReferencesFormatter
-        references={posterData.references}
+      <ReferencesTile
+        posterData={posterData}
         designSettings={designSettings}
-        sectionTitle={posterData.sectionTitles?.[4] || "5. References"}
+        isCompact={false} // Use full mode for portrait
       />
     </div>
   );
