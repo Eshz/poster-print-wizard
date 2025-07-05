@@ -84,11 +84,18 @@ const MasonryGrid: React.FC<MasonryGridProps> = ({
       child.key !== 'keytakeaways'
     );
     
-    // Fill columns sequentially (top to bottom, then left to right)
-    let currentColumn = 0;
-    for (let i = 0; i < regularItems.length; i++) {
-      columnArrays[currentColumn].push(regularItems[i]);
-      currentColumn = (currentColumn + 1) % columns;
+    // Fill columns top-to-bottom: distribute items per column first, then fill column by column
+    const baseItemsPerColumn = Math.floor(regularItems.length / columns);
+    const extraItems = regularItems.length % columns;
+    
+    let itemIndex = 0;
+    for (let col = 0; col < columns; col++) {
+      const itemsInThisColumn = baseItemsPerColumn + (col < extraItems ? 1 : 0);
+      
+      for (let i = 0; i < itemsInThisColumn && itemIndex < regularItems.length; i++) {
+        columnArrays[col].push(regularItems[itemIndex]);
+        itemIndex++;
+      }
     }
     
     // Place Key Takeaways in the rightmost column (but not at the very end)
