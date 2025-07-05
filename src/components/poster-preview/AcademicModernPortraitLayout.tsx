@@ -36,8 +36,37 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
   const totalContentLength = activeSections.reduce((acc, section) => acc + (section.content?.length || 0), 0);
   const shouldRedistribute = totalContentLength > 2000; // Threshold for content redistribution
 
+  // Format references for proper list display
+  const formatReferences = (text: string) => {
+    // Split by lines and filter out empty lines
+    const lines = text.split('\n').filter(line => line.trim());
+    
+    return lines.map((line, index) => (
+      <li key={index} className="mb-1">
+        <p className="text-sm leading-relaxed" style={{ 
+          color: "#FFFFFF",
+          fontFamily: `var(--font-${designSettings.contentFont})`
+        }}>
+          {line.trim()}
+        </p>
+      </li>
+    ));
+  };
+
+  // Generate unique CSS for this component instance
+  const uniqueId = `references-portrait-${Math.random().toString(36).substr(2, 9)}`;
+
   return (
     <div className="flex gap-3 h-full p-3">
+      <style>
+        {`
+          .${uniqueId} ul.paragraph-list li::marker {
+            color: #FFFFFF;
+            font-family: var(--font-${designSettings.contentFont});
+            font-weight: normal;
+          }
+        `}
+      </style>
       {/* Left Column - Main Sections with height stretching */}
       <div className="w-1/2 h-full flex flex-col gap-3">
         {activeSections.map((section, index) => {
@@ -195,7 +224,7 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
 
         {/* References Section - stretches to fill remaining space */}
         {posterData.references?.trim() && (
-          <div className="flex flex-col flex-1 min-h-0">
+          <div className={`flex flex-col flex-1 min-h-0 ${uniqueId}`}>
             {/* References Header */}
             <div 
               className="px-4 py-3 border-b-2 border-white flex-shrink-0"
@@ -220,17 +249,15 @@ const AcademicModernPortraitLayout: React.FC<AcademicModernPortraitLayoutProps> 
               className="p-4 flex-1 overflow-auto"
               style={{ backgroundColor: "#3E3C72" }}
             >
-              <div 
-                className="text-sm leading-relaxed whitespace-pre-line"
-                style={{ 
+              <ul 
+                className="paragraph-list list-disc pl-4 space-y-1"
+                style={{
                   color: "#FFFFFF",
-                  fontFamily: `var(--font-${designSettings.contentFont})`,
-                  paddingLeft: '0.75rem'
+                  fontFamily: `var(--font-${designSettings.contentFont})`
                 }}
-                dangerouslySetInnerHTML={{
-                  __html: posterData.references.replace(/\n/g, '<br>')
-                }}
-              />
+              >
+                {formatReferences(posterData.references)}
+              </ul>
             </div>
           </div>
         )}
