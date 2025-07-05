@@ -63,8 +63,8 @@ const Index = () => {
   const qrColor: string = currentProject?.qrColor || "#000000";
   
   const handleExportPDF = () => {
-    // Use canvas-based export by default for better font rendering
-    exportToPDF('poster-content', designSettings.orientation || 'portrait', true);
+    // Use react-pdf for best quality vector-based export
+    exportToPDF('poster-content', designSettings.orientation || 'portrait', 'react-pdf');
   };
 
   const handleZoomChange = (zoom: number) => {
