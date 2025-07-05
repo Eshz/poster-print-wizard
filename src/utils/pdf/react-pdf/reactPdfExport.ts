@@ -3,6 +3,7 @@ import { pdf } from '@react-pdf/renderer';
 import { toast } from "sonner";
 import PdfDocument from './PdfDocument';
 import { PosterData, DesignSettings } from '@/types/project';
+import React from 'react';
 
 /**
  * Exports poster using react-pdf for high-quality vector-based output
@@ -15,8 +16,8 @@ export const exportToReactPDF = async (
   try {
     toast.info('Generating high-quality vector PDF...');
     
-    // Create the PDF document
-    const doc = PdfDocument({ posterData, designSettings, qrCodeUrl });
+    // Create the PDF document - Fixed: properly instantiate React element
+    const doc = React.createElement(PdfDocument, { posterData, designSettings, qrCodeUrl });
     
     // Generate PDF blob
     const blob = await pdf(doc).toBlob();

@@ -150,8 +150,8 @@ const convertSVGToPDF = async (svgContent: string, orientation: 'portrait' | 'la
       ctx.drawImage(img, 0, 0);
       URL.revokeObjectURL(url);
       
-      // Convert canvas to PDF
-      const { canvasToPDF } = await import('../canvas/canvasPdfConverter');
+      // Convert canvas to PDF - Fixed: use correct import path
+      const { canvasToPDF } = await import('./canvas/canvasPdfConverter');
       await canvasToPDF(canvas, orientation);
       resolve();
     };

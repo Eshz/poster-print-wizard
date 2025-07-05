@@ -260,8 +260,8 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ posterData, designSettings, q
               </View>
             )}
 
-            {/* References */}
-            {posterData.showReferences !== false && posterData.references?.trim() && (
+            {/* References - Fixed: removed showReferences check since it doesn't exist in PosterData */}
+            {posterData.references?.trim() && (
               <View style={styles.referencesSection}>
                 <View style={styles.referencesHeader}>
                   <Text style={styles.referencesTitle}>
