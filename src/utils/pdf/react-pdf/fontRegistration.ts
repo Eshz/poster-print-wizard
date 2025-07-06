@@ -76,8 +76,8 @@ export const registerFonts = async () => {
   
   for (const config of FONT_CONFIGS) {
     try {
-      // Check if at least the regular font exists
-      const regularFont = config.fonts.find(f => !f.fontWeight || f.fontWeight === 'normal');
+      // Check if at least the regular font exists (font without fontWeight or with default weight)
+      const regularFont = config.fonts.find(f => !f.fontWeight);
       if (regularFont && await checkFontExists(regularFont.src)) {
         
         // Filter to only include fonts that exist
