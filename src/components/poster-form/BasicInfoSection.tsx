@@ -3,6 +3,7 @@ import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { sanitizeUserInput } from '@/utils/security/htmlSanitizer';
 
 interface BasicInfoSectionProps {
   posterData: any;
@@ -18,6 +19,33 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
   // Helper function to determine if field should use textarea
   const shouldUseTextarea = (value: string) => {
     return value && (value.length > 50 || value.includes('\n'));
+  };
+
+  // Secure change handler that sanitizes input
+  const handleSecureChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    
+    // Determine max length based on field type
+    const maxLengths: Record<string, number> = {
+      title: 200,
+      authors: 500,
+      school: 200,
+      contact: 100
+    };
+    
+    const maxLength = maxLengths[name] || 1000;
+    const sanitizedValue = sanitizeUserInput(value, maxLength);
+    
+    // Create sanitized event
+    const sanitizedEvent = {
+      ...e,
+      target: {
+        ...e.target,
+        value: sanitizedValue
+      }
+    } as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
+    
+    handleChange(sanitizedEvent);
   };
 
   // If singleField is provided, only show that field
@@ -45,7 +73,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             id={singleField}
             name={singleField}
             value={value}
-            onChange={handleChange}
+            onChange={handleSecureChange}
             placeholder={config.placeholder}
             className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm min-h-[60px] resize-none"
             rows={Math.max(2, Math.ceil(value.length / 50))}
@@ -55,7 +83,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             id={singleField}
             name={singleField}
             value={value}
-            onChange={handleChange}
+            onChange={handleSecureChange}
             placeholder={config.placeholder}
             className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
           />
@@ -76,7 +104,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             id="title"
             name="title"
             value={posterData.title || ''}
-            onChange={handleChange}
+            onChange={handleSecureChange}
             placeholder="Enter your poster title"
             className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm min-h-[60px] resize-none"
             rows={Math.max(2, Math.ceil((posterData.title || '').length / 50))}
@@ -86,7 +114,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             id="title"
             name="title"
             value={posterData.title || ''}
-            onChange={handleChange}
+            onChange={handleSecureChange}
             placeholder="Enter your poster title"
             className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
           />
@@ -102,7 +130,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             id="authors"
             name="authors"
             value={posterData.authors || ''}
-            onChange={handleChange}
+            onChange={handleSecureChange}
             placeholder="Enter author names"
             className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm min-h-[60px] resize-none"
             rows={Math.max(2, Math.ceil((posterData.authors || '').length / 50))}
@@ -112,7 +140,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             id="authors"
             name="authors"
             value={posterData.authors || ''}
-            onChange={handleChange}
+            onChange={handleSecureChange}
             placeholder="Enter author names"
             className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
           />
@@ -128,7 +156,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             id="school"
             name="school"
             value={posterData.school || ''}
-            onChange={handleChange}
+            onChange={handleSecureChange}
             placeholder="Enter institution name"
             className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm min-h-[60px] resize-none"
             rows={Math.max(2, Math.ceil((posterData.school || '').length / 50))}
@@ -138,7 +166,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             id="school"
             name="school"
             value={posterData.school || ''}
-            onChange={handleChange}
+            onChange={handleSecureChange}
             placeholder="Enter institution name"
             className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
           />
@@ -154,7 +182,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             id="contact"
             name="contact"
             value={posterData.contact || ''}
-            onChange={handleChange}
+            onChange={handleSecureChange}
             placeholder="Enter contact information"
             className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm min-h-[60px] resize-none"
             rows={Math.max(2, Math.ceil((posterData.contact || '').length / 50))}
@@ -164,7 +192,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             id="contact"
             name="contact"
             value={posterData.contact || ''}
-            onChange={handleChange}
+            onChange={handleSecureChange}
             placeholder="Enter contact information"
             className="border-gray-200 focus:border-blue-400 focus:ring-blue-400/20 rounded-md text-sm"
           />

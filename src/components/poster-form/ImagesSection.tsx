@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { ImageItem } from './ImageItem';
 import { UploadArea } from '@/components/ui/upload-area';
+import { validateFiles, safeFileReader } from '@/utils/security/fileValidator';
+import { toast } from 'sonner';
 
 interface ImagesSectionProps {
   images: { url: string; visible: boolean; caption: string; upperCaption?: string }[];
@@ -12,45 +14,62 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
   images,
   onImagesChange 
 }) => {
-  const [error, setError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setError(null);
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
     
-    if (e.target.files && e.target.files.length > 0) {
-      const newImages = [...images];
+    setIsUploading(true);
+    
+    try {
+      const { validFiles, errors } = validateFiles(e.target.files);
       
-      Array.from(e.target.files).forEach(file => {
-        // Check file size (limit to 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-          setError(`File ${file.name} exceeds 5MB size limit`);
-          return;
-        }
+      // Show errors for invalid files
+      if (errors.length > 0) {
+        errors.forEach(error => toast.error(error));
+      }
+      
+      if (validFiles.length === 0) {
+        return;
+      }
+      
+      // Process valid files
+      const newImages = [...images];
+      const filePromises = validFiles.map(file => safeFileReader(file));
+      
+      try {
+        const results = await Promise.allSettled(filePromises);
         
-        // Check file type
-        if (!file.type.includes('image/')) {
-          setError(`File ${file.name} is not an image`);
-          return;
-        }
-        
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          if (event.target?.result) {
+        results.forEach((result, index) => {
+          if (result.status === 'fulfilled') {
             newImages.push({
-              url: event.target.result as string,
+              url: result.value,
               visible: true,
               caption: '',
               upperCaption: ''
             });
-            onImagesChange(newImages);
+          } else {
+            toast.error(`Failed to process ${validFiles[index].name}: ${result.reason}`);
           }
-        };
-        reader.readAsDataURL(file);
-      });
+        });
+        
+        onImagesChange(newImages);
+        
+        if (results.some(r => r.status === 'fulfilled')) {
+          toast.success(`Successfully uploaded ${results.filter(r => r.status === 'fulfilled').length} image(s)`);
+        }
+      } catch (error) {
+        toast.error('Failed to process images');
+        console.error('Image processing error:', error);
+      }
+    } catch (error) {
+      toast.error('File validation failed');
+      console.error('File validation error:', error);
+    } finally {
+      setIsUploading(false);
+      // Reset the input
+      e.target.value = '';
     }
-    
-    // Reset the input
-    e.target.value = '';
   };
 
   const handleImageUpdate = (index: number, updates: Partial<{ url: string; visible: boolean; caption: string; upperCaption: string }>) => {
@@ -66,8 +85,6 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
 
   return (
     <div className="space-y-6">
-      {error && <p className="text-red-500 text-sm" role="alert">{error}</p>}
-      
       {images.length > 0 ? (
         <div className="space-y-3">
           {images.map((image, index) => (
@@ -92,6 +109,12 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
           onFileUpload={handleFileUpload}
           hasImages={false}
         />
+      )}
+      
+      {isUploading && (
+        <div className="text-center text-sm text-gray-500">
+          Processing images...
+        </div>
       )}
     </div>
   );
