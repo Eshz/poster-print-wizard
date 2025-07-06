@@ -16,15 +16,19 @@ export const useProjectState = () => {
     dispatch(projectActions.setCurrentProject(project));
   }, []);
 
-  const addProject = useCallback((project: ProjectData) => {
-    const saved = saveProject(project);
-    dispatch(projectActions.addProject(saved));
+  const addProject = useCallback(async (project: ProjectData): Promise<ProjectData | null> => {
+    const saved = await saveProject(project);
+    if (saved) {
+      dispatch(projectActions.addProject(saved));
+    }
     return saved;
   }, []);
 
-  const updateProject = useCallback((project: ProjectData) => {
-    const saved = saveProject(project);
-    dispatch(projectActions.updateProject(saved));
+  const updateProject = useCallback(async (project: ProjectData): Promise<ProjectData | null> => {
+    const saved = await saveProject(project);
+    if (saved) {
+      dispatch(projectActions.updateProject(saved));
+    }
     return saved;
   }, []);
 

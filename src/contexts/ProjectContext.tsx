@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect } from 'react';
 import { generateProjectId, getProject, getProjects, saveProject } from '@/utils/projectManager';
 import { toast } from "sonner";
@@ -28,21 +29,25 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
 
   // Load projects on initial render
   useEffect(() => {
-    const savedProjects = getProjects();
-    setProjects(savedProjects);
-    
-    // If there are projects, load the most recently updated one
-    if (savedProjects.length > 0) {
-      const mostRecent = savedProjects.sort((a, b) => b.updatedAt - a.updatedAt)[0];
-      setCurrentProject(mostRecent);
-    } else {
-      // If no projects exist, create a default one
-      createNewProject("Untitled Project");
-    }
+    const loadInitialProjects = async () => {
+      const savedProjects = await getProjects();
+      setProjects(savedProjects);
+      
+      // If there are projects, load the most recently updated one
+      if (savedProjects.length > 0) {
+        const mostRecent = savedProjects.sort((a, b) => b.updatedAt - a.updatedAt)[0];
+        setCurrentProject(mostRecent);
+      } else {
+        // If no projects exist, create a default one
+        createNewProject("Untitled Project");
+      }
+    };
+
+    loadInitialProjects();
   }, [setProjects, setCurrentProject]);
 
-  const loadProject = (id: string) => {
-    const project = getProject(id);
+  const loadProject = async (id: string) => {
+    const project = await getProject(id);
     if (project) {
       setCurrentProject(project);
       toast.success(`Loaded project: ${project.name}`);
@@ -51,7 +56,7 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
     }
   };
 
-  const createNewProject = (name: string) => {
+  const createNewProject = async (name: string) => {
     const defaultPosterData: PosterData = {
       title: "Your Conference Poster Title",
       authors: "Author Name(s)",
@@ -103,30 +108,36 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
       qrColor: "#000000"
     };
 
-    const saved = addProject(newProject);
-    toast.success(`Created new project: ${name}`);
-  };
-
-  const saveCurrentProject = () => {
-    if (state.currentProject) {
-      const updated = updateProject(state.currentProject);
-      toast.success(`Saved project: ${updated.name}`);
+    const saved = await addProject(newProject);
+    if (saved) {
+      toast.success(`Created new project: ${name}`);
     }
   };
 
-  const renameCurrentProject = (newName: string) => {
+  const saveCurrentProject = async () => {
+    if (state.currentProject) {
+      const updated = await updateProject(state.currentProject);
+      if (updated) {
+        toast.success(`Saved project: ${updated.name}`);
+      }
+    }
+  };
+
+  const renameCurrentProject = async (newName: string) => {
     if (state.currentProject) {
       const updated = {
         ...state.currentProject,
         name: newName,
         updatedAt: Date.now(),
       };
-      updateProject(updated);
-      toast.success(`Renamed project to: ${newName}`);
+      const result = await updateProject(updated);
+      if (result) {
+        toast.success(`Renamed project to: ${newName}`);
+      }
     }
   };
 
-  const deleteCurrentProject = () => {
+  const deleteCurrentProject = async () => {
     if (state.currentProject) {
       const projectId = state.currentProject.id;
       const projectName = state.currentProject.name;
@@ -134,15 +145,12 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
       // Filter out the current project
       const updatedProjects = state.projects.filter(p => p.id !== projectId);
       
-      // Update localStorage
-      localStorage.setItem("poster_projects", JSON.stringify(updatedProjects));
-      
       // Set new current project (most recent) or create a new one if none left
       if (updatedProjects.length > 0) {
         const mostRecent = updatedProjects.sort((a, b) => b.updatedAt - a.updatedAt)[0];
         setCurrentProject(mostRecent);
       } else {
-        createNewProject("Untitled Project");
+        await createNewProject("Untitled Project");
       }
       
       deleteProject(projectId);
