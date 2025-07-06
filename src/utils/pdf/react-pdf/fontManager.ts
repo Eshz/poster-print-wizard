@@ -4,36 +4,55 @@ import { toast } from "sonner";
 
 interface FontConfig {
   family: string;
-  googleFontName: string;
   fallback: string;
-  weights: number[];
+  weights: Array<{
+    weight: number;
+    style: 'normal' | 'italic';
+    fileName: string;
+  }>;
 }
 
-// Font configurations with Google Fonts URLs
+// Font configurations with local TTF files
 const FONT_CONFIGS: FontConfig[] = [
   {
     family: 'Roboto',
-    googleFontName: 'Roboto',
     fallback: 'Arial, sans-serif',
-    weights: [300, 400, 500, 700]
+    weights: [
+      { weight: 300, style: 'normal', fileName: 'Roboto-Light.ttf' },
+      { weight: 400, style: 'normal', fileName: 'Roboto-Regular.ttf' },
+      { weight: 500, style: 'normal', fileName: 'Roboto-Medium.ttf' },
+      { weight: 700, style: 'normal', fileName: 'Roboto-Bold.ttf' }
+    ]
   },
   {
     family: 'Merriweather',
-    googleFontName: 'Merriweather',
     fallback: 'Georgia, serif',
-    weights: [400, 700]
+    weights: [
+      { weight: 400, style: 'normal', fileName: 'Merriweather-Regular.ttf' },
+      { weight: 700, style: 'normal', fileName: 'Merriweather-Bold.ttf' }
+    ]
   },
   {
     family: 'Montserrat',
-    googleFontName: 'Montserrat',
     fallback: 'Arial, sans-serif',
-    weights: [300, 400, 500, 600, 700]
+    weights: [
+      { weight: 300, style: 'normal', fileName: 'Montserrat-Light.ttf' },
+      { weight: 400, style: 'normal', fileName: 'Montserrat-Regular.ttf' },
+      { weight: 500, style: 'normal', fileName: 'Montserrat-Medium.ttf' },
+      { weight: 600, style: 'normal', fileName: 'Montserrat-SemiBold.ttf' },
+      { weight: 700, style: 'normal', fileName: 'Montserrat-Bold.ttf' }
+    ]
   },
   {
     family: 'Open Sans',
-    googleFontName: 'Open+Sans',
     fallback: 'Arial, sans-serif',
-    weights: [300, 400, 500, 600, 700]
+    weights: [
+      { weight: 300, style: 'normal', fileName: 'OpenSans-Light.ttf' },
+      { weight: 400, style: 'normal', fileName: 'OpenSans-Regular.ttf' },
+      { weight: 500, style: 'normal', fileName: 'OpenSans-Medium.ttf' },
+      { weight: 600, style: 'normal', fileName: 'OpenSans-SemiBold.ttf' },
+      { weight: 700, style: 'normal', fileName: 'OpenSans-Bold.ttf' }
+    ]
   }
 ];
 
@@ -42,10 +61,10 @@ const registeredFonts = new Set<string>();
 const failedFonts = new Set<string>();
 
 /**
- * Dynamically registers fonts from Google Fonts with proper error handling
+ * Registers fonts from local TTF files with proper error handling
  */
 export const registerFontsForPDF = async (): Promise<void> => {
-  console.log('Starting dynamic font registration for PDF export...');
+  console.log('Starting local TTF font registration for PDF export...');
   
   for (const config of FONT_CONFIGS) {
     if (registeredFonts.has(config.family) || failedFonts.has(config.family)) {
@@ -66,24 +85,27 @@ export const registerFontsForPDF = async (): Promise<void> => {
 };
 
 /**
- * Registers a single font family with multiple weights
+ * Registers a single font family with multiple weights from local TTF files
  */
 const registerFontFamily = async (config: FontConfig): Promise<void> => {
   const fonts = [];
   
-  for (const weight of config.weights) {
-    const fontUrl = `https://fonts.googleapis.com/css2?family=${config.googleFontName}:wght@${weight}&display=swap`;
+  for (const weightConfig of config.weights) {
+    const fontPath = `/fonts/${weightConfig.fileName}`;
     
     try {
-      // Validate font URL accessibility
-      await validateFontUrl(fontUrl);
+      // Validate that the font file exists
+      await validateFontFile(fontPath);
       
       fonts.push({
-        src: fontUrl,
-        fontWeight: weight === 400 ? 'normal' : weight === 700 ? 'bold' : weight.toString()
+        src: fontPath,
+        fontWeight: weightConfig.weight === 400 ? 'normal' : 
+                   weightConfig.weight === 700 ? 'bold' : 
+                   weightConfig.weight.toString(),
+        fontStyle: weightConfig.style
       });
     } catch (error) {
-      console.warn(`Skipping weight ${weight} for ${config.family}:`, error);
+      console.warn(`Skipping weight ${weightConfig.weight} for ${config.family}:`, error);
     }
   }
   
@@ -99,16 +121,16 @@ const registerFontFamily = async (config: FontConfig): Promise<void> => {
 };
 
 /**
- * Validates that a font URL is accessible
+ * Validates that a font file exists and is accessible
  */
-const validateFontUrl = async (url: string): Promise<void> => {
+const validateFontFile = async (fontPath: string): Promise<void> => {
   try {
-    const response = await fetch(url, { method: 'HEAD' });
+    const response = await fetch(fontPath, { method: 'HEAD' });
     if (!response.ok) {
-      throw new Error(`Font URL returned ${response.status}`);
+      throw new Error(`Font file returned ${response.status}`);
     }
   } catch (error) {
-    throw new Error(`Font URL validation failed: ${error}`);
+    throw new Error(`Font file validation failed: ${error}`);
   }
 };
 
