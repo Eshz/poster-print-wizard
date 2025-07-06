@@ -1,36 +1,6 @@
-
 import React from 'react';
-import { Document, Page, View, Text, Image, StyleSheet, Font } from '@react-pdf/renderer';
+import { Document, Page, View, Text, Image, StyleSheet } from '@react-pdf/renderer';
 import { PosterData, DesignSettings } from '@/types/project';
-
-// Register fonts for react-pdf using locally hosted files
-Font.register({
-  family: 'Roboto',
-  fonts: [
-    { 
-      src: '/fonts/Roboto-Regular.ttf',
-      fontWeight: 'normal'
-    },
-    { 
-      src: '/fonts/Roboto-Bold.ttf', 
-      fontWeight: 'bold' 
-    }
-  ]
-});
-
-Font.register({
-  family: 'Merriweather',
-  fonts: [
-    { 
-      src: '/fonts/Merriweather-Regular.ttf',
-      fontWeight: 'normal'
-    },
-    { 
-      src: '/fonts/Merriweather-Bold.ttf', 
-      fontWeight: 'bold' 
-    }
-  ]
-});
 
 interface PdfDocumentProps {
   posterData: PosterData;
