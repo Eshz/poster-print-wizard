@@ -2,6 +2,7 @@
 import { pdf } from '@react-pdf/renderer';
 import { toast } from "sonner";
 import { createPdfDocument } from './PdfDocument';
+import { registerFontsForPDF } from './fontManager';
 import { PosterData, DesignSettings } from '@/types/project';
 
 /**
@@ -13,12 +14,17 @@ export const exportToReactPDF = async (
   qrCodeUrl?: string
 ) => {
   try {
+    toast.info('Preparing fonts for high-quality vector PDF...');
+    
+    // Register fonts dynamically with error handling
+    await registerFontsForPDF();
+    
     toast.info('Generating high-quality vector PDF...');
     
-    // Create the PDF document - Fixed: get the Document element directly
+    // Create the PDF document with proper font handling
     const doc = createPdfDocument(posterData, designSettings, qrCodeUrl);
     
-    // Generate PDF blob
+    // Generate PDF blob with error handling
     const blob = await pdf(doc).toBlob();
     
     // Create download link
@@ -36,7 +42,18 @@ export const exportToReactPDF = async (
     
   } catch (error) {
     console.error('React-PDF export failed:', error);
-    toast.error('Vector PDF export failed. Please try again.');
+    
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes('font')) {
+        toast.error('PDF export failed due to font loading issues. Using system fonts as fallback.');
+      } else {
+        toast.error(`Vector PDF export failed: ${error.message}`);
+      }
+    } else {
+      toast.error('Vector PDF export failed. Please try again.');
+    }
+    
     throw error;
   }
 };
