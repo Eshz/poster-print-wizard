@@ -11,46 +11,49 @@ if (typeof global === 'undefined') {
 }
 
 if (typeof Buffer === 'undefined') {
-  // Create a complete Buffer polyfill that mimics Node.js Buffer
-  class BufferPolyfill extends Uint8Array {
+  // Create a Buffer polyfill that doesn't conflict with Uint8Array
+  class BufferPolyfill {
+    private data: Uint8Array;
+
     constructor(input?: any, encoding?: string) {
       if (typeof input === 'string') {
         const encoder = new TextEncoder();
-        super(encoder.encode(input));
+        this.data = encoder.encode(input);
       } else if (typeof input === 'number') {
-        super(input);
+        this.data = new Uint8Array(input);
       } else if (input instanceof ArrayBuffer || input instanceof Uint8Array) {
-        super(input);
+        this.data = new Uint8Array(input);
       } else if (Array.isArray(input)) {
-        super(input);
+        this.data = new Uint8Array(input);
       } else {
-        super(0);
+        this.data = new Uint8Array(0);
       }
     }
 
     static from(input: string | ArrayLike<number> | ArrayBuffer, encoding?: string): BufferPolyfill {
-      if (typeof input === 'string') {
-        const encoder = new TextEncoder();
-        return new BufferPolyfill(encoder.encode(input));
-      }
-      return new BufferPolyfill(input);
+      return new BufferPolyfill(input, encoding);
     }
 
     static alloc(size: number, fill?: number): BufferPolyfill {
       const buffer = new BufferPolyfill(size);
       if (fill !== undefined) {
-        buffer.fill(fill);
+        buffer.data.fill(fill);
       }
       return buffer;
     }
 
     static concat(buffers: (Uint8Array | BufferPolyfill)[]): BufferPolyfill {
-      const totalLength = buffers.reduce((sum, buf) => sum + buf.length, 0);
+      const totalLength = buffers.reduce((sum, buf) => {
+        return sum + (buf instanceof BufferPolyfill ? buf.length : buf.length);
+      }, 0);
+      
       const result = new BufferPolyfill(totalLength);
       let offset = 0;
+      
       for (const buf of buffers) {
-        result.set(buf, offset);
-        offset += buf.length;
+        const sourceData = buf instanceof BufferPolyfill ? buf.data : buf;
+        result.data.set(sourceData, offset);
+        offset += sourceData.length;
       }
       return result;
     }
@@ -59,18 +62,46 @@ if (typeof Buffer === 'undefined') {
       return obj instanceof BufferPolyfill || obj instanceof Uint8Array || obj instanceof ArrayBuffer;
     }
 
+    get length(): number {
+      return this.data.length;
+    }
+
     toString(encoding?: string): string {
       const decoder = new TextDecoder(encoding || 'utf8');
-      return decoder.decode(this);
+      return decoder.decode(this.data);
     }
 
     toJSON(): { type: string; data: number[] } {
       return {
         type: 'Buffer',
-        data: Array.from(this)
+        data: Array.from(this.data)
       };
     }
+
+    // Add methods to make it behave like a Uint8Array
+    set(array: ArrayLike<number>, offset?: number): void {
+      this.data.set(array, offset);
+    }
+
+    fill(value: number, start?: number, end?: number): this {
+      this.data.fill(value, start, end);
+      return this;
+    }
+
+    // Make it iterable and array-like
+    [Symbol.iterator]() {
+      return this.data[Symbol.iterator]();
+    }
+
+    [index: number]: number;
   }
+
+  // Add array-like behavior
+  Object.defineProperty(BufferPolyfill.prototype, Symbol.iterator, {
+    value: function() {
+      return this.data[Symbol.iterator]();
+    }
+  });
 
   // Set up the polyfill
   (window as any).Buffer = BufferPolyfill;
