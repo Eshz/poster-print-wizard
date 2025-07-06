@@ -1,5 +1,6 @@
 
 import DOMPurify from 'dompurify';
+import React from 'react';
 
 /**
  * Configuration for different sanitization levels
@@ -36,12 +37,12 @@ export const sanitizeHtml = (html: string, level: 'PLAIN_TEXT' | 'BASIC_HTML' = 
  */
 export const safeTextWithLineBreaks = (text: string): JSX.Element[] => {
   const sanitizedText = sanitizeHtml(text, 'PLAIN_TEXT');
-  return sanitizedText.split('\n').map((line, index) => (
-    <span key={index}>
-      {line}
-      {index < sanitizedText.split('\n').length - 1 && <br />}
-    </span>
-  ));
+  return sanitizedText.split('\n').map((line, index) => 
+    React.createElement('span', { key: index }, [
+      line,
+      index < sanitizedText.split('\n').length - 1 ? React.createElement('br') : null
+    ].filter(Boolean))
+  );
 };
 
 /**
