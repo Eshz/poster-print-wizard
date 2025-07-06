@@ -18,7 +18,6 @@ const Index = () => {
   const [manualZoom, setManualZoom] = React.useState<number>(0);
   const [fitZoomLevel, setFitZoomLevel] = React.useState<number>(0);
   
-  // Extract values from the current project with proper defaults (Academic Modern style)
   const posterData: PosterData = currentProject?.posterData || {
     title: "Your Conference Poster Title",
     authors: "Author Name(s)",
@@ -45,7 +44,6 @@ const Index = () => {
     images: []
   };
   
-  // Updated default to Academic Modern style
   const designSettings: DesignSettings = currentProject?.designSettings || {
     layout: 'modern',
     orientation: 'portrait',
@@ -63,8 +61,17 @@ const Index = () => {
   const qrColor: string = currentProject?.qrColor || "#000000";
   
   const handleExportPDF = () => {
-    // Use react-pdf for best quality vector-based export
-    exportToPDF('poster-content', designSettings.orientation || 'portrait', 'react-pdf');
+    console.log('🔄 Export PDF triggered from Index.tsx');
+    console.log('📊 Using poster data:', posterData);
+    console.log('🎨 Using design settings:', designSettings);
+    
+    exportToPDF(
+      'poster-content', 
+      designSettings.orientation || 'portrait', 
+      'react-pdf',
+      posterData,
+      designSettings
+    );
   };
 
   const handleZoomChange = (zoom: number) => {
