@@ -1,6 +1,165 @@
-
 import { StyleSheet } from '@react-pdf/renderer';
+import { DesignSettings } from '@/types/design';
+import { getFontFamilyFromKey } from '../fonts/fontMappings';
 
+export const createDynamicStyles = (designSettings: DesignSettings) => {
+  const titleFontFamily = getFontFamilyFromKey(designSettings.titleFont);
+  const contentFontFamily = getFontFamilyFromKey(designSettings.contentFont);
+
+  return StyleSheet.create({
+    page: {
+      flexDirection: 'column',
+      backgroundColor: '#FFFFFF',
+      padding: 0,
+    },
+    header: {
+      padding: 20,
+      backgroundColor: designSettings.headerBgColor,
+      borderBottomWidth: 2,
+      borderBottomColor: designSettings.headerTextColor,
+    },
+    title: {
+      fontSize: 48,
+      fontWeight: 'bold',
+      color: designSettings.headerTextColor,
+      fontFamily: titleFontFamily,
+      textAlign: 'center',
+      marginBottom: 12,
+    },
+    authors: {
+      fontSize: 24,
+      color: designSettings.headerTextColor,
+      fontFamily: contentFontFamily,
+      textAlign: 'center',
+      marginBottom: 8,
+    },
+    school: {
+      fontSize: 20,
+      color: designSettings.headerTextColor,
+      fontFamily: contentFontFamily,
+      textAlign: 'center',
+      marginBottom: 8,
+    },
+    contact: {
+      fontSize: 18,
+      color: designSettings.headerTextColor,
+      fontFamily: contentFontFamily,
+      textAlign: 'center',
+    },
+    content: {
+      flex: 1,
+      padding: 16,
+      flexDirection: 'row',
+      gap: 16,
+    },
+    column: {
+      flex: 1,
+      gap: 16,
+    },
+    section: {
+      backgroundColor: designSettings.sectionBgColor,
+      borderRadius: 8,
+      overflow: 'hidden',
+    },
+    sectionHeader: {
+      backgroundColor: designSettings.sectionBgColor,
+      padding: 16,
+      borderBottomWidth: 2,
+      borderBottomColor: designSettings.sectionTitleColor,
+    },
+    sectionTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: designSettings.sectionTitleColor,
+      fontFamily: titleFontFamily,
+    },
+    sectionContent: {
+      padding: 16,
+      backgroundColor: designSettings.sectionBgColor,
+    },
+    sectionText: {
+      fontSize: 14,
+      color: designSettings.sectionTextColor,
+      fontFamily: contentFontFamily,
+      lineHeight: 1.6,
+    },
+    keyTakeaway: {
+      flexDirection: 'row',
+      marginBottom: 12,
+      backgroundColor: designSettings.keyPointsBgColor,
+      borderRadius: 8,
+      overflow: 'hidden',
+    },
+    keyNumber: {
+      width: 48,
+      height: 48,
+      backgroundColor: '#FF6B6B',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    keyNumberText: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: '#FFFFFF',
+      fontFamily: titleFontFamily,
+    },
+    keyContent: {
+      flex: 1,
+      padding: 12,
+      justifyContent: 'center',
+    },
+    keyTitle: {
+      fontSize: 12,
+      fontWeight: 'bold',
+      color: designSettings.keyPointsTextColor,
+      fontFamily: titleFontFamily,
+      marginBottom: 4,
+    },
+    keyDescription: {
+      fontSize: 10,
+      color: designSettings.keyPointsTextColor,
+      fontFamily: contentFontFamily,
+      lineHeight: 1.4,
+    },
+    referencesSection: {
+      backgroundColor: designSettings.sectionBgColor,
+      borderRadius: 8,
+      overflow: 'hidden',
+    },
+    referencesHeader: {
+      backgroundColor: designSettings.sectionBgColor,
+      padding: 16,
+      borderBottomWidth: 2,
+      borderBottomColor: designSettings.sectionTitleColor,
+    },
+    referencesTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: designSettings.sectionTitleColor,
+      fontFamily: titleFontFamily,
+    },
+    referencesContent: {
+      padding: 16,
+      backgroundColor: designSettings.sectionBgColor,
+    },
+    referenceItem: {
+      fontSize: 12,
+      color: designSettings.sectionTextColor,
+      fontFamily: contentFontFamily,
+      lineHeight: 1.4,
+      marginBottom: 8,
+    },
+    qrCode: {
+      width: 120,
+      height: 120,
+      position: 'absolute',
+      top: 20,
+      right: 20,
+    },
+  });
+};
+
+// Keep backward compatibility with static styles as fallback
 export const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',

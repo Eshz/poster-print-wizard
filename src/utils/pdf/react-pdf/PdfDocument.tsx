@@ -1,12 +1,13 @@
+
 import React from 'react';
 import { Document, Page, View, Text, Image } from '@react-pdf/renderer';
 import { PosterData, DesignSettings } from '@/types/project';
-import { registerFonts } from './fontRegistration';
-import { styles } from './pdfStyles';
+import { registerFontsSync } from './fontRegistration';
+import { createDynamicStyles } from './pdfStyles';
 import { A0_WIDTH, A0_HEIGHT, KEY_TAKEAWAY_COLORS } from './pdfConstants';
 
 // Register fonts on module load
-registerFonts();
+registerFontsSync();
 
 interface PdfDocumentProps {
   posterData: PosterData;
@@ -25,6 +26,9 @@ export const createPdfDocument = (
   const isLandscape = designSettings.orientation === 'landscape';
   const pageWidth = isLandscape ? A0_HEIGHT : A0_WIDTH;
   const pageHeight = isLandscape ? A0_WIDTH : A0_HEIGHT;
+  
+  // Create dynamic styles based on design settings
+  const styles = createDynamicStyles(designSettings);
 
   // Filter active sections
   const sections = [

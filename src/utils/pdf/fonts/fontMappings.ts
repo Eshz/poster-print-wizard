@@ -1,31 +1,59 @@
 
 /**
- * Font key to font family mappings for PDF export
+ * Font key to font family mappings for PDF export with fallbacks
  */
 export const getFontFamilyFromKey = (fontKey: string): string => {
   const fontMap: { [key: string]: string } = {
-    'playfair': 'Playfair Display, serif',
-    'roboto': 'Roboto, sans-serif',
-    'merriweather': 'Merriweather, serif',
-    'montserrat': 'Montserrat, sans-serif',
-    'opensans': 'Open Sans, sans-serif',
-    'lora': 'Lora, serif',
-    'raleway': 'Raleway, sans-serif',
-    'crimsontext': 'Crimson Text, serif',
-    'sourceserifpro': 'Source Serif Pro, serif',
-    'ebgaramond': 'EB Garamond, serif',
-    'inter': 'Inter, sans-serif',
-    'librewilson': 'Libre Baskerville, serif',
-    'nunito': 'Nunito, sans-serif',
-    'cormorantgaramond': 'Cormorant Garamond, serif',
-    'worksans': 'Work Sans, sans-serif',
-    'oldstandardtt': 'Old Standard TT, serif',
-    'karla': 'Karla, sans-serif',
-    'spectral': 'Spectral, serif',
-    'publicsans': 'Public Sans, sans-serif',
-    'vollkorn': 'Vollkorn, serif',
-    'firasans': 'Fira Sans, sans-serif'
+    'playfair': 'Playfair Display',
+    'roboto': 'Roboto', 
+    'merriweather': 'Merriweather',
+    'montserrat': 'Montserrat',
+    'opensans': 'Open Sans',
+    'lora': 'Lora',
+    'raleway': 'Raleway',
+    'crimsontext': 'Roboto', // Fallback to Roboto if not available
+    'sourceserifpro': 'Merriweather', // Fallback to Merriweather
+    'ebgaramond': 'Merriweather', // Fallback to Merriweather
+    'inter': 'Roboto', // Fallback to Roboto
+    'librewilson': 'Merriweather', // Fallback to Merriweather
+    'nunito': 'Roboto', // Fallback to Roboto
+    'cormorantgaramond': 'Merriweather', // Fallback to Merriweather
+    'worksans': 'Roboto', // Fallback to Roboto
+    'oldstandardtt': 'Merriweather', // Fallback to Merriweather
+    'karla': 'Roboto', // Fallback to Roboto
+    'spectral': 'Merriweather', // Fallback to Merriweather
+    'publicsans': 'Roboto', // Fallback to Roboto
+    'vollkorn': 'Merriweather', // Fallback to Merriweather
+    'firasans': 'Roboto' // Fallback to Roboto
   };
   
-  return fontMap[fontKey] || 'Roboto, sans-serif';
+  const mappedFont = fontMap[fontKey];
+  if (!mappedFont) {
+    console.warn(`Unknown font key: ${fontKey}, falling back to Roboto`);
+    return 'Roboto';
+  }
+  
+  return mappedFont;
+};
+
+/**
+ * Get available fonts that have TTF files
+ */
+export const getAvailableFonts = (): string[] => {
+  return [
+    'Roboto',
+    'Merriweather', 
+    'Playfair Display',
+    'Montserrat',
+    'Open Sans',
+    'Lora',
+    'Raleway'
+  ];
+};
+
+/**
+ * Check if a font is available for PDF export
+ */
+export const isFontAvailable = (fontFamily: string): boolean => {
+  return getAvailableFonts().includes(fontFamily);
 };
