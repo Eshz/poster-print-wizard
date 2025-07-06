@@ -11,28 +11,42 @@ if (typeof global === 'undefined') {
 }
 
 if (typeof Buffer === 'undefined') {
-  // Create a proper Buffer polyfill that works with @react-pdf/renderer
-  const BufferPolyfill = {
-    from: (input: string | ArrayLike<number>, encoding?: string) => {
+  // Create a complete Buffer polyfill that mimics Node.js Buffer
+  class BufferPolyfill extends Uint8Array {
+    constructor(input?: any, encoding?: string) {
       if (typeof input === 'string') {
         const encoder = new TextEncoder();
-        return encoder.encode(input);
+        super(encoder.encode(input));
+      } else if (typeof input === 'number') {
+        super(input);
+      } else if (input instanceof ArrayBuffer || input instanceof Uint8Array) {
+        super(input);
+      } else if (Array.isArray(input)) {
+        super(input);
+      } else {
+        super(0);
       }
-      return new Uint8Array(input);
-    },
-    isBuffer: (obj: any) => {
-      return obj instanceof Uint8Array || obj instanceof ArrayBuffer;
-    },
-    alloc: (size: number, fill?: number) => {
-      const buffer = new Uint8Array(size);
+    }
+
+    static from(input: string | ArrayLike<number> | ArrayBuffer, encoding?: string): BufferPolyfill {
+      if (typeof input === 'string') {
+        const encoder = new TextEncoder();
+        return new BufferPolyfill(encoder.encode(input));
+      }
+      return new BufferPolyfill(input);
+    }
+
+    static alloc(size: number, fill?: number): BufferPolyfill {
+      const buffer = new BufferPolyfill(size);
       if (fill !== undefined) {
         buffer.fill(fill);
       }
       return buffer;
-    },
-    concat: (buffers: Uint8Array[]) => {
+    }
+
+    static concat(buffers: (Uint8Array | BufferPolyfill)[]): BufferPolyfill {
       const totalLength = buffers.reduce((sum, buf) => sum + buf.length, 0);
-      const result = new Uint8Array(totalLength);
+      const result = new BufferPolyfill(totalLength);
       let offset = 0;
       for (const buf of buffers) {
         result.set(buf, offset);
@@ -40,10 +54,37 @@ if (typeof Buffer === 'undefined') {
       }
       return result;
     }
-  };
-  
+
+    static isBuffer(obj: any): boolean {
+      return obj instanceof BufferPolyfill || obj instanceof Uint8Array || obj instanceof ArrayBuffer;
+    }
+
+    toString(encoding?: string): string {
+      const decoder = new TextDecoder(encoding || 'utf8');
+      return decoder.decode(this);
+    }
+
+    toJSON(): { type: string; data: number[] } {
+      return {
+        type: 'Buffer',
+        data: Array.from(this)
+      };
+    }
+  }
+
+  // Set up the polyfill
   (window as any).Buffer = BufferPolyfill;
   (global as any).Buffer = BufferPolyfill;
+  
+  // Also add process polyfill if needed
+  if (typeof process === 'undefined') {
+    (window as any).process = { 
+      env: {}, 
+      nextTick: (fn: Function) => setTimeout(fn, 0),
+      browser: true
+    };
+    (global as any).process = (window as any).process;
+  }
 }
 
 /**
