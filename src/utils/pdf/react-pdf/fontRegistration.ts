@@ -15,10 +15,18 @@ const FONT_URLS = {
   }
 };
 
+let fontsRegistered = false;
+
 /**
  * Registers fonts for react-pdf using Google Fonts URLs
  */
 export const registerPdfFonts = async (): Promise<boolean> => {
+  // Skip if already registered
+  if (fontsRegistered) {
+    console.log('PDF fonts already registered');
+    return true;
+  }
+
   try {
     console.log('Registering PDF fonts from Google Fonts...');
     
@@ -52,25 +60,19 @@ export const registerPdfFonts = async (): Promise<boolean> => {
       ]
     });
 
+    fontsRegistered = true;
     console.log('PDF fonts registered successfully');
     return true;
   } catch (error) {
     console.error('Failed to register PDF fonts:', error);
+    // Don't fail the export if fonts fail to register
     return false;
   }
 };
 
 /**
- * Validates that fonts are properly registered by checking Font registry
+ * Validates that fonts are properly registered
  */
 export const validateFontRegistration = (): boolean => {
-  try {
-    // This is a basic validation - react-pdf doesn't expose the registry directly
-    // but we can at least ensure no errors occurred during registration
-    console.log('Font registration validation completed');
-    return true;
-  } catch (error) {
-    console.error('Font validation failed:', error);
-    return false;
-  }
+  return fontsRegistered;
 };

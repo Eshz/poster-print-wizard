@@ -40,7 +40,7 @@ export const exportToPDF = async (
     switch (method) {
       case 'react-pdf':
         // Best quality - vector-based PDF generation
-        await exportToReactPDF(posterData, designSettings, qrCodeUrl);
+        await exportToReactPDF(posterData, { ...designSettings, orientation }, qrCodeUrl);
         break;
         
       case 'svg':
@@ -62,8 +62,15 @@ export const exportToPDF = async (
   } catch (error) {
     console.error(`PDF export failed with method ${method}:`, error);
     
-    // Try fallback method
-    if (method !== 'html2pdf') {
+    // Try fallback method if react-pdf fails
+    if (method === 'react-pdf') {
+      toast.error(`Vector PDF export failed, trying canvas method...`);
+      try {
+        await exportToCanvasPDF(elementId, orientation);
+      } catch (fallbackError) {
+        toast.error("PDF export failed. Please try again with a different method.");
+      }
+    } else if (method !== 'html2pdf') {
       toast.error(`${method} export failed, trying fallback method...`);
       await exportToPDF(elementId, orientation, 'html2pdf');
     } else {
