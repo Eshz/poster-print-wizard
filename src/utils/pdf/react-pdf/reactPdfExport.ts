@@ -5,6 +5,17 @@ import { createPdfDocument } from './PdfDocument';
 import { registerFonts } from './fontRegistration';
 import { PosterData, DesignSettings } from '@/types/project';
 
+// Add Buffer polyfill for browser environment
+if (typeof global === 'undefined') {
+  (window as any).global = window;
+}
+if (typeof Buffer === 'undefined') {
+  (window as any).Buffer = {
+    from: (str: string) => new TextEncoder().encode(str),
+    isBuffer: () => false
+  };
+}
+
 /**
  * Exports poster using react-pdf for high-quality vector-based output
  */
@@ -17,15 +28,15 @@ export const exportToReactPDF = async (
     toast.info('Preparing fonts and generating high-quality vector PDF...');
     
     // Ensure fonts are registered before creating the document
-    registerFonts();
+    await registerFonts();
     
-    // Small delay to allow font registration to complete
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Longer delay to allow font registration to complete properly
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Create the PDF document - Fixed: get the Document element directly
+    // Create the PDF document
     const doc = createPdfDocument(posterData, designSettings, qrCodeUrl);
     
-    // Generate PDF blob
+    // Generate PDF blob with better error handling
     const blob = await pdf(doc).toBlob();
     
     // Create download link
@@ -43,7 +54,9 @@ export const exportToReactPDF = async (
     
   } catch (error) {
     console.error('React-PDF export failed:', error);
-    toast.error('Vector PDF export failed. Please try again.');
-    throw error;
+    toast.error('Vector PDF export failed. Trying fallback method...');
+    
+    // Instead of throwing, let the main export function handle fallback
+    throw new Error(`React-PDF export failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 };
