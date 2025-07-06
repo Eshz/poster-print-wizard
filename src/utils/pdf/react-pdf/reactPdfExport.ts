@@ -5,15 +5,45 @@ import { createPdfDocument } from './PdfDocument';
 import { registerFonts } from './fontRegistration';
 import { PosterData, DesignSettings } from '@/types/project';
 
-// Add Buffer polyfill for browser environment
+// Add comprehensive Buffer polyfill for browser environment
 if (typeof global === 'undefined') {
   (window as any).global = window;
 }
+
 if (typeof Buffer === 'undefined') {
-  (window as any).Buffer = {
-    from: (str: string) => new TextEncoder().encode(str),
-    isBuffer: () => false
+  // Create a proper Buffer polyfill that works with @react-pdf/renderer
+  const BufferPolyfill = {
+    from: (input: string | ArrayLike<number>, encoding?: string) => {
+      if (typeof input === 'string') {
+        const encoder = new TextEncoder();
+        return encoder.encode(input);
+      }
+      return new Uint8Array(input);
+    },
+    isBuffer: (obj: any) => {
+      return obj instanceof Uint8Array || obj instanceof ArrayBuffer;
+    },
+    alloc: (size: number, fill?: number) => {
+      const buffer = new Uint8Array(size);
+      if (fill !== undefined) {
+        buffer.fill(fill);
+      }
+      return buffer;
+    },
+    concat: (buffers: Uint8Array[]) => {
+      const totalLength = buffers.reduce((sum, buf) => sum + buf.length, 0);
+      const result = new Uint8Array(totalLength);
+      let offset = 0;
+      for (const buf of buffers) {
+        result.set(buf, offset);
+        offset += buf.length;
+      }
+      return result;
+    }
   };
+  
+  (window as any).Buffer = BufferPolyfill;
+  (global as any).Buffer = BufferPolyfill;
 }
 
 /**
@@ -31,7 +61,7 @@ export const exportToReactPDF = async (
     await registerFonts();
     
     // Longer delay to allow font registration to complete properly
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
     // Create the PDF document
     const doc = createPdfDocument(posterData, designSettings, qrCodeUrl);
