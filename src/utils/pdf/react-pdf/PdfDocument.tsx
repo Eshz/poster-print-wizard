@@ -1,8 +1,12 @@
 import React from 'react';
 import { Document, Page, View, Text, Image } from '@react-pdf/renderer';
 import { PosterData, DesignSettings } from '@/types/project';
+import { registerFonts } from './fontRegistration';
 import { styles } from './pdfStyles';
 import { A0_WIDTH, A0_HEIGHT, KEY_TAKEAWAY_COLORS } from './pdfConstants';
+
+// Register fonts on module load
+registerFonts();
 
 interface PdfDocumentProps {
   posterData: PosterData;
