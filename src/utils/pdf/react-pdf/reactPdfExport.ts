@@ -2,6 +2,7 @@
 import { pdf } from '@react-pdf/renderer';
 import { toast } from "sonner";
 import { createPdfDocument } from './PdfDocument';
+import { registerFonts } from './fontRegistration';
 import { PosterData, DesignSettings } from '@/types/project';
 
 /**
@@ -13,7 +14,13 @@ export const exportToReactPDF = async (
   qrCodeUrl?: string
 ) => {
   try {
-    toast.info('Generating high-quality vector PDF...');
+    toast.info('Preparing fonts and generating high-quality vector PDF...');
+    
+    // Ensure fonts are registered before creating the document
+    registerFonts();
+    
+    // Small delay to allow font registration to complete
+    await new Promise(resolve => setTimeout(resolve, 500));
     
     // Create the PDF document - Fixed: get the Document element directly
     const doc = createPdfDocument(posterData, designSettings, qrCodeUrl);
