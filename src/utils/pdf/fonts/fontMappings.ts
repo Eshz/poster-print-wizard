@@ -1,6 +1,6 @@
 
 /**
- * Font key to font family mappings for PDF export with fallbacks
+ * Font key to font family mappings with system fallbacks
  */
 export const getFontFamilyFromKey = (fontKey: string): string => {
   const fontMap: { [key: string]: string } = {
@@ -11,33 +11,35 @@ export const getFontFamilyFromKey = (fontKey: string): string => {
     'opensans': 'Open Sans',
     'lora': 'Lora',
     'raleway': 'Raleway',
-    'crimsontext': 'Roboto', // Fallback to Roboto if not available
-    'sourceserifpro': 'Merriweather', // Fallback to Merriweather
-    'ebgaramond': 'Merriweather', // Fallback to Merriweather
-    'inter': 'Roboto', // Fallback to Roboto
-    'librewilson': 'Merriweather', // Fallback to Merriweather
-    'nunito': 'Roboto', // Fallback to Roboto
-    'cormorantgaramond': 'Merriweather', // Fallback to Merriweather
-    'worksans': 'Roboto', // Fallback to Roboto
-    'oldstandardtt': 'Merriweather', // Fallback to Merriweather
-    'karla': 'Roboto', // Fallback to Roboto
-    'spectral': 'Merriweather', // Fallback to Merriweather
-    'publicsans': 'Roboto', // Fallback to Roboto
-    'vollkorn': 'Merriweather', // Fallback to Merriweather
-    'firasans': 'Roboto' // Fallback to Roboto
+    
+    // Fallbacks for fonts without TTF files
+    'crimsontext': 'System Serif',
+    'sourceserifpro': 'System Serif',
+    'ebgaramond': 'System Serif',
+    'inter': 'System Sans',
+    'librewilson': 'System Serif',
+    'nunito': 'System Sans',
+    'cormorantgaramond': 'System Serif',
+    'worksans': 'System Sans',
+    'oldstandardtt': 'System Serif',
+    'karla': 'System Sans',
+    'spectral': 'System Serif',
+    'publicsans': 'System Sans',
+    'vollkorn': 'System Serif',
+    'firasans': 'System Sans'
   };
   
   const mappedFont = fontMap[fontKey];
   if (!mappedFont) {
-    console.warn(`Unknown font key: ${fontKey}, falling back to Roboto`);
-    return 'Roboto';
+    console.warn(`Unknown font key: ${fontKey}, falling back to System Sans`);
+    return 'System Sans';
   }
   
   return mappedFont;
 };
 
 /**
- * Get available fonts that have TTF files
+ * Get available fonts that have TTF files or system fallbacks
  */
 export const getAvailableFonts = (): string[] => {
   return [
@@ -47,7 +49,9 @@ export const getAvailableFonts = (): string[] => {
     'Montserrat',
     'Open Sans',
     'Lora',
-    'Raleway'
+    'Raleway',
+    'System Sans',
+    'System Serif'
   ];
 };
 

@@ -2,12 +2,10 @@
 import React from 'react';
 import { Document, Page, View, Text, Image } from '@react-pdf/renderer';
 import { PosterData, DesignSettings } from '@/types/project';
-import { registerFontsSync } from './fontRegistration';
 import { createDynamicStyles } from './pdfStyles';
 import { A0_WIDTH, A0_HEIGHT, KEY_TAKEAWAY_COLORS } from './pdfConstants';
 
-// Register fonts on module load
-registerFontsSync();
+// Note: Font registration is now handled in reactPdfExport.ts before document creation
 
 interface PdfDocumentProps {
   posterData: PosterData;
@@ -23,6 +21,13 @@ export const createPdfDocument = (
   designSettings: DesignSettings,
   qrCodeUrl?: string
 ) => {
+  console.log('📋 Creating PDF document with data:', {
+    title: posterData.title?.substring(0, 50) + '...',
+    orientation: designSettings.orientation,
+    titleFont: designSettings.titleFont,
+    contentFont: designSettings.contentFont
+  });
+
   const isLandscape = designSettings.orientation === 'landscape';
   const pageWidth = isLandscape ? A0_HEIGHT : A0_WIDTH;
   const pageHeight = isLandscape ? A0_WIDTH : A0_HEIGHT;
@@ -38,13 +43,19 @@ export const createPdfDocument = (
     { title: posterData.sectionTitles?.[3] || "4. Conclusions", content: posterData.conclusions },
   ].filter(section => section.content?.trim());
 
+  console.log(`📝 Active sections: ${sections.length}`);
+
   // Filter visible key takeaways
   const visibleKeyPoints = posterData.keypoints?.filter(
     (point: string, index: number) => point?.trim() && posterData.keyVisibility?.[index] !== false
   ) || [];
 
+  console.log(`🔑 Visible key points: ${visibleKeyPoints.length}`);
+
   // Parse references into individual items
   const referenceItems = posterData.references?.split('\n').filter(ref => ref.trim()) || [];
+
+  console.log(`📚 Reference items: ${referenceItems.length}`);
 
   return (
     <Document>
@@ -56,7 +67,7 @@ export const createPdfDocument = (
           <Text style={styles.school}>{posterData.school}</Text>
           <Text style={styles.contact}>{posterData.contact}</Text>
           
-          {/* QR Code */}
+          {/* QR Code - only if URL is provided and enabled */}
           {qrCodeUrl && posterData.showQrCode !== false && (
             <Image style={styles.qrCode} src={qrCodeUrl} />
           )}
