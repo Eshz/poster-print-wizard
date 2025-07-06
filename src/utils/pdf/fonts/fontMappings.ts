@@ -1,63 +1,31 @@
 
 /**
- * Font key to font family mappings with system fallbacks
+ * Font key to font family mappings for PDF export
  */
 export const getFontFamilyFromKey = (fontKey: string): string => {
   const fontMap: { [key: string]: string } = {
-    'playfair': 'Playfair Display',
-    'roboto': 'Roboto', 
-    'merriweather': 'Merriweather',
-    'montserrat': 'Montserrat',
-    'opensans': 'Open Sans',
-    'lora': 'Lora',
-    'raleway': 'Raleway',
-    
-    // Fallbacks for fonts without TTF files
-    'crimsontext': 'System Serif',
-    'sourceserifpro': 'System Serif',
-    'ebgaramond': 'System Serif',
-    'inter': 'System Sans',
-    'librewilson': 'System Serif',
-    'nunito': 'System Sans',
-    'cormorantgaramond': 'System Serif',
-    'worksans': 'System Sans',
-    'oldstandardtt': 'System Serif',
-    'karla': 'System Sans',
-    'spectral': 'System Serif',
-    'publicsans': 'System Sans',
-    'vollkorn': 'System Serif',
-    'firasans': 'System Sans'
+    'playfair': 'Playfair Display, serif',
+    'roboto': 'Roboto, sans-serif',
+    'merriweather': 'Merriweather, serif',
+    'montserrat': 'Montserrat, sans-serif',
+    'opensans': 'Open Sans, sans-serif',
+    'lora': 'Lora, serif',
+    'raleway': 'Raleway, sans-serif',
+    'crimsontext': 'Crimson Text, serif',
+    'sourceserifpro': 'Source Serif Pro, serif',
+    'ebgaramond': 'EB Garamond, serif',
+    'inter': 'Inter, sans-serif',
+    'librewilson': 'Libre Baskerville, serif',
+    'nunito': 'Nunito, sans-serif',
+    'cormorantgaramond': 'Cormorant Garamond, serif',
+    'worksans': 'Work Sans, sans-serif',
+    'oldstandardtt': 'Old Standard TT, serif',
+    'karla': 'Karla, sans-serif',
+    'spectral': 'Spectral, serif',
+    'publicsans': 'Public Sans, sans-serif',
+    'vollkorn': 'Vollkorn, serif',
+    'firasans': 'Fira Sans, sans-serif'
   };
   
-  const mappedFont = fontMap[fontKey];
-  if (!mappedFont) {
-    console.warn(`Unknown font key: ${fontKey}, falling back to System Sans`);
-    return 'System Sans';
-  }
-  
-  return mappedFont;
-};
-
-/**
- * Get available fonts that have TTF files or system fallbacks
- */
-export const getAvailableFonts = (): string[] => {
-  return [
-    'Roboto',
-    'Merriweather', 
-    'Playfair Display',
-    'Montserrat',
-    'Open Sans',
-    'Lora',
-    'Raleway',
-    'System Sans',
-    'System Serif'
-  ];
-};
-
-/**
- * Check if a font is available for PDF export
- */
-export const isFontAvailable = (fontFamily: string): boolean => {
-  return getAvailableFonts().includes(fontFamily);
+  return fontMap[fontKey] || 'Roboto, sans-serif';
 };
