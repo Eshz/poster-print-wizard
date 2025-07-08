@@ -19,11 +19,15 @@ export const exportToReactPDF = async (
     // Register fonts from local TTF files with proper error handling
     await registerFontsForPDF();
     
+    // Wait additional time to ensure fonts are fully processed
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     // Verify fonts are loaded
     if (!areFontsLoaded()) {
       console.warn('No custom fonts loaded, proceeding with system fonts');
       toast.warning('Custom fonts could not be loaded, using system fonts instead');
     } else {
+      console.log('Custom fonts successfully registered for PDF export');
       toast.success('Custom fonts loaded successfully!');
     }
     

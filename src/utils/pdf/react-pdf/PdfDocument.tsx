@@ -25,9 +25,14 @@ export const createPdfDocument = (
   const pageWidth = isLandscape ? A0_HEIGHT : A0_WIDTH;
   const pageHeight = isLandscape ? A0_WIDTH : A0_HEIGHT;
 
-  // Get font families with fallbacks
-  const titleFont = getAvailableFontFamily(mapFontKeyToFamily(designSettings.titleFont || 'merriweather'));
-  const contentFont = getAvailableFontFamily(mapFontKeyToFamily(designSettings.contentFont || 'roboto'));
+  // Get font families with fallbacks - ensure exact matches
+  const titleFontFamily = mapFontKeyToFamily(designSettings.titleFont || 'merriweather');
+  const contentFontFamily = mapFontKeyToFamily(designSettings.contentFont || 'roboto');
+  
+  const titleFont = getAvailableFontFamily(titleFontFamily);
+  const contentFont = getAvailableFontFamily(contentFontFamily);
+  
+  console.log(`PDF using fonts - Title: ${titleFont} (requested: ${titleFontFamily}), Content: ${contentFont} (requested: ${contentFontFamily})`);
 
   // Filter active sections
   const sections = [

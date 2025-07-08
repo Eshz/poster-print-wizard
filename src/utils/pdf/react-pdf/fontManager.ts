@@ -128,11 +128,21 @@ const registerFontFamily = async (config: FontConfig): Promise<void> => {
     throw new Error(`No valid fonts found for ${config.family}`);
   }
   
-  // Register the font family with react-pdf
+  // Register the font family with react-pdf - ensure exact family name match
   Font.register({
     family: config.family,
     fonts
   });
+  
+  // Also register with hyphenated versions that might be used in CSS
+  const hyphenatedFamily = config.family.replace(/\s+/g, '-');
+  if (hyphenatedFamily !== config.family) {
+    Font.register({
+      family: hyphenatedFamily,
+      fonts
+    });
+    console.log(`Also registered ${hyphenatedFamily} (hyphenated version)`);
+  }
   
   console.log(`Registered ${config.family} with ${fonts.length} weights`);
 };
@@ -155,22 +165,39 @@ const validateFontFile = async (fontPath: string): Promise<void> => {
  * Gets the best available font for PDF rendering with fallback
  */
 export const getAvailableFontFamily = (requestedFont: string): string => {
-  // Check if the requested font was successfully registered
-  if (registeredFonts.has(requestedFont)) {
-    console.log(`Using registered font: ${requestedFont}`);
-    return requestedFont;
+  // Normalize the requested font name
+  const normalizedFont = requestedFont.trim();
+  
+  // Check if the requested font was successfully registered (exact match)
+  if (registeredFonts.has(normalizedFont)) {
+    console.log(`Using registered font: ${normalizedFont}`);
+    return normalizedFont;
   }
   
-  // Find fallback from config
-  const config = FONT_CONFIGS.find(c => c.family === requestedFont);
-  if (config) {
-    console.log(`Font ${requestedFont} not available, using system fallback: ${config.fallback}`);
-    return config.fallback;
+  // Check hyphenated version
+  const hyphenatedFont = normalizedFont.replace(/\s+/g, '-');
+  if (registeredFonts.has(hyphenatedFont)) {
+    console.log(`Using registered hyphenated font: ${hyphenatedFont}`);
+    return hyphenatedFont;
   }
   
-  // Default system fallback
-  console.log(`Using default system fallback for unknown font: ${requestedFont}`);
-  return 'Times-Roman'; // Use a standard PDF font as fallback
+  // Find the exact config match first
+  const config = FONT_CONFIGS.find(c => c.family === normalizedFont);
+  if (config && registeredFonts.has(config.family)) {
+    console.log(`Using exact config match: ${config.family}`);
+    return config.family;
+  }
+  
+  // Use the first registered font as fallback if available
+  if (registeredFonts.size > 0) {
+    const firstRegistered = Array.from(registeredFonts)[0];
+    console.log(`Using first registered font as fallback: ${firstRegistered}`);
+    return firstRegistered;
+  }
+  
+  // Default system fallback only if no fonts are registered
+  console.log(`No fonts registered, using default system fallback for: ${normalizedFont}`);
+  return 'Helvetica'; // Standard PDF font
 };
 
 /**
