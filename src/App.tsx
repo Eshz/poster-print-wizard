@@ -61,7 +61,10 @@ const AppContent = () => {
         }
       );
     } else {
-      exportToPDF('poster-content', orientation);
+      exportToPDF(
+        'poster-content',
+         orientation,
+        'react-pdf');
     }
     trackPDFExported();
   };

@@ -19,15 +19,14 @@ export const usePosterScaling = ({
   a0WidthPx,
   a0HeightPx
 }: UsePosterScalingProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
   const posterRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
 
   useEffect(() => {
     const calculateScale = () => {
-      if (!containerRef.current || !posterRef.current) return;
+      if (!posterRef.current) return;
 
-      const container = containerRef.current.parentElement;
+      const container = posterRef.current.parentElement.parentElement.parentElement;
       if (!container) return;
 
       const containerRect = container.getBoundingClientRect();
@@ -75,5 +74,5 @@ export const usePosterScaling = ({
     };
   }, [manualZoom, onContainerScaleChange, posterUIWidth, posterUIHeight, a0WidthPx, a0HeightPx, isMobile]);
 
-  return { containerRef, posterRef };
+  return { posterRef };
 };

@@ -27,7 +27,6 @@ export const registerFontsForPDF = async (): Promise<void> => {
     fontRegistrationPromises.set(config.family, promise);
     
     try {
-      await promise;
       registeredFonts.add(config.family);
       console.log(`Successfully registered font: ${config.family}`);
     } catch (error) {
@@ -38,13 +37,11 @@ export const registerFontsForPDF = async (): Promise<void> => {
     return promise;
   });
   
-  // Wait for all font registrations to complete
+  //Wait for all font registrations to complete
   await Promise.allSettled(registrationPromises);
   
   console.log(`Font registration complete. Successfully registered: ${Array.from(registeredFonts).join(', ')}`);
   
-  // Wait a bit more to ensure fonts are fully loaded
-  await new Promise(resolve => setTimeout(resolve, 500));
 };
 
 /**

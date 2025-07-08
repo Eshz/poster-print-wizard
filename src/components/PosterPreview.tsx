@@ -1,13 +1,9 @@
-
-import React, { useMemo } from 'react';
-import { PosterData, DesignSettings } from '@/types/project';
-import PosterHeader from './poster-preview/PosterHeader';
-import ContentVisibilityWarning from './poster-preview/ContentVisibilityWarning';
-import PosterLayoutRenderer from './poster-preview/PosterLayoutRenderer';
-import { checkContentVisibility } from '@/utils/contentVisibilityChecker';
-import { usePosterScaling } from '@/hooks/usePosterScaling';
-import { getPosterDimensions } from '@/utils/posterConstants';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
+import React, { useMemo } from "react";
+import { PosterData, DesignSettings } from "@/types/project";
+import PosterHeader from "./poster-preview/PosterHeader";
+import PosterLayoutRenderer from "./poster-preview/PosterLayoutRenderer";
+import { usePosterScaling } from "@/hooks/usePosterScaling";
+import { getPosterDimensions } from "@/utils/posterConstants";
 
 interface PosterPreviewProps {
   posterData: PosterData;
@@ -16,91 +12,71 @@ interface PosterPreviewProps {
   onContainerScaleChange?: (scale: number) => void;
 }
 
-const PosterPreview: React.FC<PosterPreviewProps> = React.memo(({ 
-  posterData, 
-  designSettings, 
-  manualZoom = 1,
-  onContainerScaleChange 
-}) => {
-  // Get dimensions based on orientation
-  const dimensions = useMemo(() => 
-    getPosterDimensions(designSettings.orientation || 'portrait'), 
-    [designSettings.orientation]
-  );
+const PosterPreview: React.FC<PosterPreviewProps> = React.memo(
+  ({ posterData, designSettings, manualZoom = 1, onContainerScaleChange }) => {
+    // Get dimensions based on orientation
+    const dimensions = useMemo(
+      () => getPosterDimensions(designSettings.orientation || "portrait"),
+      [designSettings.orientation]
+    );
 
-  const { containerRef, posterRef } = usePosterScaling({
-    manualZoom,
-    onContainerScaleChange,
-    posterUIWidth: dimensions.width,
-    posterUIHeight: dimensions.height,
-    a0WidthPx: dimensions.a0Width,
-    a0HeightPx: dimensions.a0Height
-  });
+    const { posterRef } = usePosterScaling({
+      manualZoom,
+      onContainerScaleChange,
+      posterUIWidth: dimensions.width,
+      posterUIHeight: dimensions.height,
+      a0WidthPx: dimensions.a0Width,
+      a0HeightPx: dimensions.a0Height,
+    });
 
-  // QR Code generation - memoized for performance
-  const qrCodeUrl = useMemo(() => {
-    if (!posterData.qrCodeUrl || posterData.showQrCode === false) return '';
-    
-    return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(posterData.qrCodeUrl)}&color=${(posterData.qrCodeColor || '#000000').replace('#', '')}`;
-  }, [posterData.qrCodeUrl, posterData.showQrCode, posterData.qrCodeColor]);
+    // QR Code generation - memoized for performance
+    const qrCodeUrl = useMemo(() => {
+      if (!posterData.qrCodeUrl || posterData.showQrCode === false) return "";
 
-  // Check content visibility - memoized for performance
-  const visibilityCheck = useMemo(() => 
-    checkContentVisibility(posterData, designSettings),
-    [posterData, designSettings]
-  );
+      return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
+        posterData.qrCodeUrl
+      )}&color=${(posterData.qrCodeColor || "#000000").replace("#", "")}`;
+    }, [posterData.qrCodeUrl, posterData.showQrCode, posterData.qrCodeColor]);
 
-  // Aspect ratio calculation - memoized
-  const aspectRatio = useMemo(() => dimensions.height / dimensions.width, [dimensions]);
+    // Check content visibility - memoized for performance
 
-  return (
-    <div ref={containerRef} className="flex flex-col items-center justify-center w-full">
-      {/* Content Visibility Warning */}
-      <ContentVisibilityWarning 
-        isVisible={visibilityCheck.isContentVisible}
-        warnings={visibilityCheck.warnings}
-      />
+    return (
+      <div
+        id="poster-content"
+        ref={posterRef}
+        className="bg-white border border-gray-200 relative overflow-hidden flex flex-col shadow-lg w-full h-full"
+        style={{
+          transformOrigin: "center",
+        }}
+      >
+        {/* Header Section */}
+        <PosterHeader
+          title={posterData.title}
+          authors={posterData.authors}
+          school={posterData.school}
+          contact={posterData.contact}
+          designSettings={designSettings}
+          qrCodeUrl={qrCodeUrl}
+          showQrCode={posterData.showQrCode !== false}
+          qrCodeCaption={posterData.qrCodeCaption}
+        />
 
-      <div style={{ width: `${dimensions.width}px` }}>
-        <AspectRatio ratio={1/aspectRatio}>
-          <div
-            id="poster-content"
-            ref={posterRef}
-            className="bg-white border border-gray-200 relative overflow-hidden flex flex-col shadow-lg w-full h-full"
-            style={{ 
-              transformOrigin: 'center'
-            }}
-          >
-            {/* Header Section */}
-            <PosterHeader
-              title={posterData.title}
-              authors={posterData.authors}
-              school={posterData.school}
-              contact={posterData.contact}
-              designSettings={designSettings}
-              qrCodeUrl={qrCodeUrl}
-              showQrCode={posterData.showQrCode !== false}
-              qrCodeCaption={posterData.qrCodeCaption}
-            />
-
-            {/* Dynamic Content Layout - adding overflow control */}
-            <div className="flex-grow overflow-hidden p-2">
-              <PosterLayoutRenderer
-                layout={designSettings.layout}
-                posterData={posterData}
-                designSettings={designSettings}
-                qrCodeUrl={qrCodeUrl}
-                showKeypoints={posterData.showKeypoints !== false}
-                showQrCode={posterData.showQrCode !== false}
-              />
-            </div>
-          </div>
-        </AspectRatio>
+        {/* Dynamic Content Layout - adding overflow control */}
+        <div className="flex-grow overflow-hidden p-2">
+          <PosterLayoutRenderer
+            layout={designSettings.layout}
+            posterData={posterData}
+            designSettings={designSettings}
+            qrCodeUrl={qrCodeUrl}
+            showKeypoints={posterData.showKeypoints !== false}
+            showQrCode={posterData.showQrCode !== false}
+          />
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 
-PosterPreview.displayName = 'PosterPreview';
+PosterPreview.displayName = "PosterPreview";
 
 export default PosterPreview;
