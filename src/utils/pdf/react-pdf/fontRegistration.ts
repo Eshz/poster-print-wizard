@@ -54,14 +54,18 @@ const registerFontFamily = async (config: FontConfig): Promise<void> => {
   const fonts = [];
   
   for (const weightConfig of config.weights) {
-    const fontPath = `/fonts/${weightConfig.fileName}`;
+    const fontSrc = weightConfig.fileName.startsWith('http') 
+      ? weightConfig.fileName 
+      : `/fonts/${weightConfig.fileName}`;
     
     try {
-      // Validate that the font file exists
-      await validateFontFile(fontPath);
+      // Skip validation for external URLs, validate only local files
+      if (!weightConfig.fileName.startsWith('http')) {
+        await validateFontFile(fontSrc);
+      }
       
       fonts.push({
-        src: fontPath,
+        src: fontSrc,
         fontWeight: weightConfig.weight,
         fontStyle: weightConfig.style
       });

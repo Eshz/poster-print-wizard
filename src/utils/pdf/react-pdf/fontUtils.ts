@@ -47,8 +47,8 @@ export const getAvailableFontFamily = (requestedFont: string): string => {
  */
 export const mapFontKeyToFamily = (fontKey: string): string => {
   const fontMap: { [key: string]: string } = {
-    'roboto': 'Roboto',
-    'merriweather': 'Merriweather', 
+    'roboto': 'DejaVu Sans',
+    'merriweather': 'DejaVu Sans Bold', 
     'montserrat': 'Montserrat',
     'opensans': 'Open Sans'
   };
@@ -58,5 +58,5 @@ export const mapFontKeyToFamily = (fontKey: string): string => {
     return getAvailableFontFamily(mappedFont);
   }
   
-  return getAvailableFontFamily('Roboto'); // Default fallback
+  return getAvailableFontFamily('DejaVu Sans'); // Default fallback
 };

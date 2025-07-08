@@ -8,24 +8,22 @@ interface FontConfig {
   }>;
 }
 
-// Font configurations with local TTF files
+// Font configurations with CDN TTF files for testing
 export const FONT_CONFIGS: FontConfig[] = [
   {
-    family: 'Roboto',
+    family: 'DejaVu Sans',
     fallback: 'Arial, sans-serif',
     weights: [
-      { weight: 300, style: 'normal', fileName: 'Roboto-Light.ttf' },
-      { weight: 'normal', style: 'normal', fileName: 'Roboto-Regular.ttf' },
-      { weight: 500, style: 'normal', fileName: 'Roboto-Medium.ttf' },
-      { weight: 'bold', style: 'normal', fileName: 'Roboto-Bold.ttf' }
+      { weight: 'normal', style: 'normal', fileName: 'https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans.ttf' },
+      { weight: 'bold', style: 'normal', fileName: 'https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Bold.ttf' }
     ]
   },
   {
-    family: 'Merriweather',
+    family: 'DejaVu Sans Bold',
     fallback: 'Georgia, serif',
     weights: [
-      { weight: 'normal', style: 'normal', fileName: 'Merriweather-Regular.ttf' },
-      { weight: 'bold', style: 'normal', fileName: 'Merriweather-Bold.ttf' }
+      { weight: 'normal', style: 'normal', fileName: 'https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Bold.ttf' },
+      { weight: 'bold', style: 'normal', fileName: 'https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Bold.ttf' }
     ]
   },
   {

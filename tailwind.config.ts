@@ -21,8 +21,10 @@ export default {
 			fontFamily: {
 				// Existing fonts
 				'playfair': ['Playfair Display', 'serif'],
-				'roboto': ['Roboto', 'sans-serif'],
-				'merriweather': ['Merriweather', 'serif'],
+				'roboto': ['DejaVu Sans', 'sans-serif'],
+				'merriweather': ['DejaVu Sans Bold', 'serif'],
+				'dejavu-sans': ['DejaVu Sans', 'sans-serif'],
+				'dejavu-sans-bold': ['DejaVu Sans Bold', 'serif'],
 				'montserrat': ['Montserrat', 'sans-serif'],
 				'opensans': ['Open Sans', 'sans-serif'],
 				'lora': ['Lora', 'serif'],

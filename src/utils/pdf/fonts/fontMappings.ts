@@ -5,8 +5,8 @@
 export const getFontFamilyFromKey = (fontKey: string): string => {
   const fontMap: { [key: string]: string } = {
     'playfair': 'Playfair Display, serif',
-    'roboto': 'Roboto, sans-serif',
-    'merriweather': 'Merriweather, serif',
+    'roboto': 'DejaVu Sans, sans-serif',
+    'merriweather': 'DejaVu Sans Bold, serif',
     'montserrat': 'Montserrat, sans-serif',
     'opensans': 'Open Sans, sans-serif',
     'lora': 'Lora, serif',
@@ -27,5 +27,5 @@ export const getFontFamilyFromKey = (fontKey: string): string => {
     'firasans': 'Fira Sans, sans-serif'
   };
   
-  return fontMap[fontKey] || 'Roboto, sans-serif';
+  return fontMap[fontKey] || 'DejaVu Sans, sans-serif';
 };
