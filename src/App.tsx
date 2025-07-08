@@ -50,7 +50,19 @@ const AppContent = () => {
   const handleExportPDF = () => {
     // Use the current project's orientation or default to portrait
     const orientation = currentProject?.designSettings?.orientation || 'portrait';
-    exportToPDF('poster-content', orientation);
+    if (currentProject) {
+      exportToPDF(
+        'poster-content', 
+        orientation, 
+        'react-pdf',
+        { 
+          posterData: currentProject.posterData, 
+          designSettings: currentProject.designSettings 
+        }
+      );
+    } else {
+      exportToPDF('poster-content', orientation);
+    }
     trackPDFExported();
   };
 

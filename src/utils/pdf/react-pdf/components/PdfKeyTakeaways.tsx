@@ -14,7 +14,8 @@ export const PdfKeyTakeaways: React.FC<PdfKeyTakeawaysProps> = ({
   visibleKeyPoints, 
   styles 
 }) => (
-  <View>
+  <View style={styles.keyTakeawaysContainer}>
+    <Text style={styles.keyTakeawaysTitle}>Key Takeaways</Text>
     {visibleKeyPoints.map((point: string, index: number) => (
       <View key={index} style={styles.keyTakeaway}>
         <View style={[styles.keyNumber, { backgroundColor: keyTakeawayColors[index] || keyTakeawayColors[0] }]}>

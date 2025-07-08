@@ -63,8 +63,13 @@ const Index = () => {
   const qrColor: string = currentProject?.qrColor || "#000000";
   
   const handleExportPDF = () => {
-    // Use react-pdf for best quality vector-based export
-    exportToPDF('poster-content', designSettings.orientation || 'portrait', 'react-pdf');
+    // Use react-pdf for best quality vector-based export with actual project data
+    exportToPDF(
+      'poster-content', 
+      designSettings.orientation || 'portrait', 
+      'react-pdf',
+      { posterData, designSettings }
+    );
   };
 
   const handleZoomChange = (zoom: number) => {

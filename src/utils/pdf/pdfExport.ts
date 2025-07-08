@@ -25,11 +25,12 @@ export type ExportMethod = 'react-pdf' | 'canvas' | 'svg' | 'html2pdf';
 export const exportToPDF = async (
   elementId: string, 
   orientation: 'portrait' | 'landscape' = 'portrait',
-  method: ExportMethod = 'react-pdf'
+  method: ExportMethod = 'react-pdf',
+  projectData?: { posterData: any; designSettings: any }
 ) => {
   // Get poster data for react-pdf method
-  const posterData = extractPosterDataFromDOM();
-  const designSettings = extractDesignSettings();
+  const posterData = projectData?.posterData || extractPosterDataFromDOM();
+  const designSettings = projectData?.designSettings || extractDesignSettings();
   
   // Generate QR code URL if needed
   const qrCodeUrl = posterData.qrCodeUrl && posterData.showQrCode !== false
@@ -73,21 +74,32 @@ export const exportToPDF = async (
 };
 
 /**
- * Extract poster data from DOM for react-pdf
+ * Extract poster data from DOM for react-pdf (fallback method)
  */
 const extractPosterDataFromDOM = () => {
-  // This would need to extract actual data from the current poster state
-  // For now, return a basic structure - this should be connected to the actual poster data
+  // Try to extract data from the DOM elements if available
+  const titleElement = document.querySelector('[data-poster-title]') || document.querySelector('h1');
+  const authorsElement = document.querySelector('[data-poster-authors]');
+  const schoolElement = document.querySelector('[data-poster-school]');
+  const contactElement = document.querySelector('[data-poster-contact]');
+  
+  // Extract section content from DOM
+  const introElement = document.querySelector('[data-section="introduction"]');
+  const methodsElement = document.querySelector('[data-section="methods"]');
+  const findingsElement = document.querySelector('[data-section="findings"]');
+  const conclusionsElement = document.querySelector('[data-section="conclusions"]');
+  const referencesElement = document.querySelector('[data-section="references"]');
+  
   return {
-    title: "Conference Poster Title",
-    authors: "Author Names",
-    school: "Institution",
-    contact: "contact@example.com",
-    introduction: "Introduction content...",
-    methods: "Methods content...",
-    findings: "Findings content...",
-    conclusions: "Conclusions content...",
-    references: "References...",
+    title: titleElement?.textContent || "Conference Poster Title",
+    authors: authorsElement?.textContent || "Author Names",
+    school: schoolElement?.textContent || "Institution",
+    contact: contactElement?.textContent || "contact@example.com",
+    introduction: introElement?.textContent || "Introduction content...",
+    methods: methodsElement?.textContent || "Methods content...",
+    findings: findingsElement?.textContent || "Findings content...",
+    conclusions: conclusionsElement?.textContent || "Conclusions content...",
+    references: referencesElement?.textContent || "References...",
     keypoints: ["Key Point 1", "Key Point 2", "Key Point 3"],
     keyDescriptions: ["Description 1", "Description 2", "Description 3"],
     sectionTitles: ["1. Introduction", "2. Methods", "3. Findings", "4. Conclusions", "5. References"],
