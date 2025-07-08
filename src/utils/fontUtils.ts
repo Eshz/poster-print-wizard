@@ -5,8 +5,8 @@ export const getFontClass = (fontType: 'title' | 'content', titleFont: string, c
   
   switch(font) {
     case 'playfair': return 'font-playfair';
-    case 'roboto': return 'font-dejavu-sans';
-    case 'merriweather': return 'font-dejavu-sans-bold';
+    case 'roboto': return 'font-roboto';
+    case 'merriweather': return 'font-merriweather';
     case 'montserrat': return 'font-montserrat';
     case 'opensans': return 'font-opensans';
     case 'lora': return 'font-lora';

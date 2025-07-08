@@ -1,7 +1,7 @@
 export const FONT_FAMILIES = {
   playfair: 'Playfair Display',
-  roboto: 'DejaVu Sans',
-  merriweather: 'DejaVu Sans Bold',
+  roboto: 'Roboto',
+  merriweather: 'Merriweather',
   montserrat: 'Montserrat',
   opensans: 'Open Sans',
   lora: 'Lora',
