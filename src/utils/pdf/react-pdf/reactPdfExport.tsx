@@ -2,7 +2,7 @@ import { pdf } from "@react-pdf/renderer";
 import { toast } from "sonner";
 import { registerFontsForPDF } from "./fontManager";
 import { DesignSettings, PosterData } from "@/types/project";
-import PosterPreview from "@/components/PosterPreview";
+import { createPdfDocument } from "./PdfDocument";
 
 /**
  * Exports poster using react-pdf with local TTF fonts for high-quality vector-based output
@@ -19,17 +19,12 @@ export const exportToReactPDF = async (
 
     toast.info("Generating high-quality vector PDF...");
 
-    const doc = (
-      <PosterPreview
-        posterData={{
-          ...posterData,
-          qrCodeColor: posterData.qrCodeColor,
-          showKeypoints: posterData.showKeypoints,
-          showQrCode: posterData.showQrCode,
-        }}
-        designSettings={designSettings}
-      />
-    );
+    // Generate QR code URL if needed
+    const qrCodeUrl = posterData.qrCodeUrl && posterData.showQrCode !== false
+      ? `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(posterData.qrCodeUrl)}&color=${(posterData.qrCodeColor || '#000000').replace('#', '')}`
+      : undefined;
+
+    const doc = createPdfDocument(posterData, designSettings, qrCodeUrl);
 
     // Generate PDF blob with error handling
     const pdfElement = pdf(doc);
