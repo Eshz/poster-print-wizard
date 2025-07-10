@@ -1,5 +1,12 @@
+// A0 dimensions in points for 300 DPI
+const A0_WIDTH_POINTS = 2384;
+const A0_HEIGHT_POINTS = 3370;
 
-import { A0_WIDTH_POINTS, A0_HEIGHT_POINTS, PREVIEW_WIDTH_PORTRAIT, PREVIEW_HEIGHT_PORTRAIT, PREVIEW_WIDTH_LANDSCAPE, PREVIEW_HEIGHT_LANDSCAPE } from './pdfConfig';
+// Preview dimensions
+const PREVIEW_WIDTH_PORTRAIT = 800;
+const PREVIEW_HEIGHT_PORTRAIT = 1131;
+const PREVIEW_WIDTH_LANDSCAPE = 1131;
+const PREVIEW_HEIGHT_LANDSCAPE = 800;
 
 /**
  * Calculates the scale factor for A0 export at 300 DPI based on orientation

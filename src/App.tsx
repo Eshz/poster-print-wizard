@@ -54,17 +54,11 @@ const AppContent = () => {
       exportToPDF(
         'poster-content', 
         orientation, 
-        'react-pdf',
         { 
           posterData: currentProject.posterData, 
           designSettings: currentProject.designSettings 
         }
       );
-    } else {
-      exportToPDF(
-        'poster-content',
-         orientation,
-        'react-pdf');
     }
     trackPDFExported();
   };

@@ -5,9 +5,7 @@ import { getAvailableFontFamily, mapFontKeyToFamily } from './fontManager';
 import { createPdfStyles, A0_WIDTH, A0_HEIGHT } from './pdfStyles';
 import { processPosterData } from './pdfDataProcessor';
 import { PdfHeader } from './components/PdfHeader';
-import { PdfSection } from './components/PdfSection';
-import { PdfKeyTakeaways } from './components/PdfKeyTakeaways';
-import { PdfReferences } from './components/PdfReferences';
+import { PdfLayoutRouter } from './PdfLayoutRouter';
 
 interface PdfDocumentProps {
   posterData: PosterData;
@@ -36,9 +34,6 @@ export const createPdfDocument = (
   
   console.log(`PDF using fonts - Title: ${titleFont} (requested: ${titleFontFamily}), Content: ${contentFont} (requested: ${contentFontFamily})`);
 
-  // Process poster data
-  const { sections, visibleKeyPoints, referenceItems } = processPosterData(posterData);
-
   // Create styles with resolved fonts
   const styles = createPdfStyles(designSettings, titleFont, contentFont);
 
@@ -52,40 +47,12 @@ export const createPdfDocument = (
           styles={styles} 
         />
 
-        {/* Content */}
-        <View style={styles.content}>
-          {/* Left Column - Main Sections */}
-          <View style={[styles.column, { flex: 2 }]}>
-            {sections.map((section, index) => (
-              <PdfSection 
-                key={index} 
-                section={section} 
-                styles={styles} 
-              />
-            ))}
-          </View>
-
-          {/* Right Column - Key Takeaways and References */}
-          <View style={styles.column}>
-            {/* Key Takeaways */}
-            {posterData.showKeypoints !== false && visibleKeyPoints.length > 0 && (
-              <PdfKeyTakeaways 
-                posterData={posterData}
-                visibleKeyPoints={visibleKeyPoints}
-                styles={styles}
-              />
-            )}
-
-            {/* References */}
-            {posterData.references?.trim() && (
-              <PdfReferences 
-                posterData={posterData}
-                referenceItems={referenceItems}
-                styles={styles}
-              />
-            )}
-          </View>
-        </View>
+        {/* Dynamic Layout Content */}
+        <PdfLayoutRouter 
+          posterData={posterData}
+          designSettings={designSettings}
+          styles={styles}
+        />
       </Page>
     </Document>
   );
