@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { PosterData, DesignSettings } from "@/types/project";
 import PosterHeader from "./poster-preview/PosterHeader";
-import PdfPreviewRenderer from "./PdfPreviewRenderer";
+import PosterLayoutRenderer from "./poster-preview/PosterLayoutRenderer";
 import { usePosterScaling } from "@/hooks/usePosterScaling";
 import { getPosterDimensions } from "@/utils/posterConstants";
 
@@ -61,12 +61,15 @@ const PosterPreview: React.FC<PosterPreviewProps> = React.memo(
           qrCodeCaption={posterData.qrCodeCaption}
         />
 
-        {/* PDF Preview Content */}
+        {/* Dynamic Content Layout - adding overflow control */}
         <div className="flex-grow overflow-hidden p-2">
-          <PdfPreviewRenderer
+          <PosterLayoutRenderer
+            layout={designSettings.layout}
             posterData={posterData}
             designSettings={designSettings}
             qrCodeUrl={qrCodeUrl}
+            showKeypoints={posterData.showKeypoints !== false}
+            showQrCode={posterData.showQrCode !== false}
           />
         </div>
       </div>

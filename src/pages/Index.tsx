@@ -67,6 +67,7 @@ const Index = () => {
     exportToPDF(
       'poster-content', 
       designSettings.orientation || 'portrait', 
+      'react-pdf',
       { posterData, designSettings }
     );
   };
